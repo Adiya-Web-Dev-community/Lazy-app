@@ -42,15 +42,15 @@ export interface RegisterData {
 }
 
 export interface RegisterResponseChildData {
-  name: string;
-  email: string;
-  password: string;
-  mobile: string;
-  isVerified: boolean;
-  otp: string;
-  role: string;
-  _id: string;
-  registrationDate: string;
+  name?: string;
+  email?: string;
+  password?: string;
+  mobile?: number;
+  isVerified?: boolean;
+  role?: string;
+  _id?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 //type data which will come after register
