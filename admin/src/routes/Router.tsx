@@ -14,6 +14,7 @@ import Authentication from "../pages/Authentication";
 import Login from "../pages/Login";
 import ForgetPassword from "../pages/ForgetPassword";
 import RegisterAdmin from "../pages/RegisterAdmin";
+import DummyPage from "../pages/DummyPage";
 
 const route = createBrowserRouter([
   {
@@ -70,8 +71,8 @@ const route = createBrowserRouter([
 
       { path: "/companies", element: <Companies /> },
       { path: "/companies/:id", element: <CompaniesProfile /> },
-      { path: "/companies/companiesForm", element: <CompaniesForm /> },
-      //   { path: "/orders", element: <Orders /> },
+      { path: "/companies/form", element: <CompaniesForm /> },
+      // { path: "/orders", element: <Orders /> },
     ],
   },
 ]);

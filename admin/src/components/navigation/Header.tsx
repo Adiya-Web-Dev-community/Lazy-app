@@ -132,12 +132,12 @@ const Header = ({ onToggleSidebarSmall, isOpen }) => {
             </div>
             <div className="font-semibold text-[#DEE1E2]">
               <p className="">Jacobe Jones</p>
-              <p className="text-xs">Admin</p>
+              <p className="text-xs ">Admin</p>
             </div>
           </div>
           {showProfile && (
             <div className="absolute right-0 z-50 top-[3.7rem]">
-              <div className="w-[174.5px] pt-1 bg-[#252525] rounded-bl-md rounded-br-md shadow-lg">
+              <div className="w-[174.5px] py-2 bg-[#252525] rounded-bl-md rounded-br-md shadow-lg">
                 <button
                   className="w-full flex items-center px-4  pt-2 pb-2 text-sm font-bold text-[#DEE1E2] border-y border-[#1E3F4A]  hover:text-gray-400 "
                   onClick={handleLogout}
