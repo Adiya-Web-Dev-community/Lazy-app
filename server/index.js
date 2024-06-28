@@ -13,6 +13,7 @@ require("dotenv").config();
 const usersRoute = require("./routes/userRoute");
 const adminRoute = require("./routes/adminRoute");
 const categoryRoute = require("./routes/categoryRoute");
+const companyRoute=require("./routes/companyRoute")
 databaseConnect();
 
 const routes = [
@@ -27,6 +28,10 @@ const routes = [
   {
     path: `${rootEndPoint}/admin/`,
     func: categoryRoute,
+  },
+  {
+    path: `${rootEndPoint}/company/`,
+    func: companyRoute,
   },
 ];
 routes.forEach(({ path, func }) => {

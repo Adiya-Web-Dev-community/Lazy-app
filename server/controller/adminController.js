@@ -86,4 +86,42 @@ const GetData=async(req,res)=>{
         });
     }
 }
-module.exports={Register,Login,GetData}
+const UpdateProfile = async (req, res) => {
+    const id=req.userId;
+    const { name,mobile,image } = req.body;
+    try {
+        if (!name || !mobile ) {
+            return res.status(400).json({
+                success: false,
+                message: "Name and mobile,  fields are required",
+            });
+        }
+        const response = await User.findByIdAndUpdate(id, {
+            $set: {
+                name: name,
+                mobile: mobile,
+                image: image
+            }
+        }, { new: true }).select("-password");
+  
+        if (!response) {
+            return res.status(404).json({
+                success: false,
+                message: "User Not exists",
+            });
+        }
+       
+
+        res.status(200).json({
+            success: true,
+            message: "User Update successfully",
+            data:response
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
+module.exports={Register,Login,GetData,UpdateProfile}
