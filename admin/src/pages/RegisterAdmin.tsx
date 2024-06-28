@@ -98,29 +98,29 @@ const RegisterAdmin = () => {
       toast.loading("Creating account");
       try {
         const response = await apiRequest<RegisterResponse>({
-          url: "user/register-admin",
+          url: "/api/admin/register",
           method: "post",
           data,
         });
 
         // Assuming apiRequest returns an object with `data`, `status`, etc.
-        return { data: response.data }; // Wrap response.data in ApiResponse structure
+        return response; // Wrap response.data in ApiResponse structure
       } catch (error) {
         console.log(error);
         throw new Error("Error occurred during Register"); // Handle specific errors if needed
       }
     },
     onSuccess: (data: ApiResponse<RegisterResponse>) => {
-      console.log("Login successful:", data);
+      console.log("Register successful:", data);
       toast.dismiss();
       console.log(data);
-      toast.success(`${data?.message}-> Check your Email`);
-      navigate("/login/verify-email");
+      toast.success(`${data?.data?.message}`);
+      navigate("/login");
       // Handle success (e.g., redirect to dashboard)
     },
     onError: (error: ApiError) => {
-      console.error("Login error:", error);
-      console.log("Login error:", error);
+      console.error("Register error:", error);
+      console.log("Register error:", error);
       toast.dismiss();
       toast.error(`${error}`);
       // Handle error (e.g., show error message)
@@ -157,6 +157,7 @@ const RegisterAdmin = () => {
       password: registorObj.password,
       email: registorObj.email,
       mobile: registorObj.contact,
+      role: "admin",
     };
 
     mutation.mutate(finalObject);
@@ -190,7 +191,7 @@ const RegisterAdmin = () => {
           </p>
         </div>
         <form
-          className="grid w-full grid-cols-1 gap-2 py-0 md:gap-4 md:p-4 md:px-6 md:grid-cols-2 "
+          className="grid w-full grid-cols-1 gap-2 py-0 md:gap-4 lg:p-4 lg:px-6 md:grid-cols-2 "
           onSubmit={handleSumbit}
         >
           <div className="grid grid-cols-1 col-span-2 gap-4 md:gap-6 lg:grid-cols-2">

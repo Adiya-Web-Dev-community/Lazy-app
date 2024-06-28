@@ -47,7 +47,7 @@ const Login = () => {
         toast.loading("Checking Details");
         try {
           const response = await apiRequest<LoginResponse>({
-            url: "user/signin-admin",
+            url: "api/admin/login",
             method: "post",
             data,
           });
@@ -70,7 +70,7 @@ const Login = () => {
         toast.success(`Login successful`);
 
         // Handle success (e.g., redirect to dashboard)
-        navigate("/");
+        // navigate("/");
       },
       onError: (error: ApiError) => {
         console.error("Login error:", error);
