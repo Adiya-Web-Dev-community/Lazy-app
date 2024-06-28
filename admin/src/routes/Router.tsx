@@ -11,6 +11,9 @@ import CompaniesForm from "../forms/CompaniesForm";
 import Tabel from "../pages/Tabel";
 import CategoryProductForm from "../pages/CategoryProductForm";
 import Authentication from "../pages/Authentication";
+import Login from "../pages/Login";
+import ForgetPassword from "../pages/ForgetPassword";
+import RegisterAdmin from "../pages/RegisterAdmin";
 
 const route = createBrowserRouter([
   {
@@ -19,12 +22,12 @@ const route = createBrowserRouter([
     children: [
       {
         path: "register",
-        //   element: <RegisterUser />,
+        element: <RegisterAdmin />,
       },
-      {
-        path: "verify-email",
-        //   element: <EmailVerification />,
-      },
+      // {
+      //   path: "verify-email",
+      //   //   element: <EmailVerification />,
+      // },
       // {
       //   path: "verify-phone",
       //   element: <PhoneVerification />,
@@ -35,7 +38,7 @@ const route = createBrowserRouter([
       },
       {
         path: "reset-password",
-        //   element: <ForgetPassword />,
+        element: <ForgetPassword />,
       },
 
       {
@@ -44,7 +47,7 @@ const route = createBrowserRouter([
       },
       {
         path: "",
-        //   element: <Login />,
+        element: <Login />,
       },
     ],
   },
