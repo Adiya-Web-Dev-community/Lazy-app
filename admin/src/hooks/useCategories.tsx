@@ -6,10 +6,11 @@ import { ApiError, ApiResponse } from "../types/apiType";
 
 export const useCategories = () => {
   return useQuery<ApiResponse<CategoryResponseData>, ApiError>({
-    queryKey: ["categories"],
+    queryKey: ["category"],
     queryFn: async () => {
       return await apiRequest<CategoryResponseData>({
-        url: "/categories",
+        // url: "api/admin/category",
+        url: "api/admin/category",
         method: "get",
       });
     },
