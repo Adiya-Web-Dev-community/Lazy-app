@@ -137,3 +137,17 @@ export const productsData = [
     dateAdded: "2024-01-25",
   },
 ];
+
+//category
+export const categories = [
+  "Electronics",
+  "Accessories",
+  "Audio",
+  "Footwear",
+  "Apparel",
+  "Home & Kitchen",
+  "Sports & Outdoors",
+  "Books",
+  "Toys & Games",
+  "Beauty & Personal Care",
+];

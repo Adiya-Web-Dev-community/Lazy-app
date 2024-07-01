@@ -22,6 +22,8 @@ import {
 import { apiRequest } from "../api/adminApi";
 import { useCategories } from "../hooks/useCategories";
 import CreatCategory from "./CreatCategory";
+import { FiEye } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 const Category = () => {
   const [categorysData, setCategoryData] = useState([{ name: "Electronic" }]);
@@ -39,7 +41,7 @@ const Category = () => {
     type: "",
   });
 
-  const categoryHeading = ["Category Name", "Setting"];
+  const categoryHeading = ["Category Name", "Setting", "View"];
 
   const handlingCategory = () => {
     setCategoryForm((prev) => ({
@@ -155,6 +157,22 @@ const Category = () => {
 
   // console.log(categoryDataByApi);
 
+  const navigate = useNavigate();
+  const handlingNavigate = (id) => {
+    // navigate(`/dashboard/${id}`);
+    // if (condition === "profile") {
+    // setUserProfile((prev) => ({
+    //   ...prev,
+    //   isOpen: !prev.isOpen,
+    //   userProfile: userData,
+    // }));
+    // }
+    // else {
+    // navigate(`/dashboard/form/${id}`);
+    // }
+    navigate(`/category/${id}`);
+  };
+
   return (
     <>
       {(isCategoryForm.creat || isCategoryForm.updateId) && (
@@ -255,6 +273,14 @@ const Category = () => {
                         // onClick={() => deletCategory(category._id)}
                       >
                         Delete
+                      </button>
+                    </div>
+                    <div className="grid justify-center gap-2">
+                      <button
+                        className="px-2 py-2 text-sm text-white rounded-md bg-sky-400 hover:bg-sky-600"
+                        onClick={() => handlingNavigate(i)}
+                      >
+                        <FiEye className="w-6 h-4" />
                       </button>
                     </div>
                   </section>

@@ -52,3 +52,34 @@ export interface CreatCategoryObject {
   name: string;
   type: string;
 }
+
+//company
+// export interface CompanyUni {
+//   name: string;
+
+// }
+
+//products
+export interface FormProductTypes {
+  description?: string;
+  imageSrc?: string;
+  image?: string;
+
+  name?: string;
+  price?: number;
+  company?: {
+    name?: string;
+    id?: string;
+  };
+  category?: {
+    name?: string;
+    id?: string;
+  };
+  available?: false;
+  status: "";
+}
+
+export interface ProductUni {
+  name: string;
+  id: string;
+}
