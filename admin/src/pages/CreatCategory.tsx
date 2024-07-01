@@ -8,15 +8,26 @@ import { categoryType } from "../components/content_data/content_data";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { toast } from "react-toastify";
-import { SingleCategoryResponseData } from "../types/contentType";
+// import { SingleCategoryResponseData } from "../types/contentType";
 import { apiRequest } from "../api/adminApi";
 import { ApiError } from "../types/apiType";
 
-const CreatCategory = ({
+interface CategoryState {
+  creat: boolean;
+  updateId: string;
+  updateData: string;
+}
+interface CreatCategoryProps {
+  setCategoryForm: (value: boolean | string) => void;
+  isCategoryForm: CategoryState;
+  refetch: () => void;
+}
+
+const CreatCategory: React.FC<CreatCategoryProps> = ({
   isCategoryForm,
   setCategoryForm,
-  singleCategory,
-  //   refetch,
+  // singleCategory,
+  refetch,
 }) => {
   // const { isPending, isError, data, error } = useQuery<
   //   ApiResponse<SingleCategoryResponseData>,
@@ -31,12 +42,14 @@ const CreatCategory = ({
   //   },
   // });
 
+  console.log(isCategoryForm);
+
   // const singleCategory = data?.data?.data;
 
-  console.log(singleCategory);
+  // console.log(singleCategory);
 
   const [categoryDataForm, setCategoryDataForm] = useState({
-    categoryName: singleCategory ? singleCategory.name : "",
+    categoryName: isCategoryForm.updateData ? isCategoryForm.updateData : "",
     type: "",
     error: "",
   });
@@ -89,7 +102,7 @@ const CreatCategory = ({
     // onSuccess: (data: ApiResponse<DeletCategoryData>) => {
     onSuccess: (data) => {
       console.log(data, data?.statusText);
-      //   refetch();
+      refetch();
       toast.dismiss();
       closeHandler();
       toast.success(
@@ -105,6 +118,8 @@ const CreatCategory = ({
     },
     onError: (error: ApiError) => {
       console.log(error);
+      toast.dismiss();
+      closeHandler();
     },
   });
 
@@ -113,42 +128,36 @@ const CreatCategory = ({
 
     console.log(categoryDataForm);
 
-    // if (categoryDataForm.categoryName !== "") {
-    //   //   setCategoryData((prev) => [...prev, categoryDataForm]);
-    //   // dispatch(addData(categoryDataForm));
-    //   console.log();
+    if (categoryDataForm.categoryName !== "") {
+      console.log();
 
-    //   if (isCategoryForm.creat) {
-    //     console.log("now creat");
-    //     mutation.mutate({
-    //       path: "/categories",
-    //       condition: "creat",
-    //       data: {
-    //         name: categoryDataForm.categoryName,
-    //       },
-    //     });
-    //   }
+      if (isCategoryForm.creat) {
+        console.log("now creat");
+        mutation.mutate({
+          path: "api/admin/category",
+          condition: "creat",
+          data: {
+            name: categoryDataForm.categoryName,
+          },
+        });
+      }
 
-    //   if (isCategoryForm.updateId) {
-    //     console.log("update Id");
-    //     mutation.mutate({
-    //       path: `/categories/${isCategoryForm.updateId}`,
-    //       condition: "update",
-    //       data: {
-    //         name: categoryDataForm.categoryName,
-    //       },
-    //     });
-    //   }
-    //   // mutation.mutate({
-
-    // })
-    // setCategoryForm(false);
-    // } else {
-    //   setCategoryDataForm((prev) => ({
-    //     ...prev,
-    //     error: `Fill Type field first !!!`,
-    //   }));
-    // }
+      if (isCategoryForm.updateId) {
+        console.log("update Id");
+        mutation.mutate({
+          path: `api/admin/category/${isCategoryForm.updateId}`,
+          condition: "update",
+          data: {
+            name: categoryDataForm.categoryName,
+          },
+        });
+      }
+    } else {
+      setCategoryDataForm((prev) => ({
+        ...prev,
+        error: `Fill Type field first !!!`,
+      }));
+    }
   };
 
   const closeHandler = () => {
@@ -185,7 +194,7 @@ const CreatCategory = ({
                 <TiArrowBackOutline className="w-10 h-10 ml-4 hover:text-orange-600 text-sky-600" />
               </button>
             </div>
-            {/* <div className="items-center h-full gap-4 sm:flex "> */}
+
             <input
               value={categoryDataForm?.categoryName}
               type="text"
@@ -197,7 +206,6 @@ const CreatCategory = ({
               placeholder={"Category Name"}
               required
             />
-            {/* </div> */}
 
             <div className="flex text-[#DEE1E2]">
               <button

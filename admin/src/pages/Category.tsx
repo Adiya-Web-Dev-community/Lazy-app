@@ -24,9 +24,10 @@ import { useCategories } from "../hooks/useCategories";
 import CreatCategory from "./CreatCategory";
 import { FiEye } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import ConfirmDeleteModal from "../components/modal/ConfirmDeleteModal";
 
 const Category = () => {
-  const [categorysData, setCategoryData] = useState([{ name: "Electronic" }]);
+  // const [categorysData, setCategoryData] = useState([{ name: "Electronic", _id:"0991" }]);
 
   // const categoryDataLatest = useSelector(
   //   (state) => state.category.categoryData
@@ -35,10 +36,15 @@ const Category = () => {
   const [isCategoryForm, setCategoryForm] = useState({
     creat: false,
     updateId: "",
+    updateData: "",
   });
+  const [isDeletModal, setDeletModal] = useState({
+    delet: false,
+    deletElementId: "",
+  });
+
   const [updateData, setUpdateDate] = useState({
     name: "",
-    type: "",
   });
 
   const categoryHeading = ["Category Name", "Setting", "View"];
@@ -50,8 +56,6 @@ const Category = () => {
     }));
   };
 
-  // console.log(categorysData);
-
   //   {
   //     "data": {
   //         "success": true,
@@ -59,7 +63,13 @@ const Category = () => {
   //     }
   // }
 
-  // const { isPending, isError, data, error, refetch } = useCategories();
+  const { isPending, isError, data, error, refetch } = useCategories();
+
+  console.log(data, error, "category");
+
+  const categoryApiData = data?.data?.data;
+
+  const navigate = useNavigate();
 
   const mutation = useMutation<
     ApiResponse<DeletElementData>,
@@ -87,101 +97,75 @@ const Category = () => {
     },
     onSuccess: (data: ApiResponse<DeletElementData>) => {
       console.log(data);
-      // refetch();
+      refetch();
       toast.dismiss();
       toast.success(`${data?.data?.message}`);
+      setDeletModal((prev) => ({
+        ...prev,
+        delet: false,
+        deletElementId: "",
+      }));
     },
     onError: (error: ApiError) => {
       console.log(error);
+      toast.dismiss();
+      setDeletModal((prev) => ({
+        ...prev,
+        delet: false,
+        deletElementId: "",
+      }));
     },
   });
 
   const deletCategory = (id) => {
-    const isConfirmed = window.confirm(
-      "Are you sure you want to delete this category?"
-    );
-
-    if (isConfirmed) {
-      console.log(id, "delet");
-
-      const deleteObj: CategoryDelet = {
-        path: `/categories/${id}`,
-      };
-
-      console.log(deleteObj);
-
-      // Proceed with the deletion
-      mutation.mutate(deleteObj);
-    } else {
-      // Deletion canceled by the user
-      console.log("Deletion canceled");
-    }
+    setDeletModal((prev) => ({
+      ...prev,
+      delet: true,
+      deletElementId: id,
+    }));
   };
   const updateCategory = (category) => {
     setCategoryForm((prev) => ({
       ...prev,
       updateId: category._id,
-    }));
-
-    setUpdateDate((prev) => ({
-      ...prev,
-      name: category.name,
-      type: "Veg/non-veg",
+      updateData: category.name,
     }));
   };
 
-  // const { isPending, isError, data, error } = useQuery<
-  //   ApiResponse<CategoryResponseData>,
-  //   ApiError
-  // >({
-  //   queryKey: ["categories"],
-  //   queryFn: async () => {
-  //     return await apiRequest<CategoryResponseData>({
-  //       url: "/categories",
-  //       method: "get",
-  //     });
-  //   },
-  // });
-
-  // console.log(data, error, "dashbaord>>?");
-
-  // if (isPending) {
-  //   return <span>Loading...</span>;
-  // }
-
-  // if (isError) {
-  //   return <span>Error: {error.message}</span>;
-  // }
-
-  // const categoryDataByApi = data?.data?.data;
-
-  // console.log(categoryDataByApi);
-
-  const navigate = useNavigate();
   const handlingNavigate = (id) => {
-    // navigate(`/dashboard/${id}`);
-    // if (condition === "profile") {
-    // setUserProfile((prev) => ({
-    //   ...prev,
-    //   isOpen: !prev.isOpen,
-    //   userProfile: userData,
-    // }));
-    // }
-    // else {
-    // navigate(`/dashboard/form/${id}`);
-    // }
     navigate(`/category/${id}`);
+  };
+
+  const closehandler = () => {
+    setDeletModal((prev) => ({
+      ...prev,
+      delet: false,
+      deletElementId: "",
+    }));
+  };
+
+  const confirmhandler = () => {
+    const deleteObj: CategoryDelet = {
+      path: `/api/admin/category/${isDeletModal?.deletElementId}`,
+    };
+
+    console.log(deleteObj);
+
+    // Proceed with the deletion
+    mutation.mutate(deleteObj);
   };
 
   return (
     <>
       {(isCategoryForm.creat || isCategoryForm.updateId) && (
         <CreatCategory
-          singleCategory={updateData}
           isCategoryForm={isCategoryForm}
           setCategoryForm={setCategoryForm}
-          // refetch={refetch}
+          refetch={refetch}
         />
+      )}
+      {isDeletModal?.delet && (
+        <ConfirmDeleteModal onClose={closehandler} onConfirm={confirmhandler} />
       )}
       <section
         className={`  md:pl-0 p-4 h-full rounded-md font-philosopher  mx-auto [&::-webkit-scrollbar]:hidden`}
@@ -227,10 +211,8 @@ const Category = () => {
           <section
             className={`w-full overflow-auto  border-2  [&::-webkit-scrollbar]:hidden rounded-lg border-[#1A1A1A] shadow-md bg-[#1A1A1A]`}
           >
-            {/* min-w-[900px] */}
             <section className="grid gap-4 p-2 pb-2 min-w-[600px] font-medium  grid-cols-customeCategory text-[#DEE1E2] md:font-semibold bg-[#1A1A1A]">
               <p className="pl-2 md:text-lg">SrNo.</p>
-              {/* <p className="pl-10 text-gray-600 md:text-lg">Logo</p> */}
 
               {categoryHeading.map((heading, index) => (
                 <p
@@ -243,48 +225,54 @@ const Category = () => {
                 </p>
               ))}
             </section>
-            {/* min-w-[900px] */}
+
             <div className=" h-[400px] overflow-y-auto [&::-webkit-scrollbar]:hidden min-w-[600px] bg-[#252525]">
               {
-                // isPending ? (
-                //   <p>Data is fetching...</p>
-                // ) : (
-                // categoryDataByApi?.map((category, i) => (
-                categorysData?.map((category, i) => (
-                  <section
-                    key={i}
-                    className="grid items-center gap-6 py-2 pl-6 pr-4 border-t-2 text-[#DEE1E2] border-[#1A1A1A] grid-cols-customeCategory group hover:bg-[#2c2c2c]"
-                  >
-                    <span>{i + 1}</span>
+                isPending ? (
+                  <p className="flex items-center justify-center w-full h-full text-center text-emerald-600">
+                    loading...
+                  </p>
+                ) : isError ? (
+                  <p className="flex items-center justify-center w-full h-full font-medium text-center text-rose-800">
+                    Check Internet connection or Contact to Admin
+                  </p>
+                ) : (
+                  categoryApiData?.map((category, i) => (
+                    <section
+                      key={i}
+                      className="grid items-center gap-6 py-2 pl-6 pr-4 border-t-2 text-[#DEE1E2] border-[#1A1A1A] grid-cols-customeCategory group hover:bg-[#2c2c2c]"
+                    >
+                      <span>{i + 1}</span>
 
-                    <span className="ml-2 text-sm font-semibold md:text-base">
-                      {category?.name}
-                    </span>
+                      <span className="ml-2 text-sm font-semibold md:text-base">
+                        {category?.name}
+                      </span>
 
-                    <div className="flex justify-center gap-4">
-                      <button
-                        className="px-3 py-2 text-sm font-semibold rounded-md bg-emerald-800 hover:bg-emerald-700 "
-                        // onClick={() => updateCategory(category)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="px-3 py-2 text-sm font-semibold rounded-md bg-rose-800 hover:bg-rose-700"
-                        // onClick={() => deletCategory(category._id)}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                    <div className="grid justify-center gap-2">
-                      <button
-                        className="px-2 py-2 text-sm rounded-md bg-sky-800 hover:bg-sky-700"
-                        onClick={() => handlingNavigate(i)}
-                      >
-                        <FiEye className="w-6 h-4" />
-                      </button>
-                    </div>
-                  </section>
-                ))
+                      <div className="flex justify-center gap-4">
+                        <button
+                          className="px-3 py-2 text-sm font-semibold rounded-md bg-emerald-800 hover:bg-emerald-700 "
+                          onClick={() => updateCategory(category)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="px-3 py-2 text-sm font-semibold rounded-md bg-rose-800 hover:bg-rose-700"
+                          onClick={() => deletCategory(category?._id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                      <div className="grid justify-center gap-2">
+                        <button
+                          className="px-2 py-2 text-sm rounded-md bg-sky-800 hover:bg-sky-700"
+                          onClick={() => handlingNavigate(category?._id)}
+                        >
+                          <FiEye className="w-6 h-4" />
+                        </button>
+                      </div>
+                    </section>
+                  ))
+                )
                 // )
               }
             </div>

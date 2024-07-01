@@ -82,7 +82,7 @@ const Header = ({ onToggleSidebarSmall, isOpen }) => {
             <span className="text-emerald-700">B</span>at
           </p>
         </div>
-        <div className="md:w-[30%] w-full items-center justify-self-end flex gap-2 md:gap-8 justify-end  relative">
+        <div className="md:w-1/2 lg:w-[30%]  items-center justify-self-end flex gap-4 md:gap-8 justify-end  relative">
           {/* <MdOutlineNotifications className="text-gray-500 w-7 h-7" />
 
           <FaUserCog
@@ -112,13 +112,13 @@ const Header = ({ onToggleSidebarSmall, isOpen }) => {
           {/* clock */}
           <div className="flex items-center justify-start md:w-1/2 font-bold text-[#DEE1E2] font-lato">
             {/* time */}
-            <div className="pr-2 text-sm border-r">{time}</div>
+            <div className="pr-2 text-xs border-r md:text-sm">{time}</div>
             {/* date and month */}
-            <div className="pl-2 text-sm ">{dateMonth}</div>
+            <div className="pl-2 text-xs md:text-sm ">{dateMonth}</div>
           </div>
           {/* user Profile */}
           <div
-            className={`flex items-center w-1/2 gap-4 p-1 cursor-pointer rounded-md  ${
+            className={`flex items-center md:w-1/2 gap-4 p-1 cursor-pointer rounded-md  ${
               //   showProfile ? "bg-[#224855]  " : ""
               showProfile ? "bg-[#252525]  " : ""
             }`}
