@@ -66,7 +66,7 @@ const route = createBrowserRouter([
         path: "/category",
         element: <Category />,
       },
-      { path: "/category/:id", element: <DummyPage /> },
+      { path: "/category/:id", element: <Tabel /> },
       //   { path: "/category/:id/form", element: <CategoryProductForm /> },
 
       { path: "/companies", element: <Companies /> },

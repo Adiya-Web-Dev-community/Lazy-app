@@ -277,7 +277,7 @@ const Category = () => {
                     </div>
                     <div className="grid justify-center gap-2">
                       <button
-                        className="px-2 py-2 text-sm text-white rounded-md bg-sky-400 hover:bg-sky-600"
+                        className="px-2 py-2 text-sm rounded-md bg-sky-800 hover:bg-sky-700"
                         onClick={() => handlingNavigate(i)}
                       >
                         <FiEye className="w-6 h-4" />

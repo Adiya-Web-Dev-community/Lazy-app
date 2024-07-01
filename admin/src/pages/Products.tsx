@@ -227,8 +227,11 @@ h-full
                   )}
                 </div> */}
                 <span className="flex justify-center ml-2 text-sm font-semibold md:text-base">
-                  ₹ {product?.price}
+                  {product?.feature}
                 </span>
+                {/* <span className="flex justify-center ml-2 text-sm font-semibold md:text-base">
+                  ₹ {product?.price}
+                </span> */}
                 <span className="flex justify-center ml-2 text-sm font-semibold ">
                   {product?.stockQuantity}
                 </span>
