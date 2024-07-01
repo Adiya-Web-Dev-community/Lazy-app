@@ -118,7 +118,7 @@ h-full
       >
         <div className="flex items-center mb-2 md:mb-6">
           <h1 className=" text-[28px] font-bold md:text-4xl text-[#DEE1E2]">
-            Dishes
+            Products
           </h1>
         </div>
         <div className="flex justify-between mb-4">
@@ -141,7 +141,7 @@ h-full
               }    rounded shadow-xl md:px-4 md:py-2  sm:self-center`}
             >
               {/* <Link to={"/dishes/form"}> */}
-              <Link to={"/dishes"}>
+              <Link to={"/products/form"}>
                 <span className="hidden md:inline-block">Add Product</span>
 
                 <IoIosSend className="w-6 h-6 md:hidden" />

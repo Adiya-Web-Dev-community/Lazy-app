@@ -70,7 +70,7 @@ const Login = () => {
         toast.success(`Login successful`);
 
         // Handle success (e.g., redirect to dashboard)
-        // navigate("/");
+        navigate("/products");
       },
       onError: (error: ApiError) => {
         console.error("Login error:", error);

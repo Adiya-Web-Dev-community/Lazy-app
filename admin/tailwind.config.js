@@ -23,7 +23,7 @@ export default {
 
         customBlog: "40px  1.2fr 1.6fr 2.2fr 1.4fr 0.6fr 1fr 1fr 1.4fr 0.6fr",
 
-        customeCategory: "40px 2fr  0.6fr",
+        customeCategory: "40px 2fr  0.6fr 0.6fr",
       },
     },
   },

@@ -141,7 +141,7 @@ h-full
               }    rounded shadow-xl md:px-4 md:py-2  sm:self-center`}
             >
               <Link to={"/companies/form"}>
-                <span className="hidden md:inline-block">Add Companies</span>
+                <span className="hidden md:inline-block">Add Company</span>
 
                 <IoIosSend className="w-6 h-6 md:hidden" />
               </Link>
