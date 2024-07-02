@@ -11,22 +11,27 @@ import {
   productHeadings,
   productsData,
 } from "../components/content_data/contentData";
+import { useState } from "react";
+import Pagination from "../components/pagination/Pagination";
 
 const Products = () => {
   const navigate = useNavigate();
 
-  // const { isPending, isError, data, error, refetch } = useQuery<
-  //   ApiResponse<MenuDataResponse>,
-  //   ApiError
-  // >({
-  //   queryKey: ["menus"],
-  //   queryFn: async () => {
-  //     return await apiRequest<MenuDataResponse>({
-  //       url: "/menus",
-  //       method: "get",
-  //     });
-  //   },
-  // });
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+  //calculation of page
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
+  const currentProduct = productsData?.slice(indexOfFirstItem, indexOfLastItem);
+
+  console.log(currentProduct, "pagination");
+
+  // const totalPages = Math.ceil(productsData.length / itemsPerPage);
+
+  const handleClick = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
 
   const mutation = useMutation<
     ApiResponse<DeletElementData>,
@@ -91,30 +96,13 @@ const Products = () => {
     navigate("/product/form");
   };
 
-  // console.log(data, error, "menus");
-
-  // if (isPending) {
-  //   return <span>Loading...</span>;
-  // }
-
-  // if (isError) {
-  //   return <span>Error: {error.message}</span>;
-  // }
-
-  // const productData = data?.data?.data;
-
-  // console.log(menueData?.[30].ingredient.split(","));
-
   return (
     <section
       className={`  md:pl-0 p-4 h-full rounded-md font-philosopher  mx-auto [&::-webkit-scrollbar]:hidden`}
     >
       <section
-        className={` md:p-8 p-6
-  
-h-full
-        border-gray-200 
-    rounded-md  font-philosopher max-w-full w-full shadow-md`}
+        className={` md:p-8 p-6 h-full border-gray-200 
+    rounded-md  font-philosopher max-w-full w-full shadow-md `}
       >
         <div className="flex items-center mb-2 md:mb-6">
           <h1 className=" text-[28px] font-bold md:text-4xl text-[#DEE1E2]">
@@ -166,8 +154,8 @@ h-full
               </p>
             ))}
           </section>
-          <div className=" h-[400px] overflow-y-auto [&::-webkit-scrollbar]:hidden min-w-[1200px] bg-[#252525]">
-            {productsData?.map((product, i) => (
+          <div className=" h-[380px] overflow-y-auto [&::-webkit-scrollbar]:hidden min-w-[1200px] bg-[#252525]">
+            {currentProduct?.map((product, i) => (
               <section
                 key={i}
                 className="grid items-center gap-6 py-2 pl-6 pr-4 border-t-2  grid-cols-customProduct group text-[#DEE1E2] border-[#1A1A1A] hover:bg-[#2c2c2c]"
@@ -226,9 +214,12 @@ h-full
                     </span>
                   )}
                 </div> */}
-                <span className="flex justify-center ml-2 text-sm font-semibold md:text-base">
-                  {product?.feature}
-                </span>
+                <Link
+                  to={"/"}
+                  className="flex justify-center py-2 ml-2 text-sm font-semibold rounded-md bg-emerald-800"
+                >
+                  Add Feature
+                </Link>
                 {/* <span className="flex justify-center ml-2 text-sm font-semibold md:text-base">
                   ₹ {product?.price}
                 </span> */}
@@ -246,13 +237,13 @@ h-full
                 </span>
                 <div className="grid justify-center gap-2">
                   <button
-                    className="px-3 py-2 text-sm rounded-md bg-emerald-800 hover:bg-emerald-700"
+                    className="px-3 py-2 text-sm font-semibold rounded-md bg-emerald-800 hover:bg-emerald-700"
                     // onClick={() => updateProduct(product)}
                   >
                     Edit
                   </button>
                   <button
-                    className="px-3 py-2 text-sm rounded-md bg-rose-800 hover:bg-rose-700"
+                    className="px-3 py-2 text-sm font-semibold rounded-md bg-rose-800 hover:bg-rose-700"
                     // onClick={() => deletProduct(product._id)}
                   >
                     Delete
@@ -262,12 +253,13 @@ h-full
             ))}
           </div>
         </section>
-        {/* <Pagination
-      paginationInfo={pagination}
-      paginationUpdateds={(value) => setCurrentPage(value)}
-      currentPage={currentPage}
-      pageNumbers={pageArray}
-    /> */}
+
+        <Pagination
+          currentPage={currentPage}
+          apiData={productsData}
+          itemsPerPage={itemsPerPage}
+          handleClick={handleClick}
+        />
       </section>
     </section>
   );

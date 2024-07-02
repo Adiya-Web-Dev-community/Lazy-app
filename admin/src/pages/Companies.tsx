@@ -17,6 +17,7 @@ import { addingData } from "../store/companies";
 import ConfirmDeleteModal from "../components/modal/ConfirmDeleteModal";
 import { useState } from "react";
 import ConfirmationDialog from "../components/modal/ConfirmationDialog";
+import Pagination from "../components/pagination/Pagination";
 
 const Companies = () => {
   const navigate = useNavigate();
@@ -43,8 +44,6 @@ const Companies = () => {
   );
 
   console.log(currentCompanies, "pagination");
-
-  const totalPages = Math.ceil(companyData?.length / itemsPerPage);
 
   const handleClick = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -303,13 +302,13 @@ h-full
 
                   <div className="grid justify-center gap-2">
                     <button
-                      className="px-3 py-2 text-sm rounded-md bg-emerald-800 hover:bg-emerald-700"
+                      className="px-3 py-2 text-sm font-semibold rounded-md bg-emerald-800 hover:bg-emerald-700"
                       onClick={() => updatecompany(company)}
                     >
                       Edit
                     </button>
                     <button
-                      className="px-3 py-2 text-sm rounded-md bg-rose-800 hover:bg-rose-700"
+                      className="px-3 py-2 text-sm font-semibold rounded-md bg-rose-800 hover:bg-rose-700"
                       onClick={() => deletcompany(company._id)}
                     >
                       Delete
@@ -319,35 +318,13 @@ h-full
               ))}
             </div>
           </section>
-          <div className="flex items-center justify-center w-full mt-4">
-            <div className="flex justify-start w-full">
-              <p className="text-[#DEE1E2] text-sm font-medium">
-                <span>Total Item: </span>{" "}
-                <span>0{currentCompanies?.length}</span>
-              </p>
-            </div>
-            <div className="flex justify-start w-full">
-              {Array.from({ length: totalPages }, (_, index) => (
-                <button
-                  key={index + 1}
-                  className={`mx-1 px-3 py-1  rounded  ${
-                    currentPage === index + 1
-                      ? "bg-emerald-800 text-[#DEE1E2]"
-                      : "bg-gray-400"
-                  }`}
-                  onClick={() => handleClick(index + 1)}
-                >
-                  {index + 1}
-                </button>
-              ))}
-            </div>
-          </div>
-          {/* <Pagination
-      paginationInfo={pagination}
-      paginationUpdateds={(value) => setCurrentPage(value)}
-      currentPage={currentPage}
-      pageNumbers={pageArray}
-    /> */}
+
+          <Pagination
+            currentPage={currentPage}
+            apiData={companyData}
+            itemsPerPage={itemsPerPage}
+            handleClick={handleClick}
+          />
         </section>
       </section>
     </>

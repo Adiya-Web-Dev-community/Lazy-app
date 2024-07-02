@@ -1,37 +1,22 @@
-import React, { useState } from "react";
-
 import { IoIosSend } from "react-icons/io";
 
 import { ApiError, ApiResponse } from "../types/apiType";
 
 import { useMutation } from "@tanstack/react-query";
-// import {
-//   CategoryDelet,
-//   CategoryDeletObject,
-//   DeletCategoryData,
-//   DeletCategoryResponse,
-//   DeletElementData,
-// } from "../types/contentType";
 
 import { toast } from "react-toastify";
-import {
-  CategoryDelet,
-  DeletElementData,
-  UniDelet,
-} from "../types/contentType";
+import { DeletElementData, UniDelet } from "../types/contentType";
 import { apiRequest } from "../api/adminApi";
 import { useCategories } from "../hooks/useCategories";
 import CreatCategory from "./CreatCategory";
 import { FiEye } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import ConfirmDeleteModal from "../components/modal/ConfirmDeleteModal";
+import { useState } from "react";
+import Pagination from "../components/pagination/Pagination";
 
 const Category = () => {
   // const [categorysData, setCategoryData] = useState([{ name: "Electronic", _id:"0991" }]);
-
-  // const categoryDataLatest = useSelector(
-  //   (state) => state.category.categoryData
-  // );
 
   const [isCategoryForm, setCategoryForm] = useState({
     creat: false,
@@ -43,10 +28,6 @@ const Category = () => {
     deletElementId: "",
   });
 
-  const [updateData, setUpdateDate] = useState({
-    name: "",
-  });
-
   const categoryHeading = ["Category Name", "Setting", "View"];
 
   const handlingCategory = () => {
@@ -56,18 +37,28 @@ const Category = () => {
     }));
   };
 
-  //   {
-  //     "data": {
-  //         "success": true,
-  //         "message": "Category deleted successfully"
-  //     }
-  // }
-
   const { isPending, isError, data, error, refetch } = useCategories();
 
   console.log(data, error, "category");
 
   const categoryApiData = data?.data?.data;
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+  //calculation of page
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
+  const currentCategory = categoryApiData?.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+
+  console.log(currentCategory, "pagination");
+
+  const handleClick = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
 
   const navigate = useNavigate();
 
@@ -145,7 +136,7 @@ const Category = () => {
   };
 
   const confirmhandler = () => {
-    const deleteObj: CategoryDelet = {
+    const deleteObj: UniDelet = {
       path: `/api/admin/category/${isDeletModal?.deletElementId}`,
     };
 
@@ -226,7 +217,7 @@ const Category = () => {
               ))}
             </section>
 
-            <div className=" h-[400px] overflow-y-auto [&::-webkit-scrollbar]:hidden min-w-[600px] bg-[#252525]">
+            <div className=" h-[380px] overflow-y-auto [&::-webkit-scrollbar]:hidden min-w-[600px] bg-[#252525]">
               {
                 isPending ? (
                   <p className="flex items-center justify-center w-full h-full text-center text-emerald-600">
@@ -237,7 +228,7 @@ const Category = () => {
                     Check Internet connection or Contact to Admin
                   </p>
                 ) : (
-                  categoryApiData?.map((category, i) => (
+                  currentCategory?.map((category, i) => (
                     <section
                       key={i}
                       className="grid items-center gap-6 py-2 pl-6 pr-4 border-t-2 text-[#DEE1E2] border-[#1A1A1A] grid-cols-customeCategory group hover:bg-[#2c2c2c]"
@@ -277,12 +268,35 @@ const Category = () => {
               }
             </div>
           </section>
-          {/* <Pagination
-        paginationInfo={pagination}
-        paginationUpdateds={(value) => setCurrentPage(value)}
-        currentPage={currentPage}
-        pageNumbers={pageArray}
-      /> */}
+          {/* <div className="flex items-center justify-center w-full mt-4">
+            <div className="flex justify-start w-full">
+              <p className="text-[#DEE1E2] text-sm font-medium">
+                <span>Total Item: </span>{" "}
+                <span>0{currentCategory?.length}</span>
+              </p>
+            </div>
+            <div className="flex justify-start w-full">
+              {Array.from({ length: totalPages }, (_, index) => (
+                <button
+                  key={index + 1}
+                  className={`mx-1 px-3 py-1  rounded  ${
+                    currentPage === index + 1
+                      ? "bg-emerald-800 text-[#DEE1E2]"
+                      : "bg-gray-400"
+                  }`}
+                  onClick={() => handleClick(index + 1)}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+          </div> */}
+          <Pagination
+            currentPage={currentPage}
+            apiData={categoryApiData}
+            itemsPerPage={itemsPerPage}
+            handleClick={handleClick}
+          />
         </section>
       </section>
     </>
