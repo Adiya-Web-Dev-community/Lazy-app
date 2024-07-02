@@ -9,7 +9,7 @@ const useCompanies = () => {
     queryKey: ["company"],
     queryFn: async () => {
       return await apiRequest<RestaurantResponseData>({
-        url: "/company",
+        url: "api/company",
         method: "get",
       });
     },
