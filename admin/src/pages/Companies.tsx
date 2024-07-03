@@ -261,7 +261,7 @@ h-full
                       <img
                         src={company?.image}
                         alt="user Image"
-                        className="w-24 h-10 rounded-lg"
+                        className="object-contain w-24 h-24 rounded-lg"
                       />
                     ) : (
                       <span className="text-sm font-bold text-gray-400">

@@ -9,7 +9,14 @@ import { FaCaretDown } from "react-icons/fa6";
 import useCompanies from "../hooks/useCompanies";
 import { useCategories } from "../hooks/useCategories";
 import uploadeImage from "../components/firebase_image/image.js";
-import { FormProductTypes, ProductUni } from "../types/contentType.js";
+import {
+  CateUni,
+  FormProductKeys,
+  FormProductTypes,
+  ProductUni,
+} from "../types/contentType.js";
+import { IoMdArrowRoundDown } from "react-icons/io";
+import DynamicInputFields from "../components/DynamicInputFiled.js";
 
 const ProductsForm = () => {
   const [productData, setProductData] = useState<FormProductTypes>({
@@ -19,18 +26,23 @@ const ProductsForm = () => {
 
     name: "",
     // price: 0,
-    company: {
-      name: "",
-      id: "",
-    },
+    company: [],
+    // company: {
+    //   name: "",
+    //   id: "",
+    //   image: "",
+    // },
     category: {
       name: "",
       id: "",
     },
-    platform: [],
+    // platform: [],
     available: false,
     status: "",
+    productsLink: [],
   });
+
+  console.log(productData);
 
   const [isOpen, setOpen] = useState({
     company: false,
@@ -96,7 +108,7 @@ const ProductsForm = () => {
   const categories = category?.data?.data || [];
   const companies = company?.data?.data || [];
 
-  // console.log(categories);
+  console.log(companies);
 
   //for text Data
   const handleChange = (
@@ -133,7 +145,7 @@ const ProductsForm = () => {
     }
   };
 
-  const selectOption = (field: string, value: ProductUni) => {
+  const selectOption = (field: string, value: CateUni) => {
     console.log(value);
     setProductData((prev) => ({
       ...prev,
@@ -145,18 +157,18 @@ const ProductsForm = () => {
     }));
   };
 
-  // const selectMultipleOption = (field: string, value: string) => {
-  //   setProductData((prev) => ({
-  //     ...prev,
-  //     [field]: prev[field].includes(value)
-  //       ? prev[field].filter((item: string) => item !== value)
-  //       : [...prev[field], value],
-  //   }));
-  //   setOpen((prev) => ({
-  //     ...prev,
-  //     [field]: false,
-  //   }));
-  // };
+  const selectMultipleOption = (field: FormProductKeys, value: ProductUni) => {
+    setProductData((prev) => ({
+      ...prev,
+      [field]: prev[field].some((item) => item.id === value.id)
+        ? prev[field].filter((item) => item.id !== value.id)
+        : [...prev[field], value],
+    }));
+    setOpen((prev) => ({
+      ...prev,
+      [field]: false,
+    }));
+  };
 
   const navigate = useNavigate();
   // const dispatch = useDispatch();
@@ -203,17 +215,15 @@ const ProductsForm = () => {
       image: "",
 
       name: "",
-      // price: 0,
-      company: {
-        name: "",
-        id: "",
-      },
+
+      company: [],
       category: {
         name: "",
         id: "",
       },
       available: false,
       status: "",
+      productsLink: [],
     });
 
     navigate("/dishes");
@@ -248,7 +258,7 @@ const ProductsForm = () => {
               <TiArrowBackOutline className="w-10 h-10 ml-4 text-emerald-600 hover:text-emerald-500" />
             </Link>
           </div>
-          <div className="h-[calc(100vh-12rem)] overflow-y-auto pr-4 md:pr-0 text-[#DEE1E2]">
+          <div className="h-[calc(100vh-12rem)] overflow-y-auto [&::-webkit-scrollbar]:hidden pr-4 md:pr-0 text-[#DEE1E2]">
             <div className="grid items-center grid-cols-1 gap-4 py-4 md:grid-cols-2">
               <input
                 value={productData.name}
@@ -261,17 +271,6 @@ const ProductsForm = () => {
               />
 
               <div className="relative w-full h-full">
-                {/* <input
-                  // value={userDetails?.image}
-                  type="file"
-                  name="image"
-                  onChange={handleImageChange}
-                  className={`px-2 py-[5px] ${
-                    progressStatus ? "pb-2" : ""
-                  }  w-full text-sm  bg-[#252525] focus:border-[#DEE1E2] border-transparent border   rounded-md text-gray-400  outline-none`}
-                  placeholder="Image URL"
-                  required
-                /> */}
                 <input
                   type="file"
                   name="image"
@@ -304,11 +303,11 @@ const ProductsForm = () => {
               </div>
               <input
                 value={productData.price || ""}
-                type="number"
+                type="url"
                 onChange={handleChange}
-                name="price"
+                name="link"
                 className="w-full h-10 pl-4 font-medium  rounded-md outline-none bg-[#252525] focus:border-[#DEE1E2] border-transparent border  "
-                placeholder="Price"
+                placeholder="Source link"
                 required
               />
 
@@ -321,12 +320,16 @@ const ProductsForm = () => {
                   {productData?.status !== ""
                     ? productData.status
                     : "Select Status"}
-                  <FaCaretDown className="m-1" />
+                  <FaCaretDown
+                    className={`m-1 transition-all duration-500 ${
+                      isOpen.status ? "rotate-180 text-emerald-600" : ""
+                    }`}
+                  />
                 </div>
                 <ul
                   className={`mt-2 p-2 rounded-md w-28 text-[#DEE1E2] bg-[#1A1A1A] shadow-lg absolute z-10 ${
                     isOpen.status ? "max-h-60" : "hidden"
-                  } custom-scrollbar`}
+                  } `}
                 >
                   {statusData.map((state, i) => (
                     <li
@@ -345,7 +348,7 @@ const ProductsForm = () => {
               {/* Company Dropdown */}
               <div className="relative">
                 <div
-                  className="flex justify-between p-2 pl-4 font-medium border rounded-md cursor-pointer text-gray-400 bg-[#252525] focus:border-[#DEE1E2]  border-transparent  "
+                  className="flex relative justify-between p-2 pl-4 font-medium border rounded-md cursor-pointer text-gray-400 bg-[#252525] focus:border-[#DEE1E2]  border-transparent  "
                   onClick={() =>
                     setOpen({
                       ...isOpen,
@@ -353,32 +356,60 @@ const ProductsForm = () => {
                     })
                   }
                 >
-                  {productData?.company?.name !== ""
-                    ? productData?.company?.name
-                    : "Select Company"}
-                  <FaCaretDown className="m-1" />
+                  {productData.company && productData.company.length > 0 ? (
+                    <div className="w-full  h-6 gap-2 overflow-y-auto [&::-webkit-scrollbar]:hidden">
+                      {productData.company.map((comp, idx) => (
+                        <div key={idx} className="flex items-center gap-2">
+                          <img
+                            src={comp.image}
+                            alt="company logo"
+                            className="object-contain w-8 h-6 rounded-full"
+                          />
+                          <span className="font-medium">{comp.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    "Select Company"
+                  )}
+                  {productData.company && productData.company.length > 0 && (
+                    <IoMdArrowRoundDown className="absolute w-6 h-6 right-8 top-2 animate-bounce" />
+                  )}
+                  <FaCaretDown
+                    className={`m-1 transition-all duration-500 ${
+                      isOpen.company ? "rotate-180 text-emerald-600" : ""
+                    }`}
+                  />
                 </div>
                 <ul
-                  className={`mt-2 p-2 rounded-md w-48 overflow-y-scroll text-[#DEE1E2] bg-[#1A1A1A] shadow-lg absolute z-10 ${
+                  className={` p-2 rounded-md w-48 overflow-y-scroll text-[#DEE1E2] [&::-webkit-scrollbar]:hidden bg-[#1A1A1A] shadow-lg absolute z-10 ${
                     isOpen.company ? "max-h-40" : "hidden"
-                  } custom-scrollbar`}
+                  } `}
                 >
                   {companies?.map((company, i) => (
                     <li
                       key={i}
-                      className={`p-2 mb-2 text-sm text-[#DEE1E2] rounded-md cursor-pointer hover:bg-blue-200/60 ${
-                        productData?.company?.name === company?.name
+                      className={`p-2 mb-2 flex gap-2 items-center text-sm text-[#DEE1E2] rounded-md cursor-pointer hover:bg-blue-200/60 ${
+                        productData?.company?.find(
+                          (com) => com.id === company._id
+                        )
                           ? "bg-rose-600"
                           : ""
                       }`}
                       onClick={() =>
-                        selectOption("company", {
+                        selectMultipleOption("company", {
                           name: company?.name,
                           id: company?._id,
+                          image: company?.image,
                         })
                       }
                     >
-                      <span>{company?.name}</span>
+                      <img
+                        src={company?.image}
+                        alt="company logo"
+                        className="object-contain w-10 h-10 rounded-full"
+                      />
+                      <span className="font-medium">{company?.name}</span>
                     </li>
                   ))}
                 </ul>
@@ -395,12 +426,16 @@ const ProductsForm = () => {
                   {productData?.category?.name !== ""
                     ? productData?.category?.name
                     : "Select Category"}
-                  <FaCaretDown className="m-1" />
+                  <FaCaretDown
+                    className={`m-1 transition-all duration-500 ${
+                      isOpen.category ? "rotate-180 text-emerald-600" : ""
+                    }`}
+                  />
                 </div>
                 <ul
-                  className={`mt-2 p-2 rounded-md w-48 overflow-y-scroll text-[#DEE1E2] bg-[#1A1A1A] shadow-lg absolute z-10 ${
+                  className={`mt-2 p-2 rounded-md w-48 overflow-y-scroll  text-[#DEE1E2] [&::-webkit-scrollbar]:hidden bg-[#1A1A1A] shadow-lg absolute z-10 ${
                     isOpen.category ? "max-h-40" : "hidden"
-                  } custom-scrollbar`}
+                  } `}
                 >
                   {
                     // categoryIsPending
@@ -427,7 +462,8 @@ const ProductsForm = () => {
                   }
                 </ul>
               </div>
-              {/* platform dropDwon */}
+
+              {/*link Source dropDwon */}
               {/* <div className="relative">
                 <div
                   className="flex justify-between p-2 text-sm border border-gray-400 rounded-md cursor-pointer"
@@ -443,7 +479,7 @@ const ProductsForm = () => {
                 <ul
                   className={`mt-2 p-2 rounded-md w-36 overflow-y-scroll bg-gray-600 shadow-lg absolute z-10 ${
                     isOpen.ingredients ? "max-h-40" : "hidden"
-                  } custom-scrollbar`}
+                  } `}
                 >
                   {ingredientsOptions.map((ingredient, i) => (
                     <li
@@ -470,6 +506,10 @@ const ProductsForm = () => {
                 className="w-full h-24 py-4 pl-4 font-medium bg-[#252525] focus:border-[#DEE1E2] border-transparent border  rounded-md outline-none  md:col-span-2 "
                 placeholder="Description"
                 required
+              />
+              <DynamicInputFields
+                companies={companies}
+                addingProductUrlData={setProductData}
               />
 
               <div className="flex items-center pl-1">
