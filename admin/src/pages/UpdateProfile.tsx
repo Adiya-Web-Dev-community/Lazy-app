@@ -2,28 +2,12 @@ import React from "react";
 import { useState } from "react";
 
 // import { toast } from "react-toastify";
-import { Link, useNavigate } from "react-router-dom";
-
-import { IoMdArrowRoundBack } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 
 import update from "../assets/Update-Profile.svg";
-import {
-  FiEye,
-  FiEyeOff,
-  FiGlobe,
-  FiLock,
-  FiMail,
-  FiPhone,
-  FiUser,
-} from "react-icons/fi";
+import { FiMail, FiPhone, FiUser } from "react-icons/fi";
 import { useMutation } from "@tanstack/react-query";
 import { ApiError, ApiResponse } from "../types/apiType";
-import {
-  RegisterData,
-  RegisterResponse,
-  UpdateData,
-  UpdateResponse,
-} from "../types/authType";
 
 import { toast } from "react-toastify";
 import { apiRequest } from "../api/adminApi";
@@ -80,26 +64,6 @@ const UpdateProfile = () => {
     // }
   };
 
-  //response after sucessfully register user
-  //   {
-  //     "data": {
-  //         "success": true,
-  //         "message": "User created successfully",
-  //         "data": {
-  //             "name": "mansoor",
-  //             "email": "khanman100698soor@gmail.com",
-  //             "password": "$2b$10$qjFNI/SVIui4VS8Cr3.IjOEuavoffVMA1b9CoQL11nGVfOCYvQiFO",
-  //             "mobile": "8828787878",
-  //             "isVerified": false,
-  //             "otp": "323365",
-  //             "role": "admin",
-  //             "_id": "6676a89a3a51f8ebba4bed69",
-  //             "registrationDate": "2024-06-22T10:34:02.554Z",
-  //             "__v": 0
-  //         }
-  //     }
-  // }
-
   const mutation = useMutation({
     mutationFn: async (data) => {
       toast.loading("Creating account");
@@ -122,15 +86,15 @@ const UpdateProfile = () => {
       toast.dismiss();
       console.log(data);
       toast.success(`${data?.data?.message}`);
-      navigate("/");
       // Handle success (e.g., redirect to dashboard)
+      setTimeout(() => navigate("/products"), 1000);
     },
     onError: (error: ApiError) => {
+      // Handle error (e.g., show error message)
       console.error("Update Profile error:", error);
       console.log("Update Profile error:", error);
       toast.dismiss();
       toast.error(`${error}`);
-      // Handle error (e.g., show error message)
     },
   });
 
@@ -389,33 +353,8 @@ const UpdateProfile = () => {
                 className="w-full py-[6px]  transition-all duration-200 border-2 rounded-md outline-none bg-blue-50 placeholder:text-gray-400 pl-9 focus:border-blue-300"
               />
             </div>
-            {/* <div className="relative w-full">
-              <FiGlobe className="absolute w-5 h-5 text-gray-400 top-[10px] left-2" />
-              <input
-                label={"Country"}
-                required
-                name={"country"}
-                onChange={handleChnage}
-                value={updateProfileObj.country}
-                placeholder="Country"
-                className="w-full py-[6px]  transition-all duration-200 border-2 rounded-md outline-none bg-blue-50 placeholder:text-gray-400 pl-9 focus:border-blue-300"
-              />
-            </div> */}
           </div>
-          {/* <div className="flex col-span-2 ">
-            <input
-              type="checkbox"
-              className="items-start mx-2 cursor-pointer "
-              name={"accessptTermsAndCondition"}
-              onChange={handleChnage}
-              checked={updateProfileObj.accessptTermsAndCondition}
-            />
-            <p className="text-sm font-montserrat">
-              I have read and accept the terms of service and privacy policy.
-            </p>
-          </div> */}
 
-          {/* <div className=""> */}
           <button className="col-span-2 px-4 py-2 mt-4 text-white bg-blue-400 border rounded-md disabled:bg-gray-600">
             Update
           </button>

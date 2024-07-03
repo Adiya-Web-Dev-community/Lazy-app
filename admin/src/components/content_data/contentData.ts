@@ -80,7 +80,7 @@ export const productHeadings = [
   // "Price",
   // "Feature",
   "Stock Qty",
-  "SKU",
+  // "SKU",
   "Status",
   "Date Added",
   "View",

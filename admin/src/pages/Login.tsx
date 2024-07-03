@@ -70,7 +70,7 @@ const Login = () => {
         toast.success(`Login successful`);
 
         // Handle success (e.g., redirect to dashboard)
-        navigate("/products");
+        setTimeout(() => navigate("/products"), 1000);
       },
       onError: (error: ApiError) => {
         console.error("Login error:", error);
@@ -93,8 +93,7 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Login ID:", loginObj.email);
-    console.log("Password:", loginObj.password);
+
     // mutation.mutate(userDetails);
 
     mutation.mutate(loginObj);

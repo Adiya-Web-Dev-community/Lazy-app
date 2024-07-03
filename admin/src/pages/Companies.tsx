@@ -18,6 +18,7 @@ import ConfirmDeleteModal from "../components/modal/ConfirmDeleteModal";
 import { useState } from "react";
 import ConfirmationDialog from "../components/modal/ConfirmationDialog";
 import Pagination from "../components/pagination/Pagination";
+import CompaniesLoading from "../components/loading-elemnts/CompaniesLoading";
 
 const Companies = () => {
   const navigate = useNavigate();
@@ -239,83 +240,92 @@ h-full
               ))}
             </section>
             <div className=" h-[380px] overflow-y-auto [&::-webkit-scrollbar]:hidden min-w-[1200px] bg-[#252525]">
-              {(currentCompanies || companiesData)?.map((company, i) => (
-                <section
-                  key={i}
-                  className="grid items-center gap-6 py-2 pl-6 pr-4 border-t-2 text-[#DEE1E2] border-[#1A1A1A] grid-cols-customCompanies group hover:bg-[#2c2c2c]"
-                >
-                  <span>{i + 1}</span>
-
-                  <span
-                    className={`  font-semibold text-center  rounded-full  `}
+              {isPending ? (
+                // Loading element for the table
+                <CompaniesLoading />
+              ) : isError ? (
+                <p className="flex items-center justify-center w-full h-full font-medium text-center text-rose-800">
+                  Check Internet connection or Contact to Admin
+                </p>
+              ) : (
+                (currentCompanies || companiesData)?.map((company, i) => (
+                  <section
+                    key={i}
+                    className="grid items-center gap-6 py-2 pl-6 pr-4 border-t-2 text-[#DEE1E2] border-[#1A1A1A] grid-cols-customCompanies group hover:bg-[#2c2c2c]"
                   >
-                    {company?.name || company?.companyName}
-                  </span>
+                    <span>{i + 1}</span>
 
-                  <span className="text-sm font-semibold break-words break-all text-ellipsis">
-                    {company?.email}
-                  </span>
-
-                  <div className="flex items-center justify-center">
-                    {company?.image ? (
-                      <img
-                        src={company?.image}
-                        alt="user Image"
-                        className="object-contain w-24 h-24 rounded-lg"
-                      />
-                    ) : (
-                      <span className="text-sm font-bold text-gray-400">
-                        No Image
-                      </span>
-                    )}
-                  </div>
-                  <span className="flex justify-center ml-2 text-sm font-semibold ">
-                    {company?.phoneNumber || "--"}
-                  </span>
-                  <span className="flex justify-center ml-2 text-sm font-semibold ">
-                    {company?.address || "--"}
-                  </span>
-                  <span
-                    onClick={() =>
-                      company?.website && handleLinkClick(company.website)
-                    }
-                    className={`ml-2 text-sm font-semibold text-center ${
-                      company?.website ? "underline text-sky-400 " : ""
-                    } break-words break-all cursor-pointer `}
-                  >
-                    {company?.website || "----"}
-                  </span>
-                  <ConfirmationDialog
-                    show={dialogCrendial.showDialog}
-                    onClose={handleCloseDialog}
-                    onConfirm={handleConfirmRedirect}
-                  />
-                  <span className="flex justify-center ml-2 text-sm font-semibold ">
-                    {company?.status}
-                  </span>
-                  <span className="flex justify-center ml-2 text-sm font-semibold ">
-                    {company?.productcount || 0}
-                  </span>
-                  {/* <span className="flex justify-center ml-2 text-sm font-semibold ">
-                    {company?.dateAdded || "---"}
-                  </span> */}
-
-                  <div className="grid justify-center gap-2">
-                    <button
-                      className="px-3 py-2 text-sm font-semibold rounded-md bg-emerald-800 hover:bg-emerald-700"
-                      onClick={() => updatecompany(company)}
+                    <span
+                      className={`  font-semibold text-center  rounded-full  `}
                     >
-                      Edit
-                    </button>
-                    <button
-                      className="px-3 py-2 text-sm font-semibold rounded-md bg-rose-800 hover:bg-rose-700"
-                      onClick={() => deletcompany(company._id)}
+                      {company?.name || company?.companyName}
+                    </span>
+
+                    <span className="text-sm font-semibold break-words break-all text-ellipsis">
+                      {company?.email}
+                    </span>
+
+                    <div className="flex items-center justify-center">
+                      {company?.image ? (
+                        <img
+                          src={company?.image}
+                          alt="user Image"
+                          className="object-contain w-24 h-24 rounded-lg"
+                        />
+                      ) : (
+                        <span className="text-sm font-bold text-gray-400">
+                          No Image
+                        </span>
+                      )}
+                    </div>
+                    <span className="flex justify-center ml-2 text-sm font-semibold ">
+                      {company?.phoneNumber || "--"}
+                    </span>
+                    <span className="flex justify-center ml-2 text-sm font-semibold ">
+                      {company?.address || "--"}
+                    </span>
+                    <span
+                      onClick={() =>
+                        company?.website && handleLinkClick(company.website)
+                      }
+                      className={`ml-2 text-sm font-semibold text-center ${
+                        company?.website ? "underline text-sky-400 " : ""
+                      } break-words break-all cursor-pointer `}
                     >
-                      Delete
-                    </button>
-                  </div>
-                </section>
-              ))}
+                      {company?.website || "----"}
+                    </span>
+                    <ConfirmationDialog
+                      show={dialogCrendial.showDialog}
+                      onClose={handleCloseDialog}
+                      onConfirm={handleConfirmRedirect}
+                    />
+                    <span className="flex justify-center ml-2 text-sm font-semibold ">
+                      {company?.status}
+                    </span>
+                    <span className="flex justify-center ml-2 text-sm font-semibold ">
+                      {company?.productcount || 0}
+                    </span>
+                    {/* <span className="flex justify-center ml-2 text-sm font-semibold ">
+                  {company?.dateAdded || "---"}
+                </span> */}
+
+                    <div className="grid justify-center gap-2">
+                      <button
+                        className="px-3 py-2 text-sm font-semibold rounded-md bg-emerald-800 hover:bg-emerald-700"
+                        onClick={() => updatecompany(company)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="px-3 py-2 text-sm font-semibold rounded-md bg-rose-800 hover:bg-rose-700"
+                        onClick={() => deletcompany(company._id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </section>
+                ))
+              )}
             </div>
           </section>
 

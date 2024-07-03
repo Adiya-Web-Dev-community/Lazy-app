@@ -171,11 +171,15 @@ const Products = () => {
                   {heading.charAt(0).toUpperCase() + heading.slice(1)}
                   <span
                     className={`${
-                      index === 7 ? "visible" : "hidden"
-                    }   rounded-full ml-2`}
+                      index === 6 ? "visible" : "hidden"
+                    }   rounded-full ml-2 cursor-pointer`}
                     onClick={handlinInfo}
                   >
-                    <FaStarOfLife className="w-3 h-3 text-gray-600 hover:text-rose-600" />
+                    <FaStarOfLife
+                      className={`w-3 h-3 text-gray-600 ${
+                        isInformModal ? "text-rose-500" : "text-gray-600"
+                      } hover:text-rose-600`}
+                    />
                   </span>
                 </p>
               ))}
@@ -231,9 +235,9 @@ const Products = () => {
                   <span className="flex justify-center ml-2 text-sm font-semibold ">
                     {product?.stockQuantity}
                   </span>
-                  <span className="flex justify-center ml-2 text-sm font-semibold ">
+                  {/* <span className="flex justify-center ml-2 text-sm font-semibold ">
                     {product?.sku}
-                  </span>
+                  </span> */}
                   <span className="flex justify-center ml-2 text-sm font-semibold ">
                     {product?.status}
                   </span>
@@ -244,7 +248,7 @@ const Products = () => {
                     {/* <button> */}
                     <Link
                       to={`/products/${i}`}
-                      className="flex justify-center px-4 py-2 ml-2 text-sm font-semibold bg-teal-800 rounded-md"
+                      className="flex justify-center px-4 py-2 ml-2 text-sm font-semibold bg-teal-800 rounded-md hover:bg-emerald-700"
                     >
                       <BsEye className="w-4 h-4" />
                     </Link>

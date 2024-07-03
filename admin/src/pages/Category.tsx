@@ -14,10 +14,9 @@ import { useNavigate } from "react-router-dom";
 import ConfirmDeleteModal from "../components/modal/ConfirmDeleteModal";
 import { useState } from "react";
 import Pagination from "../components/pagination/Pagination";
+import CategoryLoading from "../components/loading-elemnts/CategoryLoading";
 
 const Category = () => {
-  // const [categorysData, setCategoryData] = useState([{ name: "Electronic", _id:"0991" }]);
-
   const [isCategoryForm, setCategoryForm] = useState({
     creat: false,
     updateId: "",
@@ -220,9 +219,7 @@ const Category = () => {
             <div className=" h-[380px] overflow-y-auto [&::-webkit-scrollbar]:hidden min-w-[600px] bg-[#252525]">
               {
                 isPending ? (
-                  <p className="flex items-center justify-center w-full h-full text-center text-emerald-600">
-                    loading...
-                  </p>
+                  <CategoryLoading />
                 ) : isError ? (
                   <p className="flex items-center justify-center w-full h-full font-medium text-center text-rose-800">
                     Check Internet connection or Contact to Admin

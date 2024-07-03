@@ -29,32 +29,11 @@ const CreatCategory: React.FC<CreatCategoryProps> = ({
   // singleCategory,
   refetch,
 }) => {
-  // const { isPending, isError, data, error } = useQuery<
-  //   ApiResponse<SingleCategoryResponseData>,
-  //   ApiError
-  // >({
-  //   queryKey: [`singlcategories-${isCategoryForm.updateId}`],
-  //   queryFn: async () => {
-  //     return await apiRequest<SingleCategoryResponseData>({
-  //       url: `/categories/${isCategoryForm.updateId}`,
-  //       method: "get",
-  //     });
-  //   },
-  // });
-
-  console.log(isCategoryForm);
-
-  // const singleCategory = data?.data?.data;
-
-  // console.log(singleCategory);
-
   const [categoryDataForm, setCategoryDataForm] = useState({
     categoryName: isCategoryForm.updateData ? isCategoryForm.updateData : "",
     type: "",
     error: "",
   });
-
-  // const [isOpen, setOpen] = useState(false);
 
   const handleChange = (e) => {
     setCategoryDataForm((prev) => ({

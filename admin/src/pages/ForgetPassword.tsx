@@ -18,9 +18,6 @@ import { apiRequest } from "../api/adminApi";
 const ForgetPassword = () => {
   const [email, setEmail] = useState("");
 
-  // const dispatch = useDispatch();
-  // const navigate = useNavigate();
-
   //reset passsword response data
   //   {
   //     "data": {
