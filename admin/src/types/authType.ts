@@ -74,3 +74,18 @@ export interface OtpVerificationResponse {
   success: boolean;
   message: string;
 }
+
+//update
+
+export interface UpdateData {
+  name: string;
+  image: string;
+  // email: string;
+  mobile: string;
+}
+
+export interface UpdateResponse {
+  success: boolean;
+  message: string;
+  data: "";
+}

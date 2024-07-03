@@ -58,6 +58,34 @@ export interface CreatCategoryObject {
 // }
 
 //products
+export interface PlatformTypes {
+  icons: "";
+}
+
+export interface CompanyType {
+  name?: string;
+  id?: string;
+  image?: "";
+}
+
+export type FormProductKeys = keyof FormProductTypes;
+
+export interface ProductUni {
+  name: string;
+  id: string;
+  image: string;
+}
+export interface CateUni {
+  name: string;
+  id: string;
+}
+
+export interface ProductsLinkType {
+  id?: string;
+  url?: string;
+  company?: CateUni;
+}
+
 export interface FormProductTypes {
   description?: string;
   imageSrc?: string;
@@ -65,19 +93,14 @@ export interface FormProductTypes {
 
   name?: string;
   price?: number;
-  company?: {
-    name?: string;
-    id?: string;
-  };
+
+  company?: CompanyType[];
+
   category?: {
     name?: string;
     id?: string;
   };
-  available?: false;
-  status: "";
-}
-
-export interface ProductUni {
-  name: string;
-  id: string;
+  available?: boolean;
+  status: string;
+  productsLink: ProductsLinkType[];
 }
