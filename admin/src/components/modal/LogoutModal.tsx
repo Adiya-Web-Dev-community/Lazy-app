@@ -1,7 +1,7 @@
 import React from "react";
 
-const ConfirmationDialog = ({ show, onClose, onConfirm }) => {
-  if (!show) return null;
+const LogOutModal = ({ onClose, onConfirm }) => {
+  //   if (!show) return null;
 
   const handlingPropogation = (e) => {
     e.stopPropagation();
@@ -17,7 +17,7 @@ const ConfirmationDialog = ({ show, onClose, onConfirm }) => {
         onClick={handlingPropogation}
       >
         <h2 className="mb-4 text-lg font-semibold">
-          Are you sure you want to move to this website?
+          Are you sure you want to Logout
         </h2>
         <div className="flex justify-end space-x-4">
           <button
@@ -30,7 +30,7 @@ const ConfirmationDialog = ({ show, onClose, onConfirm }) => {
             onClick={onConfirm}
             className="px-4 py-2 font-semibold rounded-md bg-rose-800 hover:bg-rose-700"
           >
-            Confirm
+            Log Out
           </button>
         </div>
       </div>
@@ -38,4 +38,4 @@ const ConfirmationDialog = ({ show, onClose, onConfirm }) => {
   );
 };
 
-export default ConfirmationDialog;
+export default LogOutModal;
