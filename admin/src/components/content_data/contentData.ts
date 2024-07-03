@@ -3,7 +3,7 @@
 export const listHeadingCompanies = [
   "Name",
   "Email",
-  "Image",
+  "Logo",
   "Phone",
   "Address",
   "Website",

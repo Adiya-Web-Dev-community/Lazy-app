@@ -17,6 +17,7 @@ import RegisterAdmin from "../pages/RegisterAdmin";
 import DummyPage from "../pages/DummyPage";
 import FeatureForm from "../forms/FeatureForm";
 import ProductProfile from "../pages/ProductProfile";
+import UpdateProfile from "../pages/UpdateProfile";
 
 const route = createBrowserRouter([
   {
@@ -47,6 +48,10 @@ const route = createBrowserRouter([
       {
         path: "update-password",
         //   element: <ResetPassword />,
+      },
+      {
+        path: "update-profile",
+        element: <UpdateProfile />,
       },
       {
         path: "",
