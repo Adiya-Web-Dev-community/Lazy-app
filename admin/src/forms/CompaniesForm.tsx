@@ -10,6 +10,9 @@ import { useMutation } from "@tanstack/react-query";
 
 import { ApiError } from "../types/apiType.js";
 import { apiRequest } from "../api/adminApi.js";
+import { useDispatch, useSelector } from "react-redux";
+import { removeData } from "../store/companies.js";
+import uploadImage from "../components/firebase_image/image.js";
 
 interface CompaniesType {
   name: string;
@@ -20,36 +23,41 @@ interface CompaniesType {
   status: string;
   products: number;
   joinDate: string;
+  imageSrc: string;
+  image: string;
 }
 
 const CompaniesForm = () => {
-  const [companiesData, setCompaniesData] = useState<CompaniesType>({
-    // description: "",
-    // imageSrc: "",
-    // image: "",
-    // ingredients: [],
-    // label: "",
-    // dietaryRestriction: "",
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-    webLink: "",
-    status: "",
-    products: 0,
-    joinDate: "",
-    // price: "",
+  const companyUpdateData = useSelector((state) => state?.company?.companyData);
 
-    // category: {
-    //   name: "",
-    //   id: "",
-    // },
-    // available: false,
+  const [companiesData, setCompaniesData] = useState<CompaniesType>({
+    name: companyUpdateData?.name || "",
+    email: companyUpdateData?.email || "",
+    phone: companyUpdateData?.phone || "",
+    address: companyUpdateData?.address || "",
+    webLink: companyUpdateData?.website || "",
+    status: companyUpdateData?.status || "",
+    products: companyUpdateData?.productcount || 0,
+    joinDate: "",
+    imageSrc:
+      companyUpdateData?.image?.slice(
+        67,
+        companyUpdateData?.image?.indexOf("%")
+      ) || "",
+    image: companyUpdateData?.image || "",
   });
+
+  console.log(companyUpdateData, "from company form");
 
   const [isOpen, setOpen] = useState({
     status: false,
   });
+
+  const dispatch = useDispatch();
+  const [progressStatus, setProgressStatus] = useState("");
+
+  const [isError, setIsError] = useState(false);
+  const pattern = new RegExp(/^\d{1,10}$/);
 
   const mutation = useMutation({
     mutationFn: async ({ path, condition, data }) => {
@@ -95,10 +103,13 @@ const CompaniesForm = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value, type, checked } = e.target;
+
     setCompaniesData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+    if (name === "phone" && !pattern.test(value)) setIsError(true);
+    else setIsError(false);
   };
 
   const selectOption = (field: string, value: string) => {
@@ -113,44 +124,70 @@ const CompaniesForm = () => {
     }));
   };
 
+  //for Image Data
+
+  const handleImageChange = async (event: React.ChangeEvent) => {
+    // const selectedFile = event.target.files[0];
+
+    const selectedFile = event.target?.files?.[0];
+
+    if (selectedFile) {
+      const imageUrl = await uploadImage(
+        event.target.files[0].name,
+
+        event.target.files[0],
+        setProgressStatus
+      );
+
+      console.log(imageUrl, selectedFile, "<<frommodal?>>");
+      setCompaniesData((prev) => ({
+        ...prev,
+        image: imageUrl,
+        imageSrc: selectedFile.name,
+      }));
+    }
+  };
+
   const navigate = useNavigate();
   // const dispatch = useDispatch();
 
   const submitHandler = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // const dishPostObject = {
-    //   companyId: companiesData.,
-    //   name: companiesData.name,
-    //   image: companiesData.image,
-    //   description: companiesData.description,
-    //   price: Number(companiesData.price),
-    //   category: companiesData.category.id,
+    const companyPostObject = {
+      name: companiesData.name,
+      email: companiesData.email,
+      phone: companiesData.phone,
+      image: companyUpdateData.image
+        ? companyUpdateData.image
+        : companiesData.image,
+      address: companiesData.address,
+      website: companiesData.webLink,
+      status: companiesData.status,
+      productcount: companiesData.products,
+    };
 
-    //   available: companiesData.available,
-    // };
+    console.log(companiesData);
 
-    // console.log(dishPostObject);
-
-    // if (Object.keys(dishUpdateData)?.length === 0) {
-    //   console.log("now creat");
-    //   mutation.mutate({
-    //     path: "/menus",
-    //     condition: "creat",
-    //     data: dishPostObject,
-    //   });
-    // } else {
-    //   console.log("update Id");
-    //   mutation.mutate({
-    //     path: `/menus/${dishUpdateData?._id}`,
-    //     condition: "update",
-    //     data: dishPostObject,
-    //   });
-    // }
+    if (Object.keys(companyUpdateData)?.length === 0) {
+      console.log("now creat");
+      mutation.mutate({
+        path: "api/company/create",
+        condition: "creat",
+        data: companyPostObject,
+      });
+    } else {
+      console.log("update Id");
+      mutation.mutate({
+        path: `api/company/update/${companyUpdateData?._id}`,
+        condition: "update",
+        data: companyPostObject,
+      });
+    }
   };
 
   const clearhandler = () => {
-    // dispatch(clearDishData());
+    dispatch(removeData());
     setCompaniesData({
       name: "",
       email: "",
@@ -160,9 +197,11 @@ const CompaniesForm = () => {
       status: "",
       products: 0,
       joinDate: "",
+      imageSrc: "",
+      image: "",
     });
 
-    navigate("/dishes");
+    navigate("/companies");
   };
 
   const LoadingFormListElement = () => {
@@ -190,9 +229,9 @@ const CompaniesForm = () => {
             <h2 className="md:text-4xl text-[28px] font-bold text-[#DEE1E2]">
               Product Form
             </h2>
-            <Link to={"/companies"} onClick={clearhandler}>
+            <div onClick={clearhandler}>
               <TiArrowBackOutline className="w-10 h-10 ml-4 text-emerald-600 hover:text-emerald-500" />
-            </Link>
+            </div>
           </div>
           <div className="h-[calc(100vh-12rem)] overflow-y-auto pr-4 md:pr-0 text-[#DEE1E2]">
             <div className="grid items-center grid-cols-1 gap-4 py-4 md:grid-cols-2">
@@ -214,13 +253,55 @@ const CompaniesForm = () => {
                 placeholder="Company Email"
                 required
               />
+              <div className="relative w-full h-full">
+                {/* <input
+                  // value={userDetails?.image}
+                  type="file"
+                  name="image"
+                  onChange={handleImageChange}
+                  className={`px-2 py-[5px] ${
+                    progressStatus ? "pb-2" : ""
+                  }  w-full text-sm  bg-[#252525] focus:border-[#DEE1E2] border-transparent border   rounded-md text-gray-400  outline-none`}
+                  placeholder="Image URL"
+                  required
+                /> */}
+                <input
+                  type="file"
+                  name="image"
+                  onChange={handleImageChange}
+                  className="hidden"
+                  id="file-upload"
+                />
+                <label
+                  htmlFor="file-upload"
+                  className={`px-4 py-2 pl-24 relative ${
+                    progressStatus ? "pb-2" : ""
+                  } w-full text-base bg-[#252525] focus:border-[#DEE1E2] border-transparent border rounded-md text-gray-400 cursor-pointer flex items-center justify-between`}
+                >
+                  {companiesData?.imageSrc || "Choose a file"}
+                  <span className="text-gray-400 text-[15px] absolute top-0 h-full flex items-center left-0 rounded-tl-md rounded-bl-md px-3 font-medium bg-[#1A1A1A]">
+                    Browse
+                  </span>
+                </label>
+                {progressStatus !== null && progressStatus !== "" && (
+                  <>
+                    <div className="absolute inset-0 z-10 flex items-end">
+                      <div
+                        className="h-1 bg-blue-400 rounded-md mx-[1px] mb-[1px]"
+                        style={{ width: `${progressStatus}%` }}
+                        // style={{ width: `${100}%` }}
+                      ></div>
+                    </div>
+                  </>
+                )}
+              </div>
 
               <input
                 value={companiesData.products || ""}
                 type="number"
                 onChange={handleChange}
-                name="prducts"
-                className="w-full h-10 pl-4 font-medium bg-[#252525] focus:border-[#DEE1E2]  border-transparent border   rounded-md outline-none "
+                name="products"
+                className="w-full h-10 px-4 font-medium bg-[#252525] focus:border-[#DEE1E2]  border-transparent border   rounded-md outline-none "
                 placeholder="No. Products"
                 required
               />
@@ -241,15 +322,15 @@ const CompaniesForm = () => {
                     isOpen.status ? "max-h-60" : "hidden"
                   } custom-scrollbar`}
                 >
-                  {statusData.map((state, i) => (
+                  {statusData.map((status, i) => (
                     <li
                       key={i}
                       className={`p-2 mb-2 text-sm text-[#DEE1E2] rounded-md cursor-pointer hover:bg-blue-200/60 ${
-                        companiesData.status === state ? "bg-rose-600" : ""
+                        companiesData.status === status ? "bg-rose-600" : ""
                       }`}
-                      onClick={() => selectOption("state", state)}
+                      onClick={() => selectOption("status", status)}
                     >
-                      <span>{state}</span>
+                      <span>{status}</span>
                     </li>
                   ))}
                 </ul>
@@ -265,14 +346,18 @@ const CompaniesForm = () => {
               />
               <input
                 value={companiesData.phone}
-                type="url"
+                type="tel"
                 onChange={handleChange}
                 name="phone"
-                className="w-full h-10 pl-4 font-medium bg-[#252525] focus:border-[#DEE1E2] border-transparent border   rounded-md outline-none "
+                className={`w-full h-10 pl-4 font-medium ${
+                  isError
+                    ? "bg-rose-600 focus:border-rose-800"
+                    : "bg-[#252525] focus:border-[#DEE1E2]"
+                }   border-transparent border   rounded-md outline-none`}
                 placeholder="Company Phone No."
                 required
               />
-              <input
+              {/* <input
                 value={companiesData.joinDate}
                 type="date"
                 onChange={handleChange}
@@ -280,7 +365,7 @@ const CompaniesForm = () => {
                 className="w-full h-10 px-4 text-[#DEE1E2] font-medium bg-[#252525] focus:border-[#DEE1E2] border-transparent border   rounded-md outline-none placeholder:text-gray-400"
                 // placeholder="Company Join Date"
                 required
-              />
+              /> */}
 
               <textarea
                 value={companiesData.address}
@@ -290,33 +375,20 @@ const CompaniesForm = () => {
                 placeholder="Company Address"
                 required
               />
-
-              {/* <div className="flex items-center pl-1">
-                <input
-                  type="checkbox"
-                  name="available"
-                  checked={dishData.available}
-                  onChange={handleChange}
-                  className="w-4 h-4"
-                />
-                <label
-                  htmlFor="available"
-                  className="pl-4 text-sm text-gray-700"
-                >
-                  Available Dish
-                </label>
-              </div> */}
             </div>
 
             <div className="flex">
               <button
-                className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-400"
+                className="px-4 py-2 text-white rounded-md bg-emerald-800 hover:bg-emerald-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
                 type="submit"
+                disabled={isError}
               >
-                Submit
+                {Object.keys(companyUpdateData).length !== 0
+                  ? "Update"
+                  : "Submit"}
               </button>
               <button
-                className="px-4 py-2 ml-8 text-white bg-red-500 rounded hover:bg-red-400"
+                className="px-4 py-2 ml-8 text-white rounded-md bg-rose-800 hover:bg-rose-700"
                 type="button"
                 onClick={clearhandler}
               >

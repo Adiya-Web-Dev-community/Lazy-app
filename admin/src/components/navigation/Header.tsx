@@ -53,7 +53,7 @@ const Header = ({ onToggleSidebarSmall, isOpen }) => {
   console.log(time, dateMonth);
   return (
     <header
-      className={`fixed top-0 flex items-center justify-between w-full  ${
+      className={`fixed top-0 flex items-center justify-between bg-black w-full  ${
         // !isOpen.large ? "lg:w-[calc(100%-15.4rem)]" : "lg:w-[calc(100%-5.4rem)]"
         !isOpen.large
           ? "md:w-[calc(100vw-15.4rem)]"
@@ -82,7 +82,7 @@ const Header = ({ onToggleSidebarSmall, isOpen }) => {
             <span className="text-emerald-700">B</span>at
           </p>
         </div>
-        <div className="md:w-1/2 lg:w-[30%]  items-center justify-self-end flex gap-4 md:gap-8 justify-end  relative">
+        <div className="md:w-1/2 lg:w-[30%]  items-center justify-self-end flex gap-4 lg:gap-8 justify-end  relative">
           {/* <MdOutlineNotifications className="text-gray-500 w-7 h-7" />
 
           <FaUserCog

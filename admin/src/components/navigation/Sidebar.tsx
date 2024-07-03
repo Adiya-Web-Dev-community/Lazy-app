@@ -1,38 +1,12 @@
-/* eslint-disable react/prop-types */
 // Sidebar.js
 import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import logo from "../../assets/Fudy.png";
-import logoFirstWord from "../../assets/logo_single_word.svg";
+
 import { RxCross1, RxHamburgerMenu } from "react-icons/rx";
-import {
-  MdFastfood,
-  MdOutlineCategory,
-  MdOutlineEqualizer,
-  MdOutlineFoodBank,
-  MdRestaurant,
-} from "react-icons/md";
-import { BsBarChart } from "react-icons/bs";
-import { MdOutlineWorkOutline } from "react-icons/md";
-import { LuUsers2 } from "react-icons/lu";
-import { BiDish } from "react-icons/bi";
-import {
-  RiArrowDropDownLine,
-  RiBuilding2Line,
-  RiRestaurantLine,
-} from "react-icons/ri";
-import { GrRestaurant } from "react-icons/gr";
-import {
-  FaBox,
-  FaBoxesStacked,
-  FaBuilding,
-  FaCartFlatbed,
-} from "react-icons/fa6";
-import { useSelector } from "react-redux";
-import { ApiError, ApiResponse } from "../../types/apiType";
-import { CategoryResponseData } from "../../types/contentType";
-import { useQuery } from "@tanstack/react-query";
-import { apiRequest } from "../../api/userApi";
+import { MdOutlineCategory } from "react-icons/md";
+
+import { RiBuilding2Line } from "react-icons/ri";
+
 import { GiBatMask } from "react-icons/gi";
 import { AiOutlineProduct } from "react-icons/ai";
 
@@ -43,45 +17,25 @@ const SideBar = ({ isOpen, onToggleSidebarLarge, onToggleSidebarSmall }) => {
     setSidebarOpen((prev) => !prev);
   };
 
-  //   const categoryData = useSelector((state) => state.category.categoryData);
-
-  //   const { isPending, isError, data, error } = useQuery<
-  //     ApiResponse<CategoryResponseData>,
-  //     ApiError
-  //   >({
-  //     queryKey: ["categories"],
-  //     queryFn: async () => {
-  //       return await apiRequest<CategoryResponseData>({
-  //         url: "/categories",
-  //         method: "get",
-  //       });
-  //     },
-  //   });
-
-  // if (isPending) {
-  //   return <span>Loading...</span>;
-  // }
-
-  //   if (isError) {
-  //     return <span>Error: {error.message}</span>;
-  //   }
-
-  //   const categoryDataByApi = data?.data?.data;
+  // const handlingPropogation = (e) => {
+  //   e.stopPropagation();
+  // };
 
   return (
-    // <section className={` h-screen w-64   ${isOpen ? "block" : "hidden"}`}>
     <section
       className={` h-screen  ${
         isOpen.small
-          ? "fixed inset-0 bg-black/20 flex  z-30 "
+          ? "fixed inset-0 bg-black/70 flex  z-30 "
           : ` md:inline-block hidden pr-4 transition-all duration-500 ${
               isOpen.large ? "w-24" : "w-64"
             }`
-      }  transition-all duration-500   `}
+      }  transition-all duration-500   cursor-pointer`}
+      // onClick={onToggleSidebarSmall}
     >
+      {/* <section className="relative w-full" onClick={handlingPropogation}> */}
       <section
         className={`
-    cursor-pointer h-full bg-[#1A1A1A] shadow-md overflow-clip   ${
+    cursor-default h-full bg-[#1A1A1A] shadow-md overflow-clip   ${
       isOpen.small ? "w-full sm:w-64" : ""
     }`}
       >
@@ -270,12 +224,13 @@ const SideBar = ({ isOpen, onToggleSidebarLarge, onToggleSidebarSmall }) => {
       </section>
       <button
         onClick={onToggleSidebarSmall}
-        className={`absolute top-6 right-4 text-gray-400 ${
+        className={`absolute top-6 right-4 z-50 text-gray-200 ${
           isOpen.small ? "" : "hidden"
         }`}
       >
         <RxCross1 className="w-6 h-6 " />
       </button>
+      {/* </section> */}
     </section>
   );
 };
