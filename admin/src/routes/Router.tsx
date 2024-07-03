@@ -15,6 +15,8 @@ import Login from "../pages/Login";
 import ForgetPassword from "../pages/ForgetPassword";
 import RegisterAdmin from "../pages/RegisterAdmin";
 import DummyPage from "../pages/DummyPage";
+import FeatureForm from "../forms/FeatureForm";
+import ProductProfile from "../pages/ProductProfile";
 
 const route = createBrowserRouter([
   {
@@ -61,7 +63,10 @@ const route = createBrowserRouter([
       // { path: "/dashboard/form/:id", element: <UserDataUpdateForm /> },
 
       { path: "/products", element: <Products /> },
+      { path: "/products/:id", element: <ProductProfile /> },
       { path: "/products/form", element: <ProductsForm /> },
+      // { path: "feature/form", element: <FeatureForm /> },
+      { path: "/products/:id/feature/form", element: <FeatureForm /> },
       {
         path: "/category",
         element: <Category />,

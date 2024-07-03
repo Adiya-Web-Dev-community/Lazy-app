@@ -27,6 +27,7 @@ const ProductsForm = () => {
       name: "",
       id: "",
     },
+    platform: [],
     available: false,
     status: "",
   });
@@ -143,6 +144,19 @@ const ProductsForm = () => {
       [field]: false,
     }));
   };
+
+  // const selectMultipleOption = (field: string, value: string) => {
+  //   setProductData((prev) => ({
+  //     ...prev,
+  //     [field]: prev[field].includes(value)
+  //       ? prev[field].filter((item: string) => item !== value)
+  //       : [...prev[field], value],
+  //   }));
+  //   setOpen((prev) => ({
+  //     ...prev,
+  //     [field]: false,
+  //   }));
+  // };
 
   const navigate = useNavigate();
   // const dispatch = useDispatch();
@@ -413,6 +427,41 @@ const ProductsForm = () => {
                   }
                 </ul>
               </div>
+              {/* platform dropDwon */}
+              {/* <div className="relative">
+                <div
+                  className="flex justify-between p-2 text-sm border border-gray-400 rounded-md cursor-pointer"
+                  onClick={() =>
+                    setOpen({ ...isOpen, ingredients: !isOpen.ingredients })
+                  }
+                >
+                  {dishData.ingredients.length > 0
+                    ? dishData.ingredients.join(", ")
+                    : "Select Ingredients"}
+                  <FaCaretDown className="m-1" />
+                </div>
+                <ul
+                  className={`mt-2 p-2 rounded-md w-36 overflow-y-scroll bg-gray-600 shadow-lg absolute z-10 ${
+                    isOpen.ingredients ? "max-h-40" : "hidden"
+                  } custom-scrollbar`}
+                >
+                  {ingredientsOptions.map((ingredient, i) => (
+                    <li
+                      key={i}
+                      className={`p-2 mb-2 text-sm text-white rounded-md cursor-pointer hover:bg-blue-200/60 ${
+                        dishData.ingredients.includes(ingredient)
+                          ? "bg-rose-600"
+                          : ""
+                      }`}
+                      onClick={() =>
+                        selectMultipleOption("ingredients", ingredient)
+                      }
+                    >
+                      <span>{ingredient}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div> */}
 
               <textarea
                 value={productData.description}

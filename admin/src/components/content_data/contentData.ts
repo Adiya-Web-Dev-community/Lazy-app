@@ -2,14 +2,14 @@
 
 export const listHeadingCompanies = [
   "Name",
-  //   "Contact",
   "Email",
+  "Image",
   "Phone",
   "Address",
   "Website",
   "Status",
   "Products",
-  "Since",
+  // "Since",
   "Setting",
 ];
 
@@ -78,11 +78,12 @@ export const productHeadings = [
   "Co.Name",
   "Category",
   // "Price",
-  "Feature",
+  // "Feature",
   "Stock Qty",
   "SKU",
   "Status",
   "Date Added",
+  "View",
   "Setting",
 ];
 
@@ -96,7 +97,7 @@ export const productsData = [
     sku: "WM12345",
     status: "Active",
     dateAdded: "2024-01-15",
-    feature: "Ergonomic design, USB receiver", // Added feature
+    // feature: "Ergonomic design, USB receiver", // Added feature
   },
   {
     productName: "Smartphone Case",
@@ -107,7 +108,7 @@ export const productsData = [
     sku: "SC67890",
     status: "Active",
     dateAdded: "2024-02-10",
-    feature: "Shockproof, Slim fit", // Added feature
+    // feature: "Shockproof, Slim fit", // Added feature
   },
   {
     productName: "Bluetooth Speaker",
@@ -118,7 +119,7 @@ export const productsData = [
     sku: "BS23456",
     status: "Inactive",
     dateAdded: "2023-12-20",
-    feature: "Portable, Waterproof", // Added feature
+    // feature: "Portable, Waterproof", // Added feature
   },
   {
     productName: "Running Shoes",
@@ -129,7 +130,7 @@ export const productsData = [
     sku: "RS78901",
     status: "Active",
     dateAdded: "2024-03-01",
-    feature: "Breathable material, Non-slip sole", // Added feature
+    // feature: "Breathable material, Non-slip sole", // Added feature
   },
   {
     productName: "Organic T-Shirt",
@@ -140,7 +141,7 @@ export const productsData = [
     sku: "OT56789",
     status: "Active",
     dateAdded: "2024-01-25",
-    feature: "100% Organic cotton, Eco-friendly", // Added feature
+    // feature: "100% Organic cotton, Eco-friendly", // Added feature
   },
 ];
 
