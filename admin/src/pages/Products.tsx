@@ -143,8 +143,8 @@ const Products = () => {
             <div className="relative flex items-center self-end ">
               <button
                 className={` px-2 py-1 
-                   bg-emerald-800  hover:bg-emerald-700 text-[#DEE1E2]
-              }    rounded shadow-xl md:px-4 md:py-2  sm:self-center`}
+                   bg-emerald-800  hover:bg-emerald-700 relative -z-6 text-[#DEE1E2]
+                  rounded shadow-xl md:px-4 md:py-2  sm:self-center`}
               >
                 {/* <Link to={"/dishes/form"}> */}
                 <Link to={"/products/form"}>
@@ -228,22 +228,6 @@ const Products = () => {
                     {product?.category}
                   </span>
 
-                  {/* <div className="flex justify-center text-sm font-semibold md:text-base">
-                  
-                  {product?.ingredient ? (
-                    <span className="flex text-xs font-semibold break-words break-all text-ellipsis md:text-sm">
-                      {product?.ingredient},
-                    </span>
-                  ) : (
-                    <span className="flex justify-center text-sm font-bold text-gray-400">
-                      Empty
-                    </span>
-                  )}
-                </div> */}
-
-                  {/* <span className="flex justify-center ml-2 text-sm font-semibold md:text-base">
-                  ₹ {product?.price}
-                </span> */}
                   <span className="flex justify-center ml-2 text-sm font-semibold ">
                     {product?.stockQuantity}
                   </span>
