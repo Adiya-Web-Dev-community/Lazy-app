@@ -9,7 +9,6 @@ import register from "../assets/Sign up.svg";
 import {
   FiEye,
   FiEyeOff,
-  FiGlobe,
   FiLock,
   FiMail,
   FiPhone,
@@ -68,26 +67,6 @@ const RegisterAdmin = () => {
       setPassWordError("");
     }
   };
-
-  //response after sucessfully register user
-  //   {
-  //     "data": {
-  //         "success": true,
-  //         "message": "User created successfully",
-  //         "data": {
-  //             "name": "mansoor",
-  //             "email": "khanman100698soor@gmail.com",
-  //             "password": "$2b$10$qjFNI/SVIui4VS8Cr3.IjOEuavoffVMA1b9CoQL11nGVfOCYvQiFO",
-  //             "mobile": "8828787878",
-  //             "isVerified": false,
-  //             "otp": "323365",
-  //             "role": "admin",
-  //             "_id": "6676a89a3a51f8ebba4bed69",
-  //             "registrationDate": "2024-06-22T10:34:02.554Z",
-  //             "__v": 0
-  //         }
-  //     }
-  // }
 
   const mutation = useMutation<
     ApiResponse<RegisterResponse>,
@@ -303,18 +282,6 @@ const RegisterAdmin = () => {
                 className="w-full py-[6px]  transition-all duration-200 border-2 rounded-md outline-none bg-blue-50 placeholder:text-gray-400 pl-9 focus:border-blue-300"
               />
             </div>
-            {/* <div className="relative w-full">
-              <FiGlobe className="absolute w-5 h-5 text-gray-400 top-[10px] left-2" />
-              <input
-                label={"Country"}
-                required
-                name={"country"}
-                onChange={handleChnage}
-                value={registorObj.country}
-                placeholder="Country"
-                className="w-full py-[6px]  transition-all duration-200 border-2 rounded-md outline-none bg-blue-50 placeholder:text-gray-400 pl-9 focus:border-blue-300"
-              />
-            </div> */}
           </div>
           {/* <div className="flex col-span-2 ">
             <input

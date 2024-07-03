@@ -17,8 +17,8 @@ const InformAleartModal = ({ onClose }) => {
         className="p-6 bg-[#252525] text-[#DEE1E2] rounded-lg shadow-lg cursor-default"
         onClick={handlingPropogation}
       >
-        <h2 className="mb-4 text-2xl font-bold text-gray-400 ">
-          By View You will able to Do:
+        <h2 className="mb-4 text-2xl font-bold text-slate-400 ">
+          By View You will:
         </h2>
         <ul className="grid gap-2 px-4 mb-4 list-disc">
           <li>Able to view Basic Info of Product</li>
