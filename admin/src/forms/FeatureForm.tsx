@@ -81,11 +81,45 @@ const FeatureForm = () => {
     navigate(`/products/${id}`);
   };
 
+  const submitHandler = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // const productPostObject = {
+    //   companyId: productData.company.id,
+    //   name: productData.name,
+    //   image: productData.image,
+    //   description: productData.description,
+    //   price: Number(productData.price),
+    //   category: productData.category.id,
+
+    //   available: productData.available,
+    // };
+
+    // console.log(productPostObject);
+    console.log(featureCategories);
+
+    // if (Object.keys(dishUpdateData)?.length === 0) {
+    //   console.log("now creat");
+    //   mutation.mutate({
+    //     // path: "/menus",
+    //     condition: "creat",
+    //     data: productPostObject,
+    //   });
+    // } else {
+    //   console.log("update Id");
+    //   mutation.mutate({
+    //     // path: `/menus/${dishUpdateData?._id}`,
+    //     condition: "update",
+    //     data: productPostObject,
+    //   });
+    // }
+  };
   return (
     <section
       className={`  md:pl-0 p-4 h-full rounded-md font-philosopher mx-auto`}
     >
-      <section
+      <form
+        onSubmit={submitHandler}
         className={` md:p-8 p-6 h-full border-gray-200 
     rounded-md  font-philosopher max-w-full w-full shadow-md `}
       >
@@ -211,8 +245,8 @@ const FeatureForm = () => {
               <MdAdd className="w-5 h-5" />
             </button>
             <button
-              type="button"
-              onClick={handleAddCategory}
+              type="submit"
+              // onClick={handleAddCategory}
               className="px-2 py-1 gap-1 text-sm flex items-center font-bold text-[#DEE1E2] bg-emerald-800 rounded-md hover:bg-emerald-700 focus:outline-none focus:shadow-outline"
             >
               <span className="mb-1">Submit</span>{" "}
@@ -228,7 +262,7 @@ const FeatureForm = () => {
             </button>
           </div>
         </section>
-      </section>
+      </form>
     </section>
   );
 };
