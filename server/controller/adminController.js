@@ -4,6 +4,8 @@ const User = require("../model/userModel");
 const jwt = require("jsonwebtoken");
 const Alert=require("../email-templates/alert")
 const SendOTP=require("../email-templates/sendOtpMail")
+const LogInFailAlert=require("../email-templates/login-failed-alert");
+const ChangePasswordFail_Alert=require("../email-templates/password-change-alert");
 const Register = async (req, res) => {
     const { name,email,mobile,password,role } = req.body;
     try {
@@ -68,7 +70,8 @@ const VeriFyOTP = async (req, res) => {
 
         const user = await User.findOne({ email, otp });
 
-        if (!findUser) {
+        if (!user) {
+            ChangePasswordFail_Alert(email);
             return res.status(401).json({success:false, message: "Invalid OTP or email." });
         }
         const hashPassword = await bcrypt.hash(newPassword, 10);
@@ -92,6 +95,7 @@ const Login = async (req, res) => {
         }
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
+            LogInFailAlert(email)
             return res
                 .status(401)
                 .json({ success: false, message: "Invalid Password credentials" });
