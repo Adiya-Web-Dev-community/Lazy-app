@@ -26,16 +26,14 @@ const ForgetPassword = () => {
   //     }
   // }
 
-  const mutation = useMutation<
-    ApiResponse<ForgotPasswordResponse>,
-    ApiError,
-    ForgotPasswordData
-  >({
+  const navigate = useNavigate();
+
+  const mutation = useMutation({
     mutationFn: async (data) => {
       toast.loading("Checking Email");
       try {
-        const response = await apiRequest<ForgotPasswordResponse>({
-          url: "user/forgot-password",
+        const response = await apiRequest({
+          url: "api/admin/forgetpassword",
           method: "post",
           data,
         });
@@ -47,10 +45,11 @@ const ForgetPassword = () => {
         throw new Error("Error occurred during login"); // Handle specific errors if needed
       }
     },
-    onSuccess: (data: ApiResponse<ForgotPasswordResponse>) => {
+    onSuccess: (data) => {
       console.log("successfully recived your email:", data);
       toast.dismiss();
       toast.success(`Check your Email`);
+      navigate("/login/forgot-password");
     },
     onError: (error: ApiError) => {
       // Handle error (e.g., show error message)

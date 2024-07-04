@@ -13,7 +13,7 @@ import {
 } from "../components/content_data/contentData";
 import { useState } from "react";
 import Pagination from "../components/pagination/Pagination";
-import { BsExclamationLg, BsEye } from "react-icons/bs";
+import { BsEye } from "react-icons/bs";
 import { FaStarOfLife } from "react-icons/fa";
 import InformAleartModal from "../components/modal/InformAleartModal";
 
