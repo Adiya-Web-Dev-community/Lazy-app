@@ -226,7 +226,7 @@ const ProductsForm = () => {
       productsLink: [],
     });
 
-    navigate("/dishes");
+    navigate("/products");
   };
 
   const LoadingFormListElement = () => {
@@ -372,7 +372,7 @@ const ProductsForm = () => {
                   ) : (
                     "Select Company"
                   )}
-                  {productData.company && productData.company.length > 0 && (
+                  {productData.company && productData.company.length > 1 && (
                     <IoMdArrowRoundDown className="absolute w-6 h-6 right-8 top-2 animate-bounce" />
                   )}
                   <FaCaretDown
