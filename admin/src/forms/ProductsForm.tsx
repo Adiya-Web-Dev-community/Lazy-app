@@ -145,8 +145,8 @@ const ProductsForm = () => {
     }
   };
 
-  const selectOption = (field: string, value: CateUni) => {
-    console.log(value);
+  const selectOption = (field, value) => {
+    console.log(field, value);
     setProductData((prev) => ({
       ...prev,
       [field]: value,
@@ -226,7 +226,7 @@ const ProductsForm = () => {
       productsLink: [],
     });
 
-    navigate("/dishes");
+    navigate("/products");
   };
 
   const LoadingFormListElement = () => {
@@ -301,7 +301,7 @@ const ProductsForm = () => {
                   </>
                 )}
               </div>
-              <input
+              {/* <input
                 value={productData.price || ""}
                 type="url"
                 onChange={handleChange}
@@ -309,7 +309,7 @@ const ProductsForm = () => {
                 className="w-full h-10 pl-4 font-medium  rounded-md outline-none bg-[#252525] focus:border-[#DEE1E2] border-transparent border  "
                 placeholder="Source link"
                 required
-              />
+              /> */}
 
               {/* Status Dropdown */}
               <div className="relative">
@@ -337,7 +337,7 @@ const ProductsForm = () => {
                       className={`p-2 mb-2 text-sm text-[#DEE1E2] rounded-md cursor-pointer hover:bg-blue-200/60 ${
                         productData.status === state ? "bg-rose-600" : ""
                       }`}
-                      onClick={() => selectOption("state", state)}
+                      onClick={() => selectOption("status", state)}
                     >
                       <span>{state}</span>
                     </li>
@@ -372,7 +372,7 @@ const ProductsForm = () => {
                   ) : (
                     "Select Company"
                   )}
-                  {productData.company && productData.company.length > 0 && (
+                  {productData.company && productData.company.length > 1 && (
                     <IoMdArrowRoundDown className="absolute w-6 h-6 right-8 top-2 animate-bounce" />
                   )}
                   <FaCaretDown

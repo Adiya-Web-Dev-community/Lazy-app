@@ -10,6 +10,7 @@ const DynamicInputFields = ({ companies, addingProductUrlData }) => {
       company: {
         name: "",
         id: "",
+        image: "",
       },
     },
   ]);
@@ -50,6 +51,7 @@ const DynamicInputFields = ({ companies, addingProductUrlData }) => {
         company: {
           name: "",
           id: "",
+          image: "",
         },
       },
     ]);
@@ -113,9 +115,20 @@ const DynamicInputFields = ({ companies, addingProductUrlData }) => {
                 })
               }
             >
-              {inputField?.company?.name !== ""
-                ? inputField?.company?.name
-                : "Select URL Company"}
+              {inputField?.company?.name !== "" ? (
+                <div className="flex items-center gap-2">
+                  <img
+                    src={inputField?.company.image}
+                    alt="company logo"
+                    className="object-contain w-8 h-6 rounded-full"
+                  />
+                  <span className="font-medium">
+                    {inputField?.company.name}
+                  </span>
+                </div>
+              ) : (
+                "Select Product of Company"
+              )}
               <FaCaretDown className="m-1" />
             </div>
             <ul
@@ -128,7 +141,7 @@ const DynamicInputFields = ({ companies, addingProductUrlData }) => {
               {companies?.map((company, i) => (
                 <li
                   key={i}
-                  className={`p-2 mb-2 text-sm text-[#DEE1E2] rounded-md cursor-pointer hover:bg-blue-200/60 ${
+                  className={`p-2 mb-2 text-sm text-[#DEE1E2] rounded-md cursor-pointer flex items-center gap-2 hover:bg-blue-200/60 ${
                     inputField?.company?.name === company?.name
                       ? "bg-rose-600"
                       : ""
@@ -137,10 +150,16 @@ const DynamicInputFields = ({ companies, addingProductUrlData }) => {
                     handleInputChange(inputField.id, "company", {
                       name: company?.name,
                       id: company?._id,
+                      image: company?.image,
                     })
                   }
                 >
-                  <span>{company?.name}</span>
+                  <img
+                    src={company?.image}
+                    alt="company logo"
+                    className="object-contain w-10 h-10 rounded-full"
+                  />
+                  <span className="font-medium">{company?.name}</span>
                 </li>
               ))}
             </ul>

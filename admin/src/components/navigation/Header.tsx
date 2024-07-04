@@ -133,6 +133,7 @@ const Header = ({ onToggleSidebarSmall, isOpen }) => {
                 showProfile ? "bg-[#252525]  " : ""
               }`}
               onClick={profilePannelHanlder}
+              // style={{ width: "178px" }}
             >
               {/* <img src="" alt=""/> */}
               <div
@@ -156,7 +157,10 @@ const Header = ({ onToggleSidebarSmall, isOpen }) => {
               </div>
             </div>
             {showProfile && (
-              <div className="absolute right-0  top-[3.7rem] z-[53]">
+              <div
+                className="absolute right-0  top-[3.7rem] z-[53]"
+                // style={{ width: "170px" }}
+              >
                 <div className="w-[170px] md:w-[174.5px] py-2 relative z-50 bg-[#252525] rounded-bl-md rounded-br-md shadow-lg">
                   <button
                     className="w-full flex items-center px-4  pt-2 pb-2 text-sm font-bold text-[#DEE1E2] border-y border-[#1E3F4A]  hover:text-gray-400 "
