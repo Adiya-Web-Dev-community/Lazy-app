@@ -7,7 +7,7 @@ router.post("/create",isAdmin,CreateProduct);
 router.get("/",isAdmin,GetAllProduct);
 router.get("/:id",isAdmin,GetProductById);
 router.put("/:id",isAdmin,UpdateProduct);
-router.delete("/:id",isAdmin,DeleteProduct)
+router.delete("/:id",isAdmin,DeleteProduct);
 
 
 
