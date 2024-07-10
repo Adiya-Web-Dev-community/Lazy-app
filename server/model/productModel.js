@@ -1,20 +1,23 @@
 const mongoose = require("mongoose");
-const FeatureSchema=new mongoose.Schema({
-    category:{
-        type:String
-    },
-    fratureHeading:{
-        type:Sring,
-
-    },
-    featureValue:{
-        type:String
-    }
-})
-const companySchema=new mongoose.Schema({
-    name:{type:String},
-    image:{type:String}
-})
+const FeatureSchema = new mongoose.Schema({
+  category: {
+    type: String,
+  },
+  fratureHeading: {
+    type: String,
+  },
+  featureValue: {
+    type: String,
+  },
+});
+const companySchema = new mongoose.Schema({
+  name: { type: String },
+  image: { type: String },
+});
+const ProductLinkSchema = new mongoose.Schema({
+  url: { type: String },
+  company: { type: String },
+});
 
 const ProductSchemaModel = new mongoose.Schema(
   {
@@ -22,19 +25,14 @@ const ProductSchemaModel = new mongoose.Schema(
       type: String,
       require: true,
     },
-   images:[{type:String}],
-   feature:[FeatureSchema],
-   description:{type:String},
-   available:{type:Boolean,
-    default:true
-   },
-   status:{type:String,
-    enum:["Active","Draft"],
-    default:"Active"
-   },
-   productsLink:{type:String},
-   company:[companySchema]
-
+    images: [{ type: String }],
+    feature: [FeatureSchema],
+    description: { type: String },
+    category:{type:String},
+    available: { type: Boolean, default: true },
+    status: { type: String, enum: ["Active", "Draft"], default: "Active" },
+    productsLink: [ProductLinkSchema],
+    company: [companySchema],
   },
   {
     timestamps: true,
