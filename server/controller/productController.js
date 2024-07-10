@@ -95,11 +95,30 @@ const CreateProduct = async (req, res) => {
       });
     }
   };
+  const GetProductByCategory = async (req, res) => {
+    const {category}=req.params
+    try {
+      const response = await Product.find({category:category});
+  if(!response?.length>0){
+    return res.status(403).json({
+        success: false,
+        message: "product not Found",
+      });
+  }
+      res.status(200).json( response);
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  };
   module.exports = {
     CreateProduct,
     GetAllProduct,
     GetProductById,
     UpdateProduct,
     DeleteProduct,
+    GetProductByCategory
   };
   

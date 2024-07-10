@@ -28,6 +28,8 @@ const ProductSchemaModel = new mongoose.Schema(
     images: [{ type: String }],
     feature: [FeatureSchema],
     description: { type: String },
+    recommended:{type:Boolean},
+    flashSale:{type:Boolean},
     category:{type:String},
     available: { type: Boolean, default: true },
     status: { type: String, enum: ["Active", "Draft"], default: "Active" },
