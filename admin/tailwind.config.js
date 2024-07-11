@@ -10,7 +10,7 @@ export default {
         montserrat: ["Montserrat", "sans-serif"],
       },
       gridTemplateColumns: {
-        customProduct: "40px 1.4fr 1.4fr 1fr 1.2fr  0.8fr 1fr 1fr 0.8fr",
+        customProduct: "40px 1.4fr 1.4fr 1fr  0.8fr 1fr 1fr 0.8fr",
 
         customCategoryProduct:
           "40px 1fr 0.8fr 1fr 1.4fr 2fr 180px 0.8fr 0.8fr  ",
