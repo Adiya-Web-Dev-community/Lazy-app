@@ -1,6 +1,7 @@
 {
   "name": "lazyapp-server",
   "version": "1.0.0",
+  "description": "A server for the LazyApp application",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -8,12 +9,14 @@
     "dev": "nodemon index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Your Name",
   "license": "ISC",
-  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/lazyapp-server.git"
+  },
   "dependencies": {
     "bcrypt": "^5.1.1",
-    "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
