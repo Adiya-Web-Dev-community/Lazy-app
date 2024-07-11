@@ -3,12 +3,9 @@ const FeatureSchema = new mongoose.Schema({
   category: {
     type: String,
   },
-  fratureHeading: {
-    type: String,
-  },
-  featureValue: {
-    type: String,
-  },
+ content:{
+  type:String
+ }
 });
 const companySchema = new mongoose.Schema({
   name: { type: String },
