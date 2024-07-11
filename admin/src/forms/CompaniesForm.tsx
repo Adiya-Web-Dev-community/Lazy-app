@@ -12,7 +12,7 @@ import { ApiError } from "../types/apiType.js";
 import { apiRequest } from "../api/adminApi.js";
 import { useDispatch, useSelector } from "react-redux";
 import { removeData } from "../store/companies.js";
-import uploadImage from "../components/firebase_image/image.js";
+import uploadImage from "../components/firebase_image/image.ts";
 
 interface CompaniesType {
   name: string;

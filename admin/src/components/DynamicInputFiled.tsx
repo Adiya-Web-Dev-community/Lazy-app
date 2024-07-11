@@ -2,18 +2,47 @@ import React, { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { MdAdd, MdOutlineDelete } from "react-icons/md";
 
-const DynamicInputFields = ({ companies, addingProductUrlData }) => {
-  const [inputFields, setInputFields] = useState([
-    {
-      id: "wys",
-      url: "",
-      company: {
-        name: "",
-        id: "",
-        image: "",
-      },
-    },
-  ]);
+const DynamicInputFields = ({
+  companies,
+  addingProductUrlData,
+  produtlinks,
+  condition,
+}) => {
+  const [inputFields, setInputFields] = useState(
+    // [
+    // {
+    //   id: "wys",
+    //   url: "",
+    //   company: {
+    //     name: "",
+    //     id: "",
+    //     image: "",
+    //   },
+    // },
+    // ]
+
+    condition && produtlinks.length !== 0
+      ? produtlinks.map((item) => ({
+          id: item?.company?._id,
+          url: item?.url,
+          company: {
+            name: item?.company?.name,
+            id: item?.company?._id,
+            image: item?.company?.image,
+          },
+        }))
+      : [
+          {
+            id: "wys",
+            url: "",
+            company: {
+              name: "",
+              id: "",
+              image: "",
+            },
+          },
+        ]
+  );
   const [isOpen, setOpen] = useState({
     company: false,
     id: "",
@@ -34,11 +63,13 @@ const DynamicInputFields = ({ companies, addingProductUrlData }) => {
     }
   }, [inputFields, addingProductUrlData]);
 
+  // console.log(inputFields, "in dynamicfield");
+
   const generateRandomId = (length = 8) => {
     return Math.random().toString(36).substr(2, length);
   };
 
-  console.log(inputFields);
+  // console.log(inputFields);
   //   const [inputFields, setInputFields] = useState([{ id: 1, url: '', company: '' }]);
 
   const handleAddInputField = (e) => {

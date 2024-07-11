@@ -59,7 +59,7 @@ export interface CreatCategoryObject {
 
 //products
 export interface PlatformTypes {
-  icons: "";
+  icons?: "";
 }
 
 export interface CompanyType {
@@ -71,13 +71,13 @@ export interface CompanyType {
 export type FormProductKeys = keyof FormProductTypes;
 
 export interface ProductUni {
-  name: string;
-  id: string;
-  image: string;
+  name?: string;
+  id?: string;
+  image?: string;
 }
 export interface CateUni {
-  name: string;
-  id: string;
+  name?: string;
+  id?: string;
 }
 
 export interface ProductsLinkType {
@@ -89,18 +89,19 @@ export interface ProductsLinkType {
 export interface FormProductTypes {
   description?: string;
   imageSrc?: string;
-  image?: string;
+  image?: string[];
 
   name?: string;
   price?: number;
 
-  company?: CompanyType[];
+  company?: CompanyType[] | undefined;
 
   category?: {
     name?: string;
     id?: string;
   };
+  feature: string;
   available?: boolean;
-  status: string;
-  productsLink: ProductsLinkType[];
+  status?: string;
+  productsLink?: ProductsLinkType[] | undefined;
 }

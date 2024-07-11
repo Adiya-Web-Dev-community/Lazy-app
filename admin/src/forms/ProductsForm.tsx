@@ -1,9 +1,9 @@
-import { useMutation } from "@tanstack/react-query";
-import React, { useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { apiRequest } from "../api/adminApi";
 import { ApiError } from "../types/apiType";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { TiArrowBackOutline } from "react-icons/ti";
 import { FaCaretDown } from "react-icons/fa6";
 import useCompanies from "../hooks/useCompanies";
@@ -17,38 +17,18 @@ import {
 } from "../types/contentType.js";
 import { IoMdArrowRoundDown } from "react-icons/io";
 import DynamicInputFields from "../components/DynamicInputFiled.js";
+import { useSelector } from "react-redux";
+import FileUploadForm from "../components/multiple_imag/MultipleImageUploadeForm.js";
+import TextEditor from "../components/textEditor/TextEditor.js";
 
 const ProductsForm = () => {
-  const [productData, setProductData] = useState<FormProductTypes>({
-    description: "",
-    imageSrc: "",
-    image: "",
-
-    name: "",
-    // price: 0,
-    company: [],
-    // company: {
-    //   name: "",
-    //   id: "",
-    //   image: "",
-    // },
-    category: {
-      name: "",
-      id: "",
-    },
-    // platform: [],
-    available: false,
-    status: "",
-    productsLink: [],
-  });
-
-  console.log(productData);
-
   const [isOpen, setOpen] = useState({
     company: false,
     category: false,
     status: false,
   });
+
+  const { id } = useParams();
 
   const mutation = useMutation({
     mutationFn: async ({ path, condition, data }) => {
@@ -78,19 +58,33 @@ const ProductsForm = () => {
       toast.dismiss();
       clearhandler();
       toast.success(
-        `${
-          data?.statusText === "OK" ? "Update Successfull" : "Creat Successfull"
-        }`
+        `${isUpdate && !isError ? "Update Successfull" : "Creat Successfull"}`
       );
     },
     onError: (error: ApiError) => {
       console.log(error);
       toast.dismiss();
+      toast.error(error);
     },
   });
 
-  // const [imageUrl, setImage] = useState("");
-  const [progressStatus, setProgressStatus] = useState("");
+  const {
+    data: singleProduct,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: [`single/${id}`],
+    queryFn: async () => {
+      return await apiRequest({
+        url: `api/product/${id}`,
+        method: "get",
+      });
+    },
+  });
+
+  const isUpdate = Object.keys(singleProduct || [])?.length !== 0;
+  const singleProductObject = singleProduct?.data;
 
   const {
     isPending: categoryIsPending,
@@ -108,7 +102,84 @@ const ProductsForm = () => {
   const categories = category?.data?.data || [];
   const companies = company?.data?.data || [];
 
-  console.log(companies);
+  const findCategory = categories.find(
+    (category) => category?.name === singleProductObject?.category
+  );
+
+  const filterCompanies = useCallback((companiesApi, productCompApi) => {
+    const namesToFilter = new Set(productCompApi?.map((item) => item.name));
+    console.log("running set");
+    const filteredArray = companiesApi
+      ?.filter((item) => namesToFilter?.has(item.name))
+      ?.map(({ _id, name, image }) => ({ _id, name, image }));
+
+    return filteredArray;
+  }, []);
+
+  const filterCompaniesArray = filterCompanies(
+    companies,
+    singleProductObject?.company
+  );
+
+  const formatingProdutLink = singleProductObject?.productsLink?.map((link) => {
+    return {
+      url: link.url,
+      company: filterCompaniesArray.find((comp) =>
+        comp?.name?.includes(link.company)
+      ),
+    };
+  });
+
+  console.log(
+    singleProductObject,
+    id,
+
+    isUpdate && !isError ? "update" : "creat",
+    isUpdate,
+    "filter process"
+  );
+
+  useEffect(() => {
+    console.log("running effect");
+    if (isUpdate) {
+      setProductData((prev) => ({
+        ...prev,
+        description: singleProductObject?.description,
+
+        image: singleProductObject?.images,
+
+        name: singleProductObject?.name,
+
+        company: filterCompaniesArray,
+        feature: singleProductObject?.feature,
+        category: findCategory,
+
+        available: singleProductObject?.available,
+        status: singleProductObject?.status,
+        productsLink: formatingProdutLink,
+      }));
+    }
+  }, [isUpdate]);
+
+  const [productData, setProductData] = useState<FormProductTypes>({
+    description: singleProductObject?.description || "",
+    imageSrc: "",
+    image: singleProductObject?.images || [],
+
+    name: singleProductObject?.name || "",
+
+    company: filterCompaniesArray || [],
+
+    category: findCategory || {
+      name: "",
+      id: "",
+    },
+    feature: singleProductObject?.feature || "",
+
+    available: singleProductObject?.available || false,
+    status: singleProductObject?.status || "",
+    productsLink: formatingProdutLink || [],
+  });
 
   //for text Data
   const handleChange = (
@@ -121,32 +192,8 @@ const ProductsForm = () => {
     }));
   };
 
-  //for Image Data
-
-  const handleImageChange = async (event: React.ChangeEvent) => {
-    // const selectedFile = event.target.files[0];
-
-    const selectedFile = event.target?.files?.[0];
-
-    if (selectedFile) {
-      const imageUrl = await uploadeImage(
-        event.target.files[0].name,
-
-        event.target.files[0],
-        setProgressStatus
-      );
-
-      console.log(imageUrl, selectedFile, "<<frommodal?>>");
-      setProductData((prev) => ({
-        ...prev,
-        image: imageUrl,
-        imageSrc: selectedFile.name,
-      }));
-    }
-  };
-
   const selectOption = (field, value) => {
-    console.log(field, value);
+    // console.log(field, value);
     setProductData((prev) => ({
       ...prev,
       [field]: value,
@@ -176,35 +223,37 @@ const ProductsForm = () => {
   const submitHandler = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // const productPostObject = {
-    //   companyId: productData.company.id,
-    //   name: productData.name,
-    //   image: productData.image,
-    //   description: productData.description,
-    //   price: Number(productData.price),
-    //   category: productData.category.id,
+    const companyNameIcon = productData?.company.map((comp) => {
+      return { name: comp.name, image: comp.image };
+    });
 
-    //   available: productData.available,
-    // };
+    const productArray = productData?.productsLink.map((proLink) => {
+      return {
+        url: proLink.url,
+        company: proLink.company?.name,
+      };
+    });
 
-    // console.log(productPostObject);
-    console.log(productData);
+    const productPostObject = {
+      name: productData.name,
+      images: productData.image,
+      status: productData.status,
+      company: companyNameIcon,
+      description: productData.description,
+      category: productData.category?.name,
+      productsLink: productArray,
+      feature: productData.feature,
+      available: productData.available,
+    };
 
-    // if (Object.keys(dishUpdateData)?.length === 0) {
-    //   console.log("now creat");
-    //   mutation.mutate({
-    //     // path: "/menus",
-    //     condition: "creat",
-    //     data: productPostObject,
-    //   });
-    // } else {
-    //   console.log("update Id");
-    //   mutation.mutate({
-    //     // path: `/menus/${dishUpdateData?._id}`,
-    //     condition: "update",
-    //     data: productPostObject,
-    //   });
-    // }
+    console.log(productPostObject, companyNameIcon, productArray);
+
+    // console.log("now creat");
+    mutation.mutate({
+      path: isUpdate && !isError ? `api/product/${id}` : "api/product/create",
+      condition: isUpdate && !isError ? "update" : "creat",
+      data: productPostObject,
+    });
   };
 
   const clearhandler = () => {
@@ -212,7 +261,7 @@ const ProductsForm = () => {
     setProductData({
       description: "",
       imageSrc: "",
-      image: "",
+      image: [],
 
       name: "",
 
@@ -221,12 +270,20 @@ const ProductsForm = () => {
         name: "",
         id: "",
       },
+      feature: "",
       available: false,
       status: "",
       productsLink: [],
     });
 
     navigate("/products");
+  };
+
+  const handlingDrop = (name, value) => {
+    setProductData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const LoadingFormListElement = () => {
@@ -269,47 +326,6 @@ const ProductsForm = () => {
                 placeholder="Product Name"
                 required
               />
-
-              <div className="relative w-full h-full">
-                <input
-                  type="file"
-                  name="image"
-                  onChange={handleImageChange}
-                  className="hidden"
-                  id="file-upload"
-                />
-                <label
-                  htmlFor="file-upload"
-                  className={`px-4 py-2 pl-24 relative ${
-                    progressStatus ? "pb-2" : ""
-                  } w-full text-base bg-[#252525] focus:border-[#DEE1E2] border-transparent border rounded-md text-gray-400 cursor-pointer flex items-center justify-between`}
-                >
-                  {productData?.imageSrc || "Choose a file"}
-                  <span className="text-gray-400 absolute top-0 h-full flex items-center left-0 rounded-tl-md rounded-bl-md px-2 font-medium bg-[#1A1A1A]">
-                    Browse
-                  </span>
-                </label>
-                {progressStatus !== null && progressStatus !== "" && (
-                  <>
-                    <div className="absolute inset-0 z-10 flex items-end">
-                      <div
-                        className="h-1 bg-blue-400 rounded-md mx-[1px] mb-[1px]"
-                        style={{ width: `${progressStatus}%` }}
-                        // style={{ width: `${100}%` }}
-                      ></div>
-                    </div>
-                  </>
-                )}
-              </div>
-              {/* <input
-                value={productData.price || ""}
-                type="url"
-                onChange={handleChange}
-                name="link"
-                className="w-full h-10 pl-4 font-medium  rounded-md outline-none bg-[#252525] focus:border-[#DEE1E2] border-transparent border  "
-                placeholder="Source link"
-                required
-              /> */}
 
               {/* Status Dropdown */}
               <div className="relative">
@@ -382,8 +398,8 @@ const ProductsForm = () => {
                   />
                 </div>
                 <ul
-                  className={` p-2 rounded-md w-48 overflow-y-scroll text-[#DEE1E2] [&::-webkit-scrollbar]:hidden bg-[#1A1A1A] shadow-lg absolute z-10 ${
-                    isOpen.company ? "max-h-40" : "hidden"
+                  className={` p-2 rounded-md w-48 overflow-y-scroll text-[#DEE1E2] [&::-webkit-scrollbar]:hidden bg-[#1A1A1A] shadow-lg absolute  ${
+                    isOpen.company ? "max-h-40 z-20" : "hidden"
                   } `}
                 >
                   {companies?.map((company, i) => (
@@ -463,8 +479,127 @@ const ProductsForm = () => {
                 </ul>
               </div>
 
-              {/*link Source dropDwon */}
-              {/* <div className="relative">
+              <FileUploadForm
+                setImageData={setProductData}
+                imge={productData.image}
+                productName={productData.name}
+              />
+              <div className="col-span-1 md:col-span-2">
+                <p className="mb-2 text-sm font-bold text-[#DEE1E2]">
+                  Features :
+                </p>
+                <TextEditor
+                  height={400}
+                  value={productData.feature}
+                  OnChangeEditor={(e) => handlingDrop("feature", e)}
+                />
+              </div>
+
+              <DynamicInputFields
+                companies={companies}
+                addingProductUrlData={setProductData}
+                produtlinks={productData?.productsLink}
+                condition={isUpdate}
+              />
+
+              <div className="col-span-1 md:col-span-2">
+                <p className="mb-2 text-sm font-bold text-[#DEE1E2]">
+                  Description :
+                </p>
+                <TextEditor
+                  height={400}
+                  value={productData.description}
+                  OnChangeEditor={(e) => handlingDrop("description", e)}
+                />
+              </div>
+
+              <div className="flex items-center pl-1">
+                <input
+                  type="checkbox"
+                  name="available"
+                  checked={productData.available}
+                  onChange={handleChange}
+                  className="w-4 h-4 bg-[#252525] focus:border-[#DEE1E2] border-transparent border cursor-pointer"
+                />
+                <label htmlFor="available" className="pl-4 text-sm ">
+                  Available Product
+                </label>
+              </div>
+            </div>
+
+            <div className="flex">
+              <button
+                className="px-4 py-2 rounded-md bg-emerald-800 hover:bg-emerald-700"
+                type="submit"
+              >
+                {isUpdate && !isError ? "Update" : "Submit"}
+              </button>
+              <button
+                className="px-4 py-2 ml-8 rounded bg-rose-800 hover:bg-rose-700"
+                type="button"
+                onClick={clearhandler}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default ProductsForm;
+
+{
+  /* <div className="relative w-full h-full">
+                <input
+                  type="file"
+                  name="image"
+                  onChange={handleImageChange}
+                  className="hidden"
+                  id="file-upload"
+                />
+                <label
+                  htmlFor="file-upload"
+                  className={`px-4 py-2 pl-24 relative ${
+                    progressStatus ? "pb-2" : ""
+                  } w-full text-base bg-[#252525] focus:border-[#DEE1E2] border-transparent border rounded-md text-gray-400 cursor-pointer flex items-center justify-between`}
+                >
+                  {productData?.imageSrc || "Choose a file"}
+                  <span className="text-gray-400 absolute top-0 h-full flex items-center left-0 rounded-tl-md rounded-bl-md px-2 font-medium bg-[#1A1A1A]">
+                    Browse
+                  </span>
+                </label>
+                {progressStatus !== null && progressStatus !== "" && (
+                  <>
+                    <div className="absolute inset-0 z-10 flex items-end">
+                      <div
+                        className="h-1 bg-blue-400 rounded-md mx-[1px] mb-[1px]"
+                        style={{ width: `${progressStatus}%` }}
+                        // style={{ width: `${100}%` }}
+                      ></div>
+                    </div>
+                  </>
+                )}
+              </div> */
+}
+{
+  /* <input
+                value={productData.price || ""}
+                type="url"
+                onChange={handleChange}
+                name="link"
+                className="w-full h-10 pl-4 font-medium  rounded-md outline-none bg-[#252525] focus:border-[#DEE1E2] border-transparent border  "
+                placeholder="Source link"
+                required
+              /> */
+}
+{
+  /*link Source dropDwon */
+}
+{
+  /* <div className="relative">
                 <div
                   className="flex justify-between p-2 text-sm border border-gray-400 rounded-md cursor-pointer"
                   onClick={() =>
@@ -497,55 +632,16 @@ const ProductsForm = () => {
                     </li>
                   ))}
                 </ul>
-              </div> */}
+              </div> */
+}
 
-              <textarea
+{
+  /* <textarea
                 value={productData.description}
                 onChange={handleChange}
                 name="description"
                 className="w-full h-24 py-4 pl-4 font-medium bg-[#252525] focus:border-[#DEE1E2] border-transparent border  rounded-md outline-none  md:col-span-2 "
                 placeholder="Description"
                 required
-              />
-              <DynamicInputFields
-                companies={companies}
-                addingProductUrlData={setProductData}
-              />
-
-              <div className="flex items-center pl-1">
-                <input
-                  type="checkbox"
-                  name="available"
-                  checked={productData.available}
-                  onChange={handleChange}
-                  className="w-4 h-4 bg-[#252525] focus:border-[#DEE1E2] border-transparent border "
-                />
-                <label htmlFor="available" className="pl-4 text-sm ">
-                  Available Product
-                </label>
-              </div>
-            </div>
-
-            <div className="flex">
-              <button
-                className="px-4 py-2 rounded-md bg-emerald-800 hover:bg-emerald-700"
-                type="submit"
-              >
-                Submit
-              </button>
-              <button
-                className="px-4 py-2 ml-8 rounded bg-rose-800 hover:bg-rose-700"
-                type="button"
-                onClick={clearhandler}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
-  );
-};
-
-export default ProductsForm;
+              /> */
+}

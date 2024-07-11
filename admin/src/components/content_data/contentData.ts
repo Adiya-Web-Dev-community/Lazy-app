@@ -79,7 +79,7 @@ export const productHeadings = [
   "Category",
   // "Price",
   // "Feature",
-  "Stock Qty",
+  // "Stock Qty",
   // "SKU",
   "Status",
   "Date Added",
