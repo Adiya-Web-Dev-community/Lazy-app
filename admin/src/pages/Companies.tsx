@@ -124,26 +124,6 @@ const Companies = () => {
   });
 
   const deletcompany = (id) => {
-    // const isConfirmed = window.confirm(
-    //   "Are you sure you want to delete this Dish?"
-    // );
-
-    // if (isConfirmed) {
-    //   console.log(id, "delet");
-
-    //   const deleteObj: UniDelet = {
-    //     path: `/menus/${id}`,
-    //   };
-
-    //   console.log(deleteObj);
-
-    //   // Proceed with the deletion
-    //   mutation.mutate(deleteObj);
-    // } else {
-    //   // Deletion canceled by the user
-    //   console.log("Deletion canceled");
-    // }
-
     setDeletModal((prev) => ({
       ...prev,
       delet: true,

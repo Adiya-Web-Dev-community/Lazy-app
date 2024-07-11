@@ -16,15 +16,28 @@ import Pagination from "../components/pagination/Pagination";
 import { BsEye } from "react-icons/bs";
 import { FaStarOfLife } from "react-icons/fa";
 import InformAleartModal from "../components/modal/InformAleartModal";
+import ConfirmDeleteModal from "../components/modal/ConfirmDeleteModal";
 
 const Products = () => {
   const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(1);
-  // const [isDeletModal, setDeletModal] = useState({
-  //   delet: false,
-  //   deletElementId: "",
-  // });
+  const [isDeletModal, setDeletModal] = useState({
+    delet: false,
+    deletElementId: "",
+  });
+
+  const { data, isError, error, refetch } = useQuery({
+    queryKey: ["product"],
+    queryFn: async () => {
+      return await apiRequest({
+        url: "api/product",
+        method: "get",
+      });
+    },
+  });
+
+  const productData = data?.data;
 
   const [isInformModal, setInformModal] = useState(false);
   const itemsPerPage = 5;
@@ -32,9 +45,8 @@ const Products = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-  const currentProduct = productsData?.slice(indexOfFirstItem, indexOfLastItem);
-
-  console.log(currentProduct, "pagination");
+  // const currentProduct = productsData?.slice(indexOfFirstItem, indexOfLastItem);
+  const currentProduct = productData?.slice(indexOfFirstItem, indexOfLastItem);
 
   // const totalPages = Math.ceil(productsData.length / itemsPerPage);
 
@@ -68,9 +80,10 @@ const Products = () => {
     },
     onSuccess: (data: ApiResponse<DeletElementData>) => {
       console.log(data);
-      // refetch();
+      refetch();
       toast.dismiss();
       toast.success(`${data?.data?.message}`);
+      closehandler();
     },
     onError: (error: ApiError) => {
       console.log(error);
@@ -79,30 +92,36 @@ const Products = () => {
   });
 
   const deletProduct = (id) => {
-    const isConfirmed = window.confirm(
-      "Are you sure you want to delete this Dish?"
-    );
+    // const isConfirmed = window.confirm(
+    //   "Are you sure you want to delete this Dish?"
+    // );
 
-    if (isConfirmed) {
-      console.log(id, "delet");
+    // if (isConfirmed) {
+    //   console.log(id, "delet");
 
-      const deleteObj: DishDelet = {
-        path: `/menus/${id}`,
-      };
+    //   const deleteObj: DishDelet = {
+    //     path: `/menus/${id}`,
+    //   };
 
-      console.log(deleteObj);
+    //   console.log(deleteObj);
 
-      // Proceed with the deletion
-      mutation.mutate(deleteObj);
-    } else {
-      // Deletion canceled by the user
-      console.log("Deletion canceled");
-    }
+    //   // Proceed with the deletion
+    //   mutation.mutate(deleteObj);
+    // } else {
+    //   // Deletion canceled by the user
+    //   console.log("Deletion canceled");
+    // }
+
+    setDeletModal((prev) => ({
+      ...prev,
+      delet: true,
+      deletElementId: id,
+    }));
   };
 
-  const updateProduct = (dishData) => {
+  const updateProduct = (product) => {
     // dispatch(addDishData(dishData));
-    navigate("/product/form");
+    navigate(`/products/form/${product._id}`);
   };
 
   const handlinInfo = () => {
@@ -112,8 +131,30 @@ const Products = () => {
     setInformModal(false);
   };
 
+  const closehandler = () => {
+    setDeletModal((prev) => ({
+      ...prev,
+      delet: false,
+      deletElementId: "",
+    }));
+  };
+
+  const confirmhandler = () => {
+    const deleteObj: UniDelet = {
+      path: `/api/product/${isDeletModal?.deletElementId}`,
+    };
+
+    console.log(deleteObj);
+
+    // Proceed with the deletion
+    mutation.mutate(deleteObj);
+  };
+
   return (
     <>
+      {isDeletModal?.delet && (
+        <ConfirmDeleteModal onClose={closehandler} onConfirm={confirmhandler} />
+      )}
       {isInformModal && <InformAleartModal onClose={cancelInfo} />}
       <section
         className={`  md:pl-0 p-4 h-full rounded-md font-philosopher  mx-auto [&::-webkit-scrollbar]:hidden`}
@@ -171,7 +212,7 @@ const Products = () => {
                   {heading.charAt(0).toUpperCase() + heading.slice(1)}
                   <span
                     className={`${
-                      index === 6 ? "visible" : "hidden"
+                      index === 5 ? "visible" : "hidden"
                     }   rounded-full ml-2 cursor-pointer`}
                     onClick={handlinInfo}
                   >
@@ -192,62 +233,36 @@ const Products = () => {
                 >
                   <span>{i + 1}</span>
 
-                  {/* <span
-                  className={` text-xs font-bold  text-center rounded-full   ${
-                    product?.dietry?.toLowerCase() === "veg"
-                      ? "text-green-600 bg-green-100 p-2 text-center"
-                      : product?.dietry?.toLowerCase() === "non-veg"
-                      ? "text-rose-500 bg-rose-100 p-2 text-center"
-                      : ""
-                  }`}
-                >
-                  {product?.dietry ? product?.dietry : "-- --"}
-                </span> */}
-                  {/* <span
-                  className={` text-sm font-semibold text-center  rounded-full p-2  `}
-                >
-                  {product?.label}
-                </span> */}
-                  {/* <div className="flex items-center justify-center">
-                  {product?.image ? (
-                    <img
-                      src={product?.image}
-                      alt="user Image"
-                      className="w-24 h-10 rounded-lg"
-                    />
-                  ) : (
-                    <span className="text-sm font-bold text-gray-400">
-                      No Image
-                    </span>
-                  )}
-                </div> */}
                   <span className="text-sm font-semibold md:text-base">
-                    {product?.productName}
+                    {product?.name}
                   </span>
 
-                  <span className="flex justify-center text-sm font-semibold ">
-                    {product?.companyName}
+                  <span className="flex text-sm font-semibold ">
+                    {product?.company?.length !== 0
+                      ? product.company?.map((icon, i) => (
+                          <img
+                            key={icon?.image}
+                            src={icon?.image}
+                            alt={`${icon?.name}`}
+                            className="w-10 h-10 ml-2 rounded-full"
+                          />
+                        ))
+                      : "----"}
                   </span>
                   <span className="flex justify-center ml-2 text-sm font-semibold ">
                     {product?.category}
                   </span>
 
                   <span className="flex justify-center ml-2 text-sm font-semibold ">
-                    {product?.stockQuantity}
-                  </span>
-                  {/* <span className="flex justify-center ml-2 text-sm font-semibold ">
-                    {product?.sku}
-                  </span> */}
-                  <span className="flex justify-center ml-2 text-sm font-semibold ">
                     {product?.status}
                   </span>
                   <span className="flex justify-center ml-2 text-sm font-semibold ">
-                    {product?.dateAdded}
+                    {product?.createdAt?.split("T")[0]}
                   </span>
                   <div className="flex items-center justify-center">
                     {/* <button> */}
                     <Link
-                      to={`/products/${i}`}
+                      to={`/products/${product._id}`}
                       className="flex justify-center px-4 py-2 ml-2 text-sm font-semibold bg-teal-800 rounded-md hover:bg-emerald-700"
                     >
                       <BsEye className="w-4 h-4" />
@@ -257,13 +272,13 @@ const Products = () => {
                   <div className="grid justify-center gap-2">
                     <button
                       className="px-3 py-2 text-sm font-semibold rounded-md bg-emerald-800 hover:bg-emerald-700"
-                      // onClick={() => updateProduct(product)}
+                      onClick={() => updateProduct(product)}
                     >
                       Edit
                     </button>
                     <button
                       className="px-3 py-2 text-sm font-semibold rounded-md bg-rose-800 hover:bg-rose-700"
-                      // onClick={() => deletProduct(product._id)}
+                      onClick={() => deletProduct(product._id)}
                     >
                       Delete
                     </button>
@@ -275,7 +290,7 @@ const Products = () => {
 
           <Pagination
             currentPage={currentPage}
-            apiData={productsData}
+            apiData={productData}
             itemsPerPage={itemsPerPage}
             handleClick={handleClick}
           />
@@ -286,3 +301,50 @@ const Products = () => {
 };
 
 export default Products;
+
+{
+  /* <span
+                  className={` text-xs font-bold  text-center rounded-full   ${
+                    product?.dietry?.toLowerCase() === "veg"
+                      ? "text-green-600 bg-green-100 p-2 text-center"
+                      : product?.dietry?.toLowerCase() === "non-veg"
+                      ? "text-rose-500 bg-rose-100 p-2 text-center"
+                      : ""
+                  }`}
+                >
+                  {product?.dietry ? product?.dietry : "-- --"}
+                </span> */
+}
+{
+  /* <span
+                  className={` text-sm font-semibold text-center  rounded-full p-2  `}
+                >
+                  {product?.label}
+                </span> */
+}
+{
+  /* <div className="flex items-center justify-center">
+                  {product?.image ? (
+                    <img
+                      src={product?.image}
+                      alt="user Image"
+                      className="w-24 h-10 rounded-lg"
+                    />
+                  ) : (
+                    <span className="text-sm font-bold text-gray-400">
+                      No Image
+                    </span>
+                  )}
+                </div> */
+}
+
+{
+  /* <span className="flex justify-center ml-2 text-sm font-semibold ">
+                    {product?.stockQuantity}
+                  </span> */
+}
+{
+  /* <span className="flex justify-center ml-2 text-sm font-semibold ">
+                    {product?.sku}
+                  </span> */
+}

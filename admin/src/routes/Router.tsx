@@ -71,7 +71,7 @@ const route = createBrowserRouter([
       { path: "/products", element: <Products /> },
       { path: "/products/:id", element: <ProductProfile /> },
       { path: "/products/form", element: <ProductsForm /> },
-      // { path: "feature/form", element: <FeatureForm /> },
+      { path: "/products/form/:id", element: <ProductsForm /> },
       { path: "/products/:id/feature/form", element: <FeatureForm /> },
       {
         path: "/category",

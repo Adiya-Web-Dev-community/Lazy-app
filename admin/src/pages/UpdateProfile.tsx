@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 import { apiRequest } from "../api/adminApi";
 import { BiImageAlt } from "react-icons/bi";
 
-import uploadImage from "../components/firebase_image/image.js";
+import uploadImage from "../components/firebase_image/image.ts";
 
 const UpdateProfile = () => {
   const navigate = useNavigate();
