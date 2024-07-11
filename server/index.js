@@ -5,7 +5,12 @@ const bodyParser = require("body-parser");
 const app = express();
 const databaseConnect = require("./config/database");
 const rootEndPoint = require("./config/endpoint");
-app.use(cors());
+const corsOptions = {
+  origin: '*', 
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  allowedHeaders: 'Content-Type,authorization', 
+};
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 mongoose.set("strictQuery", false);
 require("dotenv").config();
