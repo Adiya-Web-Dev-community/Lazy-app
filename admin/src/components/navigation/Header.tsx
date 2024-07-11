@@ -32,7 +32,6 @@ const Header = ({ onToggleSidebarSmall, isOpen }) => {
   });
 
   const adminProfile = data?.data?.data;
-  console.log(adminProfile, "profile");
 
   const handleLogout = () => {
     // Add your logout logic here
@@ -69,7 +68,6 @@ const Header = ({ onToggleSidebarSmall, isOpen }) => {
 
   const time = getTimeString(date);
   const dateMonth = getDateString(date);
-  console.log(time, dateMonth);
 
   const cancelLogout = () => {
     setLogoutModal(false);
