@@ -27,13 +27,14 @@ const Category: React.FC = () => {
     creat: false,
     updateId: "",
     updateData: "",
+    updateImage: "",
   });
   const [isDeletModal, setDeletModal] = useState<ProductDeleteStateType>({
     delet: false,
     deletElementId: "",
   });
 
-  const categoryHeading = ["Category Name", "Setting", "View"];
+  const categoryHeading = ["Image", "Category Name", "Setting", "View"];
 
   const handlingCategory = () => {
     setCategoryForm((prev) => ({
@@ -127,6 +128,7 @@ const Category: React.FC = () => {
       ...prev,
       updateId: category._id,
       updateData: category.name,
+      updateImage: category?.image,
     }));
   };
 
@@ -237,6 +239,20 @@ const Category: React.FC = () => {
                       className="grid items-center gap-6 py-2 pl-6 pr-4 border-t-2 text-[#DEE1E2] border-[#1A1A1A] grid-cols-customeCategory group hover:bg-[#2c2c2c]"
                     >
                       <span>{i + 1}</span>
+
+                      <div className="flex items-center justify-center">
+                        {category?.image ? (
+                          <img
+                            src={category?.image}
+                            alt="user Image"
+                            className="object-contain w-24 h-24 rounded-lg"
+                          />
+                        ) : (
+                          <span className="flex items-center w-24 h-24 text-sm font-bold text-gray-400">
+                            No Image
+                          </span>
+                        )}
+                      </div>
 
                       <span className="ml-2 text-sm font-semibold md:text-base">
                         {category?.name}
