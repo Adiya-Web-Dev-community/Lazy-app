@@ -1,7 +1,7 @@
-import React from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import uploadVideo from "../firebase_video/video";
 import uploadImage from "../firebase_image/image";
+import { Callback, Meta } from "../../types/contentType";
 
 interface Props {
   value?: string;
@@ -9,6 +9,7 @@ interface Props {
   height: number;
 }
 const TextEditor = ({ value, OnChangeEditor, height }: Props) => {
+  console.log(value, "<<updaetProduct?>>");
   //   const imageHandler = () => {
   //     const input = document.createElement("input");
   //     input.setAttribute("type", "file");
@@ -103,12 +104,12 @@ const TextEditor = ({ value, OnChangeEditor, height }: Props) => {
   //     />
   //   );
 
-  const imageHandler = (callback) => {
+  const imageHandler = (callback: Callback) => {
     const input = document.createElement("input");
     input.setAttribute("type", "file");
     input.setAttribute("accept", "image/*");
-    input.onchange = async function () {
-      const file = this.files?.[0];
+    input.onchange = async (event: Event) => {
+      const file = (event.target as HTMLInputElement)?.files?.[0];
       if (file) {
         const fileName = file.name;
 
@@ -128,12 +129,12 @@ const TextEditor = ({ value, OnChangeEditor, height }: Props) => {
     input.click();
   };
 
-  const videoHandler = (callback) => {
+  const videoHandler = (callback: Callback) => {
     const input = document.createElement("input");
     input.setAttribute("type", "file");
     input.setAttribute("accept", "video/*");
-    input.onchange = async function () {
-      const file = this.files?.[0];
+    input.addEventListener("change", async function (event) {
+      const file = (event.target as HTMLInputElement).files?.[0]; // Cast event.target to HTMLInputElement
       if (file) {
         const fileName = file.name;
 
@@ -149,14 +150,14 @@ const TextEditor = ({ value, OnChangeEditor, height }: Props) => {
           console.error("Video upload failed:", error);
         }
       }
-    };
+    });
     input.click();
   };
 
   return (
     <div className="editor-container">
       <Editor
-        initialValue={""}
+        // initialValue={""}
         apiKey="gi18c6jyss0dc5qrkzphskd1nhectf41k2lbv9pr2qt5pgxl"
         init={{
           //   width: 600,
@@ -188,10 +189,11 @@ const TextEditor = ({ value, OnChangeEditor, height }: Props) => {
           ],
           toolbar:
             "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
-          file_picker_callback: (callback, value, meta) => {
-            if (meta.filetype === "image") {
+          file_picker_callback: (callback: Callback, _: string, meta: Meta) => {
+            console.log(meta, callback, "from textEdito");
+            if (meta?.filetype === "image") {
               imageHandler(callback);
-            } else if (meta.filetype === "media") {
+            } else if (meta?.filetype === "media") {
               videoHandler(callback);
             }
           },

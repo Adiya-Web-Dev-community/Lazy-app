@@ -1,10 +1,11 @@
 // ConfirmDeleteModal.js
-import React from "react";
 
-const InformAleartModal = ({ onClose }) => {
+import { InformAleartModalProps } from "../../types/contentType";
+
+const InformAleartModal: React.FC<InformAleartModalProps> = ({ onClose }) => {
   //   if (!isOpen) return null;
 
-  const handlingPropogation = (e) => {
+  const handlingPropogation = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
 

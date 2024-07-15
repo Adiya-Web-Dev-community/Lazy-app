@@ -1,20 +1,5 @@
-// import React from "react";
-
-// const Layout = () => {
-//   return (
-//     <div className="flex items-center justify-center w-full h-screen text-4xl text-rose-600">
-//       Let's Add admin panel here
-//     </div>
-//   );
-// };
-
-// export default Layout;
-
-import React, { useState } from "react";
+import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-// import { setUserToken } from "../store/auth";
-// import { useDispatch } from "react-redux";
-// import { ToastContainer } from "react-toastify";
 
 import { useEffect } from "react";
 
@@ -42,17 +27,6 @@ const Layout = () => {
       small: !prev.small,
     }));
   };
-
-  // const dispatch = useDispatch();
-
-  // const userKey = localStorage.getItem("authToken");
-
-  // // const navigate = useNavigate();
-
-  // //token pass to authSlice reducer
-  // if (userKey) {
-  //   dispatch(setUserToken(userKey));
-  // }
 
   useEffect(() => {
     //token getting from localStorage

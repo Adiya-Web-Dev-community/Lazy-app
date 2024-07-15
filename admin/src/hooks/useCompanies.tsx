@@ -1,16 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
-import { ApiError, ApiResponse } from "../types/apiType";
-import { RestaurantData, RestaurantResponseData } from "../types/contentType";
-import { apiRequest } from "../api/adminApi";
+
+import { ApiError, ApiGetResponse } from "../types/apiType";
+
+import { CompanyResponseData } from "../types/contentType";
+import { apiGetRequest } from "../api/adminGetApi";
 
 const useCompanies = () => {
-  return useQuery<ApiResponse<RestaurantResponseData>, ApiError>({
+  return useQuery<ApiGetResponse<CompanyResponseData>, ApiError>({
     queryKey: ["company"],
     queryFn: async () => {
-      return await apiRequest<RestaurantResponseData>({
+      return await apiGetRequest<CompanyResponseData>({
         url: "api/company",
-        method: "get",
       });
     },
   });

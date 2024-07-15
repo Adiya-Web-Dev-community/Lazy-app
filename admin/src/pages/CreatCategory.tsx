@@ -1,32 +1,23 @@
-import { Input } from "postcss";
 import React, { useState } from "react";
-import { FaCaretDown } from "react-icons/fa6";
+
 import { TiArrowBackOutline } from "react-icons/ti";
 
-import { categoryType } from "../components/content_data/content_data";
-
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import { toast } from "react-toastify";
 // import { SingleCategoryResponseData } from "../types/contentType";
 import { apiRequest } from "../api/adminApi";
-import { ApiError } from "../types/apiType";
-
-interface CategoryState {
-  creat: boolean;
-  updateId: string;
-  updateData: string;
-}
-interface CreatCategoryProps {
-  setCategoryForm: (value: boolean | string) => void;
-  isCategoryForm: CategoryState;
-  refetch: () => void;
-}
+import { ApiError, ApiResponse } from "../types/apiType";
+import {
+  CategoryPostResponseType,
+  CategorySendingPostType,
+  CreatCategoryProps,
+  MutationObjectCategoryType,
+} from "../types/contentType";
 
 const CreatCategory: React.FC<CreatCategoryProps> = ({
   isCategoryForm,
   setCategoryForm,
-  // singleCategory,
   refetch,
 }) => {
   const [categoryDataForm, setCategoryDataForm] = useState({
@@ -35,7 +26,7 @@ const CreatCategory: React.FC<CreatCategoryProps> = ({
     error: "",
   });
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCategoryDataForm((prev) => ({
       ...prev,
       [e?.target?.name]:
@@ -43,25 +34,19 @@ const CreatCategory: React.FC<CreatCategoryProps> = ({
     }));
   };
 
-  // const selectType = (value) => {
-  //   setOpen((prev) => !prev);
-  //   setCategoryDataForm((prev) => ({
-  //     ...prev,
-  //     type: value,
-  //   }));
-  // };
-
-  // const mutation = useMutation<
-  //   ApiResponse<DeletCategoryData>,
-  //   ApiError,
-  //   CategoryDelet
-  // >({
-  const mutation = useMutation({
+  const mutation = useMutation<
+    ApiResponse<CategoryPostResponseType>,
+    ApiError,
+    MutationObjectCategoryType
+  >({
     mutationFn: async ({ path, condition, data }) => {
       toast.loading("Checking Details");
       try {
         // console.log(path, method);
-        const response = await apiRequest({
+        const response = await apiRequest<
+          CategorySendingPostType,
+          CategoryPostResponseType
+        >({
           url: path,
           method: condition === "creat" ? "post" : "put",
           data: data,
@@ -70,24 +55,21 @@ const CreatCategory: React.FC<CreatCategoryProps> = ({
         // return { data: response.data };
         return response;
       } catch (error) {
-        console.log(error);
-        const apiError = {
-          message: error?.response?.data?.message || "An error occurred",
-          status: error?.response?.status || 500,
+        const apiError: ApiError = {
+          message: (error as ApiError)?.message || "An error occurred",
+          status: (error as ApiError)?.status || 500,
         };
         throw apiError;
       }
     },
-    // onSuccess: (data: ApiResponse<DeletCategoryData>) => {
+
     onSuccess: (data) => {
-      console.log(data, data?.statusText);
+      console.log(data);
       refetch();
       toast.dismiss();
       closeHandler();
       toast.success(
-        `${
-          data?.statusText === "OK" ? "Update Successfull" : "Creat Successfull"
-        }`
+        `${isCategoryForm.creat ? "Creat Successfull" : "Update Successfull"}`
       );
 
       setCategoryDataForm((prev) => ({
@@ -98,26 +80,27 @@ const CreatCategory: React.FC<CreatCategoryProps> = ({
     onError: (error: ApiError) => {
       console.log(error);
       toast.dismiss();
+      toast.error(error?.message);
       closeHandler();
     },
   });
 
-  const submiteHandler = (e) => {
+  const submiteHandler = (e: React.FormEvent) => {
     e.preventDefault();
 
     console.log(categoryDataForm);
 
-    if (categoryDataForm.categoryName !== "") {
-      console.log();
+    const categoryName: CategorySendingPostType = {
+      name: categoryDataForm.categoryName,
+    };
 
+    if (categoryDataForm.categoryName !== "") {
       if (isCategoryForm.creat) {
         console.log("now creat");
         mutation.mutate({
           path: "api/admin/category",
           condition: "creat",
-          data: {
-            name: categoryDataForm.categoryName,
-          },
+          data: categoryName,
         });
       }
 
@@ -126,9 +109,7 @@ const CreatCategory: React.FC<CreatCategoryProps> = ({
         mutation.mutate({
           path: `api/admin/category/${isCategoryForm.updateId}`,
           condition: "update",
-          data: {
-            name: categoryDataForm.categoryName,
-          },
+          data: categoryName,
         });
       }
     } else {

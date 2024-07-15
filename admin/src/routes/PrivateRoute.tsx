@@ -1,5 +1,3 @@
-import React from "react";
-
 import { Navigate } from "react-router";
 import Layout from "../layout/Layout";
 

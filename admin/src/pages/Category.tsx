@@ -5,7 +5,13 @@ import { ApiError, ApiResponse } from "../types/apiType";
 import { useMutation } from "@tanstack/react-query";
 
 import { toast } from "react-toastify";
-import { DeletElementData, UniDelet } from "../types/contentType";
+import {
+  CategoryStateType,
+  DeletElementData,
+  ProductDeleteStateType,
+  UniDelet,
+  UpdateCatgeoryData,
+} from "../types/contentType";
 import { apiRequest } from "../api/adminApi";
 import { useCategories } from "../hooks/useCategories";
 import CreatCategory from "./CreatCategory";
@@ -16,13 +22,13 @@ import { useState } from "react";
 import Pagination from "../components/pagination/Pagination";
 import CategoryLoading from "../components/loading-elemnts/CategoryLoading";
 
-const Category = () => {
-  const [isCategoryForm, setCategoryForm] = useState({
+const Category: React.FC = () => {
+  const [isCategoryForm, setCategoryForm] = useState<CategoryStateType>({
     creat: false,
     updateId: "",
     updateData: "",
   });
-  const [isDeletModal, setDeletModal] = useState({
+  const [isDeletModal, setDeletModal] = useState<ProductDeleteStateType>({
     delet: false,
     deletElementId: "",
   });
@@ -42,7 +48,7 @@ const Category = () => {
 
   const categoryApiData = data?.data?.data;
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 5;
   //calculation of page
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -53,7 +59,7 @@ const Category = () => {
     indexOfLastItem
   );
 
-  console.log(currentCategory, "pagination");
+  // console.log(currentCategory, "pagination");
 
   const handleClick = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -70,7 +76,7 @@ const Category = () => {
       toast.loading("Checking Details");
       try {
         // console.log(path, method);
-        const response = await apiRequest<DeletElementData>({
+        const response = await apiRequest<UniDelet, DeletElementData>({
           url: deletObj.path,
           method: "delete",
         });
@@ -78,9 +84,10 @@ const Category = () => {
         // return { data: response.data };
         return response as ApiResponse<DeletElementData>;
       } catch (error) {
-        const apiError = {
-          message: error?.response?.data?.message || "An error occurred",
-          status: error?.response?.status || 500,
+        console.log(error);
+        const apiError: ApiError = {
+          message: (error as ApiError)?.message || "An error occurred",
+          status: (error as ApiError)?.status || 500,
         };
         throw apiError;
       }
@@ -99,6 +106,7 @@ const Category = () => {
     onError: (error: ApiError) => {
       console.log(error);
       toast.dismiss();
+      toast.error(error?.message);
       setDeletModal((prev) => ({
         ...prev,
         delet: false,
@@ -107,14 +115,14 @@ const Category = () => {
     },
   });
 
-  const deletCategory = (id) => {
+  const deletCategory = (id: string) => {
     setDeletModal((prev) => ({
       ...prev,
       delet: true,
       deletElementId: id,
     }));
   };
-  const updateCategory = (category) => {
+  const updateCategory = (category: UpdateCatgeoryData) => {
     setCategoryForm((prev) => ({
       ...prev,
       updateId: category._id,
@@ -122,7 +130,7 @@ const Category = () => {
     }));
   };
 
-  const handlingNavigate = (id) => {
+  const handlingNavigate = (id: string) => {
     navigate(`/category/${id}`);
   };
 
@@ -138,8 +146,6 @@ const Category = () => {
     const deleteObj: UniDelet = {
       path: `/api/admin/category/${isDeletModal?.deletElementId}`,
     };
-
-    console.log(deleteObj);
 
     // Proceed with the deletion
     mutation.mutate(deleteObj);
@@ -221,7 +227,7 @@ const Category = () => {
                 isPending ? (
                   <CategoryLoading />
                 ) : isError ? (
-                  <p className="flex items-center justify-center w-full h-full font-medium text-center text-rose-800">
+                  <p className="flex items-center justify-center w-full h-full text-2xl font-bold text-center text-rose-600">
                     Check Internet connection or Contact to Admin
                   </p>
                 ) : (
@@ -253,7 +259,7 @@ const Category = () => {
                       <div className="grid justify-center gap-2">
                         <button
                           className="px-2 py-2 text-sm rounded-md bg-sky-800 hover:bg-sky-700"
-                          onClick={() => handlingNavigate(category?._id)}
+                          onClick={() => handlingNavigate(category?.name)}
                         >
                           <FiEye className="w-6 h-4" />
                         </button>
@@ -290,7 +296,7 @@ const Category = () => {
           </div> */}
           <Pagination
             currentPage={currentPage}
-            apiData={categoryApiData}
+            apiData={categoryApiData ?? []}
             itemsPerPage={itemsPerPage}
             handleClick={handleClick}
           />
