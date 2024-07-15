@@ -4,10 +4,12 @@ export interface CategoryStateType {
   creat: boolean;
   updateId: string;
   updateData: string;
+  updateImage: string;
 }
 export interface CategoryData {
   _id: string;
   name: string;
+  image: string;
 }
 
 export interface CreatCategoryProps {
@@ -19,6 +21,7 @@ export interface CreatCategoryProps {
 export interface UpdateCatgeoryData {
   _id: string;
   name: string;
+  image: string;
 }
 
 export interface CategoryResponseData {
@@ -40,6 +43,7 @@ export interface SingleCategoryResponseData {
 //form post put operation for category
 export interface CategorySendingPostType {
   name: string;
+  image: string;
 }
 
 export interface CategoryPostResponseDataType {

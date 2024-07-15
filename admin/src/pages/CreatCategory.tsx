@@ -14,6 +14,7 @@ import {
   CreatCategoryProps,
   MutationObjectCategoryType,
 } from "../types/contentType";
+import uploadImage from "../components/firebase_image/image";
 
 const CreatCategory: React.FC<CreatCategoryProps> = ({
   isCategoryForm,
@@ -22,9 +23,18 @@ const CreatCategory: React.FC<CreatCategoryProps> = ({
 }) => {
   const [categoryDataForm, setCategoryDataForm] = useState({
     categoryName: isCategoryForm.updateData ? isCategoryForm.updateData : "",
+
+    imageSrc:
+      isCategoryForm?.updateImage?.slice(
+        67,
+        isCategoryForm?.updateImage?.indexOf("%")
+      ) || "",
+    image: isCategoryForm?.updateImage || "",
     type: "",
     error: "",
   });
+
+  const [progressStatus, setProgressStatus] = useState<number | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCategoryDataForm((prev) => ({
@@ -85,6 +95,32 @@ const CreatCategory: React.FC<CreatCategoryProps> = ({
     },
   });
 
+  const handleImageChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    // const selectedFile = event.target.files[0];
+
+    const selectedFile = event.target?.files?.[0];
+    const folderName = event?.target?.files?.[0].name ?? "";
+
+    console.log(folderName, setProgressStatus, "from single image uploade");
+
+    if (selectedFile) {
+      const imageUrl = await uploadImage(
+        folderName,
+        selectedFile,
+        setProgressStatus
+      );
+
+      // console.log(imageUrl, selectedFile, "<<frommodal?>>");
+      setCategoryDataForm((prev) => ({
+        ...prev,
+        image: imageUrl,
+        imageSrc: selectedFile.name,
+      }));
+    }
+  };
+
   const submiteHandler = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -92,6 +128,7 @@ const CreatCategory: React.FC<CreatCategoryProps> = ({
 
     const categoryName: CategorySendingPostType = {
       name: categoryDataForm.categoryName,
+      image: categoryDataForm.image,
     };
 
     if (categoryDataForm.categoryName !== "") {
@@ -161,11 +198,42 @@ const CreatCategory: React.FC<CreatCategoryProps> = ({
               onChange={handleChange}
               name="categoryName"
               className={
-                " font-medium outline-none w-full my-4 border h-10 bg-black/40 border-transparent text-[#DEE1E2] rounded-md pl-4 focus-within:border-gray-800"
+                " font-medium outline-none w-full my-4 border h-10 bg-[#252525] border-transparent text-[#DEE1E2] rounded-md pl-4 focus-within:border-gray-800"
               }
               placeholder={"Category Name"}
               required
             />
+            <div className="relative w-full h-full mb-6">
+              <input
+                type="file"
+                name="image"
+                onChange={handleImageChange}
+                className="hidden"
+                id="file-upload"
+              />
+              <label
+                htmlFor="file-upload"
+                className={`px-4 py-2 pl-24 relative ${
+                  progressStatus ? "pb-2" : ""
+                } w-full text-base bg-[#252525] focus:border-[#DEE1E2] border-transparent border rounded-md text-gray-400 cursor-pointer flex items-center justify-between`}
+              >
+                {categoryDataForm?.imageSrc || "Choose a file"}
+                <span className="text-gray-400 text-[15px] absolute top-0 h-full flex items-center left-0 rounded-tl-md rounded-bl-md px-3 font-medium bg-[#1A1A1A]">
+                  Browse
+                </span>
+              </label>
+              {progressStatus !== null && progressStatus !== 0 && (
+                <>
+                  <div className="absolute inset-0 z-10 flex items-end">
+                    <div
+                      className="h-1 bg-blue-400 rounded-md mx-[1px] mb-[1px]"
+                      style={{ width: `${progressStatus}%` }}
+                      // style={{ width: `${100}%` }}
+                    ></div>
+                  </div>
+                </>
+              )}
+            </div>
 
             <div className="flex text-[#DEE1E2]">
               <button
@@ -173,7 +241,7 @@ const CreatCategory: React.FC<CreatCategoryProps> = ({
                 type="submit"
               >
                 {/* Save Changes */}
-                Submite
+                {isCategoryForm.updateId ? "Update" : "Submite"}
               </button>
               <button
                 className="px-4 py-2 ml-8 rounded bg-rose-800 hover:bg-rose-700"
