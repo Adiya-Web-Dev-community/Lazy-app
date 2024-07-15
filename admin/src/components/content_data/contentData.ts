@@ -158,3 +158,15 @@ export const categories = [
   "Toys & Games",
   "Beauty & Personal Care",
 ];
+
+//type Category heading profile of catgory
+
+export const categoryProductHeadings = [
+  "Pr.Name",
+  "Co.Name",
+  "Category",
+
+  "Status",
+  "Date Added",
+  "View",
+];

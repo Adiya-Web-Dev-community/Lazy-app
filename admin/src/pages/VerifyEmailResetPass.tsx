@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import resetImg from "../assets/Reset password.svg";
 
 import { FiEye, FiEyeOff, FiInbox, FiLock, FiUser } from "react-icons/fi";
@@ -7,22 +7,29 @@ import { FiEye, FiEyeOff, FiInbox, FiLock, FiUser } from "react-icons/fi";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { apiRequest } from "../api/adminApi";
-import { ApiError } from "../types/apiType";
+import {
+  CheckingPassProp,
+  MutationObjectResetPassType,
+  PassVisibleProp,
+  ResetPassResponse,
+  ResetPasswordData,
+  StateResteProp,
+} from "../types/authType";
+import { ApiError, ApiResponse } from "../types/apiType";
 
-const VerifyEmailResetPass = () => {
-  const [resetPassword, setResetPassword] = useState({
-    // oldPassword: "",
+const VerifyEmailResetPass: React.FC = () => {
+  const [resetPassword, setResetPassword] = useState<StateResteProp>({
     newPassword: "",
     confirmPassword: "",
     otp: "",
     email: "",
   });
 
-  const [passwordError, setPassWordError] = useState({
+  const [passwordError, setPassWordError] = useState<CheckingPassProp>({
     confirmPasswordMsg: "",
   });
 
-  const [isVisible, setVisible] = useState({
+  const [isVisible, setVisible] = useState<PassVisibleProp>({
     oldPass: false,
     enterPass: false,
     confPass: false,
@@ -30,21 +37,27 @@ const VerifyEmailResetPass = () => {
 
   const navigate = useNavigate();
 
-  const mutation = useMutation({
-    mutationFn: async (data) => {
+  const mutation = useMutation<
+    ApiResponse<ResetPassResponse>,
+    ApiError,
+    MutationObjectResetPassType
+  >({
+    mutationFn: async ({ path, method, data }) => {
       toast.loading("Checking Details");
       try {
-        const response = await apiRequest({
-          url: "api/admin/verifyotp",
-          method: "post",
-          data,
-        });
+        const response = await apiRequest<ResetPasswordData, ResetPassResponse>(
+          {
+            url: path,
+            method: method,
+            data: data,
+          }
+        );
 
         // Assuming apiRequest returns an object with `data`, `status`, etc.
-        return { data: response.data }; // Wrap response.data in ApiResponse structure
+        return response; // Wrap response.data in ApiResponse structure
       } catch (error) {
         console.log(error);
-        throw new Error("Error occurred during login"); // Handle specific errors if needed
+        throw new Error("Failed to reset check details"); // Handle specific errors if needed
       }
     },
     onSuccess: (data) => {
@@ -55,16 +68,18 @@ const VerifyEmailResetPass = () => {
       //   returnToHome();
       // Handle success (e.g., redirect to dashboard)
     },
-    onError: (error) => {
+    onError: (error: ApiError) => {
       console.error("Login error:", error);
       console.log("Login error:", error);
       toast.dismiss();
-      toast.error(`${error}`);
+      toast.error(`${error.message}`);
       // Handle error (e.g., show error message)
     },
   });
 
-  const handleChangePassword = (e) => {
+  const handleChangePassword = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const confirmPassword =
       e.target.name === "confirmPassword" && e.target.value;
 
@@ -91,7 +106,7 @@ const VerifyEmailResetPass = () => {
 
   //   const [createPost, responseInfo] = useCreateMutation();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (resetPassword.confirmPassword !== resetPassword.newPassword) {
@@ -110,14 +125,19 @@ const VerifyEmailResetPass = () => {
 
     // toast.loading("Checking Passwords");
 
-    const resetPasswordObj = {
+    const resetPasswordObj: ResetPasswordData = {
       //   oldPassword: resetPassword.oldPassword,
       newPassword: resetPassword.newPassword,
       otp: resetPassword.otp,
       email: resetPassword.email,
     };
 
-    mutation.mutate(resetPasswordObj);
+    // mutation.mutate(resetPasswordObj);
+    mutation.mutate({
+      path: "api/admin/verifyotp",
+      method: "post",
+      data: resetPasswordObj,
+    });
     console.log(resetPasswordObj);
 
     // setResetPassword({
@@ -236,11 +256,11 @@ const VerifyEmailResetPass = () => {
               onChange={handleChangePassword}
               placeholder="Place OTP here "
             />
-            {passwordError.otpMessage && (
+            {/* {passwordError?.otpMessage && (
               <div className="pt-1 text-sm text-red-500 ">
-                {passwordError.otpMessage} !
+                {passwordError?.otpMessage} !
               </div>
-            )}
+            )} */}
           </div>
 
           <div className="flex items-center justify-between w-full">

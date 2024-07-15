@@ -1,22 +1,25 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 import forgetImg from "../assets/Forgot password.svg";
-import { Link } from "react-router-dom";
-import { useNavigate, useParams } from "react-router-dom";
 
-import { IoMdArrowRoundBack } from "react-icons/io";
-import { FiMail, FiUser } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
-import { setUserToken } from "../store/auth";
+import { FiMail } from "react-icons/fi";
+
 import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
 import { ApiError, ApiResponse } from "../types/apiType";
-import { ForgotPasswordData, ForgotPasswordResponse } from "../types/authType";
-import { apiRequest } from "../api/adminApi";
 
-const ForgetPassword = () => {
-  const [email, setEmail] = useState("");
+import { apiRequest } from "../api/adminApi";
+import {
+  ForgotPasswordData,
+  ForgotPasswordResponse,
+  MutationObjectForgotType,
+} from "../types/authType";
+
+const ForgetPassword: React.FC = () => {
+  const [email, setEmail] = useState<string>("");
 
   //reset passsword response data
   //   {
@@ -28,18 +31,25 @@ const ForgetPassword = () => {
 
   const navigate = useNavigate();
 
-  const mutation = useMutation({
-    mutationFn: async (data) => {
+  const mutation = useMutation<
+    ApiResponse<ForgotPasswordResponse>, // Response type
+    ApiError, // Error type
+    MutationObjectForgotType // Request type
+  >({
+    mutationFn: async ({ path, method, data }) => {
       toast.loading("Checking Email");
       try {
-        const response = await apiRequest({
-          url: "api/admin/forgetpassword",
-          method: "post",
+        const response = await apiRequest<
+          ForgotPasswordData,
+          ForgotPasswordResponse
+        >({
+          url: path,
+          method: method,
           data,
         });
 
         // Assuming apiRequest returns an object with `data`, `status`, etc.
-        return { data: response.data }; // Wrap response.data in ApiResponse structure
+        return response; // Wrap response.data in ApiResponse structure
       } catch (error) {
         console.log(error);
         throw new Error("Error occurred during login"); // Handle specific errors if needed
@@ -60,17 +70,24 @@ const ForgetPassword = () => {
     },
   });
 
-  const handleChange = (e) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     setEmail(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const finalObj = {
+    const finalObj: ForgotPasswordData = {
       email: email,
     };
-    mutation.mutate(finalObj);
+    // mutation.mutate(finalObj);
+    mutation.mutate({
+      path: "api/admin/forgetpassword",
+      method: "post",
+      data: finalObj,
+    });
     console.log(finalObj);
 
     setEmail("");

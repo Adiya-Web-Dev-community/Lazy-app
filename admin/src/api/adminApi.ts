@@ -2,17 +2,17 @@
 import { ApiError, ApiResponse } from "../types/apiType";
 import axiosInstance from "./axiosInstance";
 
-interface ApiRequestConfig<T> {
+interface ApiRequestConfig<TRequest> {
   url: string;
   method: "get" | "post" | "put" | "delete";
-  data?: T;
+  data?: TRequest;
 }
 
-export const apiRequest = async <T>({
+export const apiRequest = async <TRequest, TResponse>({
   url,
   method,
   data,
-}: ApiRequestConfig<T>): Promise<ApiResponse<T>> => {
+}: ApiRequestConfig<TRequest>): Promise<ApiResponse<TResponse>> => {
   try {
     const config = {
       url,
@@ -20,13 +20,14 @@ export const apiRequest = async <T>({
       ...(data && { data }), // Conditionally include data only if it is provided
     };
 
-    console.log(config, "from post/put category");
-
     const response = await axiosInstance(config);
-    return response as ApiResponse<T>;
+
+    console.log(config, "from post/put category");
+    console.log(response, "Response from apis");
+    return response.data;
   } catch (error) {
-    const errorMessage = error.response?.data?.message || "An error occurred";
-    const status = error.response?.status;
+    const errorMessage = (error as ApiError).message || "An error occurred";
+    const status = (error as ApiError)?.status;
     throw { message: errorMessage, status } as ApiError;
   }
 };

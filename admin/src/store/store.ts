@@ -1,13 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import companyReducer from "./companies";
-import productReducer from "./Products";
+import rootReducer from ".";
 
 const store = configureStore({
-  reducer: {
-    company: companyReducer,
-    product: productReducer,
-  },
+  reducer: rootReducer,
 });
 
 export default store;

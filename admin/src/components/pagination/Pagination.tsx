@@ -1,21 +1,20 @@
-import React from "react";
+import { PaginationProps } from "../../types/contentType";
 
-const Pagination = ({ currentPage, apiData, itemsPerPage, handleClick }) => {
-  //     const itemsPerPage = 5;
-  //   //calculation of page
-  //   const indexOfLastItem = currentPage * itemsPerPage;
-  //   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
-  //   const currentProduct = apiData?.slice(indexOfFirstItem, indexOfLastItem);
-
-  //   console.log(currentProduct, "pagination");
-
+const Pagination = <T,>({
+  currentPage,
+  apiData,
+  itemsPerPage,
+  handleClick,
+}: PaginationProps<T>) => {
   const totalPages = Math.ceil(apiData?.length / itemsPerPage);
   return (
     <div className="flex items-center justify-center w-full mt-4">
       <div className="flex justify-start w-[90%]">
         <p className="text-[#DEE1E2] text-sm font-medium">
-          <span>Total Item: </span> <span>0{apiData?.length}</span>
+          <span>Total Item: </span>{" "}
+          <span>
+            {apiData?.length > 9 ? apiData?.length : `0${apiData?.length}`}
+          </span>
         </p>
       </div>
       <div className="flex justify-start w-full">

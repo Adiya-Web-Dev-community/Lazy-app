@@ -1,81 +1,265 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { MdAdd, MdOutlineDelete } from "react-icons/md";
+import { ApiError, ApiGetResponse } from "../types/apiType";
+import {
+  CompanyData,
+  FormProductTypes,
+  ProductPostResponseDataType,
+} from "../types/contentType";
 
-const DynamicInputFields = ({
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import { apiGetRequest } from "../api/adminGetApi";
+
+type HandleChangevalueTYpe =
+  | string
+  | {
+      name?: string;
+      id?: string;
+      image?: string;
+    };
+interface InputFieldProps {
+  companies: CompanyData[];
+  addingProductUrlData: Dispatch<SetStateAction<FormProductTypes>>;
+}
+
+const DynamicInputFields: React.FC<InputFieldProps> = ({
   companies,
   addingProductUrlData,
-  produtlinks,
-  condition,
 }) => {
-  const [inputFields, setInputFields] = useState(
-    // [
-    // {
-    //   id: "wys",
-    //   url: "",
-    //   company: {
-    //     name: "",
-    //     id: "",
-    //     image: "",
-    //   },
-    // },
-    // ]
+  // const [inputFields, setInputFields] = useState(
+  //   () => {
+  //     return condition
+  //       ? [...produtlinks]
+  //       : [
+  //           {
+  //             id: "wys",
+  //             url: "",
+  //             company: {
+  //               name: "",
+  //               id: "",
+  //               image: "",
+  //             },
+  //           },
+  //         ];
+  //   }
+  //   // condition && produtlinks.length !== 0
+  //   //   ? produtlinks.map((item) => ({
+  //   //       id: item?.company?._id,
+  //   //       url: item?.url,
+  //   //       company: {
+  //   //         name: item?.company?.name,
+  //   //         id: item?.company?._id,
+  //   //         image: item?.company?.image,
+  //   //       },
+  //   //     }))
+  //   //   :
+  // );
 
-    condition && produtlinks.length !== 0
-      ? produtlinks.map((item) => ({
-          id: item?.company?._id,
-          url: item?.url,
-          company: {
-            name: item?.company?.name,
-            id: item?.company?._id,
-            image: item?.company?.image,
-          },
-        }))
-      : [
-          {
-            id: "wys",
-            url: "",
-            company: {
-              name: "",
-              id: "",
-              image: "",
-            },
-          },
-        ]
-  );
+  // const [inputFields, setInputFields] = useState([]);
+
+  // console.log(
+  //   inputFields,
+  //   JSON.stringify(inputFields),
+  //   JSON.stringify(produtlinks),
+  //   JSON.stringify(inputFields) === JSON.stringify(produtlinks),
+  //   companies,
+  //   addingProductUrlData,
+  //   produtlinks,
+  //   condition,
+  //   "<<updaetProduct?>>"
+  // );
+
+  // useEffect(() => {
+  //   if (condition && produtlinks.length > 0) {
+  //     setInputFields(
+  //       produtlinks.map((item) => ({
+  //         id: item?.company?._id,
+  //         url: item?.url,
+  //         company: {
+  //           name: item?.company?.name,
+  //           id: item?.company?._id,
+  //           image: item?.company?.image,
+  //         },
+  //       }))
+  //     );
+  //   } else {
+  //     setInputFields([
+  //       {
+  //         id: generateRandomId(),
+  //         url: "",
+  //         company: {
+  //           name: "",
+  //           id: "",
+  //           image: "",
+  //         },
+  //       },
+  //     ]);
+  //   }
+  // }, [condition, produtlinks]);
+
+  // const updateArray = produtlinks.map((item) => ({
+  //   id: item?.company?._id,
+  //   url: item?.url,
+  //   company: {
+  //     name: item?.company?.name,
+  //     id: item?.company?._id,
+  //     image: item?.company?.image,
+  //   },
+  // }));
+
+  // useMemo(() => {
+  //   console.log("i am here <<updaetProduct?>>");
+  //   if (condition && !isError && produtlinks.length !== 0) {
+  //     console.log("start running <<updaetProduct?>>");
+  //     setInputFields([...updateArray]);
+  //   }
+  // }, [condition, isError]);
+  // const [isOpen, setOpen] = useState({
+  //   company: false,
+  //   id: "",
+  // });
+
+  // useEffect(() => {
+  //   // Check if all input fields are filled
+  //   const allFieldsFilled = inputFields.every(
+  //     (field) => field.url && field.company.name
+  //   );
+
+  // Update productData.productsLink only if all fields are filled
+  // if (allFieldsFilled) {
+  //   addingProductUrlData((prevData) => ({
+  //     ...prevData,
+  //     productsLink: inputFields,
+  //   }));
+  // }
+  // Update productData.productsLink only if all fields are filled
+  //   if (allFieldsFilled) {
+  //     addingProductUrlData((prevData) => {
+  //       // Avoid unnecessary updates
+  //       if (
+  //         JSON.stringify(prevData.productsLink) !== JSON.stringify(inputFields)
+  //       ) {
+  //         return {
+  //           ...prevData,
+  //           productsLink: inputFields,
+  //         };
+  //       }
+  //       return prevData;
+  //     });
+  //   }
+  // }, [inputFields, addingProductUrlData]);
+
+  // console.log(inputFields, "in dynamicfield");
+
+  // const generateRandomId = (length = 8) => {
+  //   return Math.random().toString(36).substr(2, length);
+  // };
+
+  const { id } = useParams();
+  const generateRandomId = (length = 8) =>
+    Math.random().toString(36).substr(2, length);
+
+  const { data: singleProduct } = useQuery<
+    ApiGetResponse<ProductPostResponseDataType>,
+    ApiError
+  >({
+    queryKey: [`single/${id}`],
+    queryFn: async () => {
+      return await apiGetRequest<ProductPostResponseDataType>({
+        url: `api/product/${id}`,
+      });
+    },
+  });
+
+  const isUpdate = Object.keys(singleProduct || [])?.length !== 0;
+  const singleProductObject = singleProduct?.data;
+
+  const formatingProdutLink = singleProductObject?.productsLink?.map((link) => {
+    return {
+      url: link?.url,
+      company: singleProductObject?.company?.find((comp) =>
+        comp?.name?.includes?.(link?.company || "")
+      ),
+    };
+  });
+
+  const initialInputFields = () => {
+    if (
+      isUpdate &&
+      singleProductObject &&
+      singleProductObject.productsLink &&
+      singleProductObject?.productsLink?.length > 0
+    ) {
+      return formatingProdutLink?.map((item) => ({
+        id: item?.company?._id || generateRandomId(),
+        url: item?.url || "",
+        company: {
+          name: item?.company?.name || "",
+          id: item?.company?._id || "",
+          image: item?.company?.image || "",
+        },
+      }));
+    }
+    return [
+      {
+        id: generateRandomId(),
+        url: "",
+        company: {
+          name: "",
+          id: "",
+          image: "",
+        },
+      },
+    ];
+  };
+
+  const [inputFields, setInputFields] = useState(initialInputFields());
   const [isOpen, setOpen] = useState({
     company: false,
     id: "",
   });
 
   useEffect(() => {
-    // Check if all input fields are filled
-    const allFieldsFilled = inputFields.every(
+    setInputFields(initialInputFields());
+  }, [isUpdate]);
+
+  useEffect(() => {
+    const allFieldsFilled = inputFields?.every(
       (field) => field.url && field.company.name
     );
 
-    // Update productData.productsLink only if all fields are filled
     if (allFieldsFilled) {
-      addingProductUrlData((prevData) => ({
-        ...prevData,
-        productsLink: inputFields,
-      }));
+      addingProductUrlData((prevData) => {
+        if (
+          JSON.stringify(prevData.productsLink) !== JSON.stringify(inputFields)
+        ) {
+          return {
+            ...prevData,
+            productsLink: inputFields,
+          };
+        }
+        return prevData;
+      });
     }
   }, [inputFields, addingProductUrlData]);
-
-  // console.log(inputFields, "in dynamicfield");
-
-  const generateRandomId = (length = 8) => {
-    return Math.random().toString(36).substr(2, length);
-  };
 
   // console.log(inputFields);
   //   const [inputFields, setInputFields] = useState([{ id: 1, url: '', company: '' }]);
 
-  const handleAddInputField = (e) => {
+  const handleAddInputField = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     e.preventDefault();
     setInputFields([
-      ...inputFields,
+      ...(inputFields || []),
       {
         id: generateRandomId(),
         url: "",
@@ -87,17 +271,24 @@ const DynamicInputFields = ({
       },
     ]);
   };
-  const handleRemoveInputField = (id) => {
-    const filterFiled = inputFields.filter(
-      (inputFiled, i) => inputFiled.id !== id
-    );
+  const handleRemoveInputField = useCallback(
+    (id: string) => {
+      const filterFiled = inputFields?.filter(
+        (inputFiled) => inputFiled.id !== id
+      );
 
-    console.log(filterFiled, id, "filter");
-    setInputFields(filterFiled);
-  };
+      console.log(filterFiled, id, "filter");
+      setInputFields(filterFiled);
+    },
+    [inputFields]
+  );
 
-  const handleInputChange = (id, field, newValue) => {
-    const updatedInputFields = inputFields.map((inputField) =>
+  const handleInputChange = (
+    id: string,
+    field: string,
+    newValue: HandleChangevalueTYpe
+  ) => {
+    const updatedInputFields = inputFields?.map((inputField) =>
       inputField.id === id ? { ...inputField, [field]: newValue } : inputField
     );
     setInputFields(updatedInputFields);
@@ -115,7 +306,7 @@ const DynamicInputFields = ({
 
   return (
     <div className="grid gap-3 pl-1 md:col-span-2">
-      {inputFields.map((inputField) => (
+      {inputFields?.map((inputField) => (
         <div key={inputField.id} className="grid items-center gap-4 md:flex ">
           <input
             type="url"
@@ -126,15 +317,7 @@ const DynamicInputFields = ({
             placeholder="Enter Product URL"
             className=" h-10 pl-4 font-medium w-full md:w-1/2 rounded-md  border  bg-[#252525] focus:border-[#DEE1E2] border-transparent"
           />
-          {/* <input
-            type="text"
-            value={inputField.company}
-            onChange={(e) =>
-              handleInputChange(inputField.id, "company", e.target.value)
-            }
-            placeholder="Enter Company Name"
-            className="w-full p-2 mb-2 border rounded"
-          /> */}
+
           <div className="relative  w-full md:w-[43%]">
             <div
               className="flex realtive justify-between p-2  pl-4 font-medium border rounded-md cursor-pointer text-gray-400 bg-[#252525] focus:border-[#DEE1E2]  border-transparent  "

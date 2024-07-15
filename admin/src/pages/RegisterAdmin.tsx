@@ -1,9 +1,6 @@
 import { useState } from "react";
 
-// import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
-
-import { IoMdArrowRoundBack } from "react-icons/io";
 
 import register from "../assets/Sign up.svg";
 import {
@@ -16,39 +13,45 @@ import {
 } from "react-icons/fi";
 import { useMutation } from "@tanstack/react-query";
 import { ApiError, ApiResponse } from "../types/apiType";
-import { RegisterData, RegisterResponse } from "../types/authType";
+import {
+  MutationObjectRegisterType,
+  RegisterData,
+  RegisterResponse,
+  RegisterStateType,
+  VisiblePassType,
+} from "../types/authType";
 
 import { toast } from "react-toastify";
 import { apiRequest } from "../api/adminApi";
 
-const RegisterAdmin = () => {
+const RegisterAdmin: React.FC = () => {
   const navigate = useNavigate();
 
-  const [isVisible, setVisible] = useState({
+  const [isVisible, setVisible] = useState<VisiblePassType>({
     enterPass: false,
     confPass: false,
   });
 
-  const [phoneNumberError, setPhoneNumberError] = useState("");
-  const [passwordError, setPassWordError] = useState("");
+  const [phoneNumberError, setPhoneNumberError] = useState<string>("");
+  const [passwordError, setPassWordError] = useState<string>("");
 
-  const [registorObj, setRegistorObj] = useState({
+  const [registorObj, setRegistorObj] = useState<RegisterStateType>({
     fullName: "",
     contact: "",
     email: "",
-    // country: "",
     password: "",
     confirmPassword: "",
-    // accessptTermsAndCondition: "",
   });
 
-  const handleChnage = (e) => {
+  const handleChnage = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     console.log(e.target.value, e.target.name);
 
     const { name, value } = e.target;
 
     // If the input is not a number or is longer than 10 characters, do not update state
-    if (!isNaN(value) && value.length <= 10) {
+    if (!isNaN(Number(value)) && value.length <= 10) {
       setRegistorObj((prevState) => ({
         ...prevState,
         [name]: value,
@@ -71,19 +74,18 @@ const RegisterAdmin = () => {
   const mutation = useMutation<
     ApiResponse<RegisterResponse>,
     ApiError,
-    RegisterData
+    MutationObjectRegisterType
   >({
-    mutationFn: async (data) => {
+    mutationFn: async ({ path, method, data }) => {
       toast.loading("Creating account");
       try {
-        const response = await apiRequest<RegisterResponse>({
-          url: "/api/admin/register",
-          method: "post",
-          data,
+        const response = await apiRequest<RegisterData, RegisterResponse>({
+          url: path,
+          method: method,
+          data: data,
         });
 
-        // Assuming apiRequest returns an object with `data`, `status`, etc.
-        return response; // Wrap response.data in ApiResponse structure
+        return response;
       } catch (error) {
         console.log(error);
         throw new Error("Error occurred during Register"); // Handle specific errors if needed
@@ -101,12 +103,12 @@ const RegisterAdmin = () => {
       console.error("Register error:", error);
       console.log("Register error:", error);
       toast.dismiss();
-      toast.error(`${error}`);
+      toast.error(`${error.message}`);
       // Handle error (e.g., show error message)
     },
   });
 
-  const handleSumbit = (e) => {
+  const handleSumbit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -131,7 +133,7 @@ const RegisterAdmin = () => {
     // Handle form submission here if the phone number is exactly 10 digits
     console.log("Submitting form with phone number:", registorObj);
 
-    const finalObject = {
+    const finalObject: RegisterData = {
       name: registorObj.fullName,
       password: registorObj.password,
       email: registorObj.email,
@@ -139,7 +141,11 @@ const RegisterAdmin = () => {
       role: "admin",
     };
 
-    mutation.mutate(finalObject);
+    mutation.mutate({
+      path: "/api/admin/register",
+      method: "post",
+      data: finalObject,
+    });
     console.log(finalObject);
 
     setPhoneNumberError("");
@@ -148,10 +154,8 @@ const RegisterAdmin = () => {
       fullName: "",
       contact: "",
       email: "",
-      //   country: "",
       password: "",
       confirmPassword: "",
-      //   accessptTermsAndCondition: "",
     });
   };
 
@@ -283,18 +287,6 @@ const RegisterAdmin = () => {
               />
             </div>
           </div>
-          {/* <div className="flex col-span-2 ">
-            <input
-              type="checkbox"
-              className="items-start mx-2 cursor-pointer "
-              name={"accessptTermsAndCondition"}
-              onChange={handleChnage}
-              checked={registorObj.accessptTermsAndCondition}
-            />
-            <p className="text-sm font-montserrat">
-              I have read and accept the terms of service and privacy policy.
-            </p>
-          </div> */}
 
           {/* <div className=""> */}
           <button className="col-span-2 px-4 py-2 mt-4 text-white bg-blue-400 border rounded-md disabled:bg-gray-600">

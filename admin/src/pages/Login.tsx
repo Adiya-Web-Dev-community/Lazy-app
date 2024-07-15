@@ -1,28 +1,25 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 import loginImg from "../assets/Login.svg";
 
 import { Link, useNavigate } from "react-router-dom";
 
-// import { IoMdArrowRoundBack } from "react-icons/io";
-
-// import { useDispatch } from "react-redux";
-// import { useNavigate } from "react-router-dom";
-
 import { FiEye, FiEyeOff, FiLock, FiUser } from "react-icons/fi";
-// import { useCreateMutation, useResetMutation } from "../service/admin";
-// import { toast } from "react-toastify";
-// import { setUserToken } from "../store/auth";
+
 import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
-import { ApiError, ApiResponse } from "../types/apiType";
+import { ApiError } from "../types/apiType";
 
 import { apiRequest } from "../api/adminApi";
-import { LoginData, LoginResponse, LoginResponseData } from "../types/authType";
+import {
+  LoginApiResponse,
+  LoginData,
+  MutationObjectLoginType,
+} from "../types/authType";
 
 const Login = () => {
-  const [loginObj, setLoginObj] = useState({
+  const [loginObj, setLoginObj] = useState<LoginData>({
     email: "",
     password: "",
   });
@@ -31,72 +28,72 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  //data fro login response
-  //   {
-  //     "data": {
-  //         "success": true,
-  //         "message": "Signin Successful",
-  //         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2Njc2YjIwMzNhNTFmOGViYmE0YmVkNzQiLCJyb2xlIjoidXNlciIsImlhdCI6MTcxOTA1NTQ3NiwiZXhwIjoxNzE5MTQxODc2fQ.20_zhN1ypc97Io8e8NyrWsMSRHZN_NamWZ6TJZE2DmM",
-  //         "role": "user"
-  //     }
-  // }
+  const mutation = useMutation<
+    LoginApiResponse,
+    ApiError,
+    MutationObjectLoginType
+  >({
+    mutationFn: async ({ path, method, data }) => {
+      toast.loading("Checking Details");
+      try {
+        const response = await apiRequest<LoginData, LoginApiResponse>({
+          url: path,
+          method: method,
+          data: data,
+        });
 
-  const mutation = useMutation<ApiResponse<LoginResponse>, ApiError, LoginData>(
-    {
-      mutationFn: async (data) => {
-        toast.loading("Checking Details");
-        try {
-          const response = await apiRequest<LoginResponse>({
-            url: "api/admin/login",
-            method: "post",
-            data,
-          });
+        return response; // Wrap response.data in ApiResponse structure
+      } catch (error) {
+        console.log(error);
+        throw new Error("Error occurred during login"); // Handle specific errors if needed
+      }
+    },
+    onSuccess: (data: LoginApiResponse) => {
+      console.log("Login successful:", data, data?.token);
+      if (data?.success) {
+        localStorage.setItem("admin", data?.token ? data?.token : "");
+      }
+      toast.dismiss();
+      toast.success(`Login successful`);
 
-          console.log(response);
-          //if response is sucess
-          if (response?.data?.success) {
-            localStorage.setItem("admin", response.data?.token);
-          }
-          return { data: response.data }; // Wrap response.data in ApiResponse structure
-        } catch (error) {
-          console.log(error);
-          throw new Error("Error occurred during login"); // Handle specific errors if needed
-        }
-      },
-      onSuccess: (data: ApiResponse<LoginResponse>) => {
-        console.log("Login successful:", data);
+      // Handle success (e.g., redirect to dashboard)
+      setTimeout(() => navigate("/products"), 1000);
+    },
+    onError: (error: ApiError) => {
+      console.error("Login error:", error);
+      console.log("Login error:", error);
+      toast.dismiss();
+      toast.error(`${error}`);
 
-        toast.dismiss();
-        toast.success(`Login successful`);
+      // Handle error (e.g., show error message)
+    },
+  });
 
-        // Handle success (e.g., redirect to dashboard)
-        setTimeout(() => navigate("/products"), 1000);
-      },
-      onError: (error: ApiError) => {
-        console.error("Login error:", error);
-        console.log("Login error:", error);
-        toast.dismiss();
-        toast.error(`${error}`);
-
-        // Handle error (e.g., show error message)
-      },
-    }
-  );
-
-  const handleChange = (e) => {
-    setLoginObj((prev) => ({
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, type, value, checked } = e.target as HTMLInputElement;
+    setLoginObj((prev: LoginData) => ({
       ...prev,
-      [e.target.name]:
-        e.target.type === "checkbox" ? e.target.checked : e.target.value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     // mutation.mutate(userDetails);
 
-    mutation.mutate(loginObj);
+    const loginObjectData: LoginData = {
+      email: loginObj.email,
+      password: loginObj.password,
+    };
+
+    mutation.mutate({
+      path: "api/admin/login",
+      method: "post",
+      data: loginObjectData,
+    });
 
     setLoginObj({
       email: "",

@@ -1,10 +1,14 @@
 // ConfirmDeleteModal.js
-import React from "react";
 
-const ConfirmDeleteModal = ({ onClose, onConfirm }) => {
+import { ConfirmDeleteModalProps } from "../../types/contentType";
+
+const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
+  onClose,
+  onConfirm,
+}) => {
   //   if (!isOpen) return null;
 
-  const handlingPropogation = (e) => {
+  const handlingPropogation = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
 

@@ -1,19 +1,19 @@
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../../../firebase";
+import { UploadImageFunction } from "../../types/contentType";
 const uniqueIdentifier = `image_${Date.now()}_${Math.floor(
   Math.random() * 10000
 )}`;
 
-const uploadImage = async (fileName, file, setProgressStatus) => {
+const uploadImage: UploadImageFunction = async (
+  fileName,
+  file,
+  setProgressStatus
+) => {
   try {
-    // Create a reference to the storage bucket
-
-    // const metadata = {
-    //   contentType: "jpeg" || "png" || "webp",
-    // };
     const storageRef = ref(
       storage,
-      `${fileName.replace(/\s+/g, "")}/${uniqueIdentifier} ${file.name}`
+      `${fileName?.replace(/\s+/g, "")}/${uniqueIdentifier} ${file?.name}`
     );
 
     // Upload the file to the storage bucket

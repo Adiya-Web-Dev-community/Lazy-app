@@ -1,9 +1,8 @@
 import React from "react";
+import { LogOutModalProps } from "../../types/contentType";
 
-const LogOutModal = ({ onClose, onConfirm }) => {
-  //   if (!show) return null;
-
-  const handlingPropogation = (e) => {
+const LogOutModal: React.FC<LogOutModalProps> = ({ onClose, onConfirm }) => {
+  const handlingPropogation = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
 

@@ -4,7 +4,7 @@ import { ToastContainer } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
 
-const Authentication = () => {
+const Authentication: React.FC = () => {
   return (
     <section className="flex md:px-4 max-w-[1200px] mx-auto font-lato">
       <Link

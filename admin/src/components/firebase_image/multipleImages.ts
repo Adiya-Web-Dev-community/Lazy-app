@@ -1,11 +1,16 @@
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../../../firebase";
+import { UploadImageFunction } from "../../types/contentType";
 
 const uniqueIdentifier = `image_${Date.now()}_${Math.floor(
   Math.random() * 10000
 )}`;
 
-const uploadMultipleImage = async (folderName, file, setProgressStatus) => {
+const uploadMultipleImage: UploadImageFunction = async (
+  folderName,
+  file,
+  setProgressStatus
+) => {
   try {
     const storageRef = ref(
       storage,

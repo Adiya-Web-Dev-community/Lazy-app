@@ -2,33 +2,34 @@ import React, { useState } from "react";
 
 import { FaCaretDown } from "react-icons/fa";
 import { TiArrowBackOutline } from "react-icons/ti";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { toast } from "react-toastify";
 
 import { useMutation } from "@tanstack/react-query";
 
-import { ApiError } from "../types/apiType.js";
+import { ApiError, ApiResponse } from "../types/apiType.js";
 import { apiRequest } from "../api/adminApi.js";
 import { useDispatch, useSelector } from "react-redux";
 import { removeData } from "../store/companies.js";
 import uploadImage from "../components/firebase_image/image.ts";
 
-interface CompaniesType {
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  webLink: string;
-  status: string;
-  products: number;
-  joinDate: string;
-  imageSrc: string;
-  image: string;
+import { RootState } from "../store/index.ts";
+import {
+  CompaniesType,
+  CompanyPostResponseType,
+  CompanySendingPostTyp,
+  MutationObjectCompanyType,
+} from "../types/contentType.ts";
+
+interface OpenStateType {
+  status: boolean;
 }
 
-const CompaniesForm = () => {
-  const companyUpdateData = useSelector((state) => state?.company?.companyData);
+const CompaniesForm: React.FC = () => {
+  const companyUpdateData = useSelector(
+    (state: RootState) => state?.company?.companyData
+  );
 
   const [companiesData, setCompaniesData] = useState<CompaniesType>({
     name: companyUpdateData?.name || "",
@@ -47,24 +48,33 @@ const CompaniesForm = () => {
     image: companyUpdateData?.image || "",
   });
 
+  const isUpdate = Object.keys(companyUpdateData || []).length !== 0;
+
   console.log(companyUpdateData, "from company form");
 
-  const [isOpen, setOpen] = useState({
+  const [isOpen, setOpen] = useState<OpenStateType>({
     status: false,
   });
 
   const dispatch = useDispatch();
-  const [progressStatus, setProgressStatus] = useState("");
+  const [progressStatus, setProgressStatus] = useState<number | null>(null);
 
-  const [isError, setIsError] = useState(false);
+  const [isError, setIsError] = useState<boolean>(false);
   const pattern = new RegExp(/^\d{1,10}$/);
 
-  const mutation = useMutation({
+  const mutation = useMutation<
+    ApiResponse<CompanyPostResponseType>,
+    ApiError,
+    MutationObjectCompanyType
+  >({
     mutationFn: async ({ path, condition, data }) => {
       toast.loading("Checking Details");
       try {
         // console.log(path, method);
-        const response = await apiRequest({
+        const response = await apiRequest<
+          CompanySendingPostTyp,
+          CompanyPostResponseType
+        >({
           url: path,
           method: condition === "creat" ? "post" : "put",
           data: data,
@@ -74,27 +84,24 @@ const CompaniesForm = () => {
         return response;
       } catch (error) {
         console.log(error);
-        const apiError = {
-          message: error?.response?.data?.message || "An error occurred",
-          status: error?.response?.status || 500,
+        const apiError: ApiError = {
+          message: (error as ApiError)?.message || "An error occurred",
+          status: (error as ApiError)?.status || 500,
         };
         throw apiError;
       }
     },
     // onSuccess: (data: ApiResponse<DeletCategoryData>) => {
     onSuccess: (data) => {
-      console.log(data, data?.statusText);
+      console.log(data);
       toast.dismiss();
       clearhandler();
-      toast.success(
-        `${
-          data?.statusText === "OK" ? "Update Successfull" : "Creat Successfull"
-        }`
-      );
+      toast.success(`${isUpdate ? "Update Successfull" : "Creat Successfull"}`);
     },
     onError: (error: ApiError) => {
       console.log(error);
       toast.dismiss();
+      toast.error(error.message);
     },
   });
 
@@ -102,7 +109,13 @@ const CompaniesForm = () => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value, type } = e.target;
+
+    let checked: boolean | undefined;
+
+    if (e.target instanceof HTMLInputElement) {
+      checked = e.target.checked;
+    }
 
     setCompaniesData((prev) => ({
       ...prev,
@@ -125,21 +138,24 @@ const CompaniesForm = () => {
   };
 
   //for Image Data
-
-  const handleImageChange = async (event: React.ChangeEvent) => {
+  const handleImageChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     // const selectedFile = event.target.files[0];
 
     const selectedFile = event.target?.files?.[0];
+    const folderName = event?.target?.files?.[0].name ?? "";
+
+    console.log(folderName, setProgressStatus, "from single image uploade");
 
     if (selectedFile) {
       const imageUrl = await uploadImage(
-        event.target.files[0].name,
-
-        event.target.files[0],
+        folderName,
+        selectedFile,
         setProgressStatus
       );
 
-      console.log(imageUrl, selectedFile, "<<frommodal?>>");
+      // console.log(imageUrl, selectedFile, "<<frommodal?>>");
       setCompaniesData((prev) => ({
         ...prev,
         image: imageUrl,
@@ -154,13 +170,12 @@ const CompaniesForm = () => {
   const submitHandler = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const companyPostObject = {
+    const companyPostObject: CompanySendingPostTyp = {
       name: companiesData.name,
       email: companiesData.email,
       phone: companiesData.phone,
-      image: companyUpdateData.image
-        ? companyUpdateData.image
-        : companiesData.image,
+      image: companyUpdateData?.image ?? companiesData?.image ?? "",
+
       address: companiesData.address,
       website: companiesData.webLink,
       status: companiesData.status,
@@ -169,8 +184,8 @@ const CompaniesForm = () => {
 
     console.log(companiesData);
 
-    if (Object.keys(companyUpdateData)?.length === 0) {
-      console.log("now creat");
+    if (Object.keys(companyUpdateData || [])?.length === 0) {
+      console.log("now create");
       mutation.mutate({
         path: "api/company/create",
         condition: "creat",
@@ -204,18 +219,6 @@ const CompaniesForm = () => {
     navigate("/companies");
   };
 
-  const LoadingFormListElement = () => {
-    return (
-      <div className="w-full max-w-sm p-4 mx-auto border border-blue-300 rounded-md shadow">
-        <div className="flex space-x-4 animate-pulse">
-          <div className="flex-1 py-1 space-y-6">
-            <div className="h-2 rounded bg-slate-700"></div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   const statusData = ["Active", "in-Active", "Pending"];
 
   return (
@@ -227,7 +230,7 @@ const CompaniesForm = () => {
         <div className="flex-1 h-full p-6 rounded font-montserrat">
           <div className="flex pb-2">
             <h2 className="md:text-4xl text-[28px] font-bold text-[#DEE1E2]">
-              Product Form
+              Company Form
             </h2>
             <div onClick={clearhandler}>
               <TiArrowBackOutline className="w-10 h-10 ml-4 text-emerald-600 hover:text-emerald-500" />
@@ -236,7 +239,7 @@ const CompaniesForm = () => {
           <div className="h-[calc(100vh-12rem)] overflow-y-auto pr-4 md:pr-0 text-[#DEE1E2]">
             <div className="grid items-center grid-cols-1 gap-4 py-4 md:grid-cols-2">
               <input
-                value={companiesData.name}
+                value={companiesData?.name}
                 type="text"
                 onChange={handleChange}
                 name="name"
@@ -245,7 +248,7 @@ const CompaniesForm = () => {
                 required
               />
               <input
-                value={companiesData.email}
+                value={companiesData?.email}
                 type="email"
                 onChange={handleChange}
                 name="email"
@@ -254,17 +257,6 @@ const CompaniesForm = () => {
                 required
               />
               <div className="relative w-full h-full">
-                {/* <input
-                  // value={userDetails?.image}
-                  type="file"
-                  name="image"
-                  onChange={handleImageChange}
-                  className={`px-2 py-[5px] ${
-                    progressStatus ? "pb-2" : ""
-                  }  w-full text-sm  bg-[#252525] focus:border-[#DEE1E2] border-transparent border   rounded-md text-gray-400  outline-none`}
-                  placeholder="Image URL"
-                  required
-                /> */}
                 <input
                   type="file"
                   name="image"
@@ -283,7 +275,7 @@ const CompaniesForm = () => {
                     Browse
                   </span>
                 </label>
-                {progressStatus !== null && progressStatus !== "" && (
+                {progressStatus !== null && progressStatus !== 0 && (
                   <>
                     <div className="absolute inset-0 z-10 flex items-end">
                       <div
@@ -297,7 +289,7 @@ const CompaniesForm = () => {
               </div>
 
               <input
-                value={companiesData.products || ""}
+                value={companiesData?.products || ""}
                 type="number"
                 onChange={handleChange}
                 name="products"
@@ -312,8 +304,8 @@ const CompaniesForm = () => {
                   className="flex justify-between p-2 font-medium pl-4 bg-[#252525] focus:border-[#DEE1E2] text-gray-400 border-transparent rounded-md cursor-pointer"
                   onClick={() => setOpen({ ...isOpen, status: !isOpen.status })}
                 >
-                  {companiesData.status !== ""
-                    ? companiesData.status
+                  {companiesData?.status !== ""
+                    ? companiesData?.status
                     : "Select Status"}
                   <FaCaretDown className="m-1" />
                 </div>
@@ -322,11 +314,11 @@ const CompaniesForm = () => {
                     isOpen.status ? "max-h-60" : "hidden"
                   } custom-scrollbar`}
                 >
-                  {statusData.map((status, i) => (
+                  {statusData?.map((status, i) => (
                     <li
                       key={i}
                       className={`p-2 mb-2 text-sm text-[#DEE1E2] rounded-md cursor-pointer hover:bg-blue-200/60 ${
-                        companiesData.status === status ? "bg-rose-600" : ""
+                        companiesData?.status === status ? "bg-rose-600" : ""
                       }`}
                       onClick={() => selectOption("status", status)}
                     >
@@ -336,7 +328,7 @@ const CompaniesForm = () => {
                 </ul>
               </div>
               <input
-                value={companiesData.webLink}
+                value={companiesData?.webLink}
                 type="url"
                 onChange={handleChange}
                 name="webLink"
@@ -345,7 +337,7 @@ const CompaniesForm = () => {
                 required
               />
               <input
-                value={companiesData.phone}
+                value={companiesData?.phone}
                 type="tel"
                 onChange={handleChange}
                 name="phone"
@@ -368,7 +360,7 @@ const CompaniesForm = () => {
               /> */}
 
               <textarea
-                value={companiesData.address}
+                value={companiesData?.address}
                 onChange={handleChange}
                 name="address"
                 className="w-full h-24 py-4 pl-4 font-medium  border-gray-400  md:col-span-2 bg-[#252525] focus:border-[#DEE1E2] border-transparent border   rounded-md outline-none "
@@ -383,9 +375,7 @@ const CompaniesForm = () => {
                 type="submit"
                 disabled={isError}
               >
-                {Object.keys(companyUpdateData).length !== 0
-                  ? "Update"
-                  : "Submit"}
+                {isUpdate ? "Update" : "Submit"}
               </button>
               <button
                 className="px-4 py-2 ml-8 text-white rounded-md bg-rose-800 hover:bg-rose-700"
