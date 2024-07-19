@@ -24,7 +24,7 @@ const Login = () => {
     password: "",
   });
 
-  const [isVisible, setVisible] = useState(false);
+  const [isVisible, setVisible] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
