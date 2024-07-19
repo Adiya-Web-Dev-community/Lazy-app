@@ -93,7 +93,7 @@ const CompaniesForm: React.FC = () => {
     },
     // onSuccess: (data: ApiResponse<DeletCategoryData>) => {
     onSuccess: (data) => {
-      console.log(data);
+      console.log(data, "company created");
       toast.dismiss();
       clearhandler();
       toast.success(`${isUpdate ? "Update Successfull" : "Creat Successfull"}`);

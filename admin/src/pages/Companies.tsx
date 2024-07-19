@@ -107,7 +107,7 @@ const Companies: React.FC = () => {
       console.log(data);
       refetch();
       toast.dismiss();
-      toast.success(`${data?.data?.message}`);
+      toast.success(`Company Deleted`);
       setDeletModal((prev) => ({
         ...prev,
         delet: false,

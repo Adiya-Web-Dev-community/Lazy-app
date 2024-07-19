@@ -48,6 +48,7 @@ export interface CategorySendingPostType {
 
 export interface CategoryPostResponseDataType {
   name: string;
+  image: string;
   _id: string;
 }
 
@@ -358,10 +359,24 @@ export interface CompanySendingPostTyp {
   productcount: number;
 }
 
+export interface CompanyPostResponseDataType {
+  address: string;
+  createdAt: string;
+  email: string;
+  image: string;
+  name: string;
+  phone: number;
+  productcount: number;
+  status: string;
+  updatedAt: string;
+  website: string;
+  _id: string;
+}
+
 export interface CompanyPostResponseType {
   success?: boolean;
   message?: string;
-  data?: ProductPostResponseDataType;
+  data?: CompanyPostResponseDataType;
 }
 
 export interface MutationObjectCompanyType {
