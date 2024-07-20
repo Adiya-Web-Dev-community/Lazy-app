@@ -109,7 +109,7 @@ export interface PlatformTypes {
 
 export interface CompanyType {
   name?: string;
-  id?: string;
+  _id?: string;
   image?: string;
 }
 
@@ -117,10 +117,11 @@ export type FormProductKeys = keyof FormProductTypes;
 
 export interface ProductUni {
   name?: string;
-  id?: string;
+  _id?: string;
   image?: string;
 }
 export interface CateUni {
+  image?: string;
   name?: string;
   id?: string;
 }

@@ -10,6 +10,8 @@ import useCompanies from "../hooks/useCompanies";
 import { useCategories } from "../hooks/useCategories";
 
 import {
+  CompanyData,
+  CompanyType,
   FormProductKeys,
   FormProductTypes,
   MutationObjectType,
@@ -132,6 +134,20 @@ const ProductUpdateForm: React.FC = () => {
     productsLink: formatingProdutLink || [],
   });
 
+  console.log(productData, companies);
+
+  const filterCompanies = (
+    companiesData: CompanyData[],
+    productCompanies: CompanyType[]
+  ) => {
+    const productCompaniesName = new Set(
+      productCompanies.map((productCom) => productCom.name)
+    );
+    return companiesData.filter((company) =>
+      productCompaniesName.has(company.name)
+    );
+  };
+
   useEffect(() => {
     console.log("running effect");
     if (isUpdate) {
@@ -143,7 +159,7 @@ const ProductUpdateForm: React.FC = () => {
 
         name: singleProductObject?.name,
 
-        company: singleProductObject?.company,
+        company: filterCompanies(companies, singleProductObject?.company ?? []),
         feature: singleProductObject?.feature,
         category: findCategory,
 
@@ -188,9 +204,9 @@ const ProductUpdateForm: React.FC = () => {
     setProductData((prev) => ({
       ...prev,
       [field]: (prev[field] as ProductUni[]).some(
-        (item) => item.id === value.id
+        (item) => item._id === value._id
       )
-        ? (prev[field] as ProductUni[]).filter((item) => item.id !== value.id)
+        ? (prev[field] as ProductUni[]).filter((item) => item._id !== value._id)
         : [...(prev[field] as ProductUni[]), value],
     }));
     setOpen((prev) => ({
@@ -211,6 +227,7 @@ const ProductUpdateForm: React.FC = () => {
     const productArray = productData?.productsLink?.map((proLink) => {
       return {
         url: proLink.url,
+        image: proLink?.company?.image,
         company: proLink.company?.name,
       };
     });
@@ -377,7 +394,7 @@ const ProductUpdateForm: React.FC = () => {
                       key={i}
                       className={`p-2 mb-2 flex gap-2 items-center text-sm text-[#DEE1E2] rounded-md cursor-pointer hover:bg-blue-200/60 ${
                         productData?.company?.find(
-                          (com) => com?.id === company?._id
+                          (com) => com?._id === company?._id
                         )
                           ? "bg-rose-600"
                           : ""
@@ -385,7 +402,7 @@ const ProductUpdateForm: React.FC = () => {
                       onClick={() =>
                         selectMultipleOption("company", {
                           name: company?.name,
-                          id: company?._id,
+                          _id: company?._id,
                           image: company?.image,
                         })
                       }
