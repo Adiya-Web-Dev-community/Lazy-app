@@ -136,9 +136,9 @@ const ProductsForm: React.FC = () => {
     setProductData((prev) => ({
       ...prev,
       [field]: (prev[field] as ProductUni[]).some(
-        (item) => item.id === value.id
+        (item) => item._id === value._id
       )
-        ? (prev[field] as ProductUni[]).filter((item) => item.id !== value.id)
+        ? (prev[field] as ProductUni[]).filter((item) => item._id !== value._id)
         : [...(prev[field] as ProductUni[]), value],
     }));
     setOpen((prev) => ({
@@ -148,6 +148,8 @@ const ProductsForm: React.FC = () => {
   };
 
   const navigate = useNavigate();
+
+  console.log(productData, companies);
 
   const submitHandler = (e: React.FormEvent) => {
     e.preventDefault();
@@ -160,6 +162,7 @@ const ProductsForm: React.FC = () => {
       return {
         url: proLink.url,
         company: proLink.company?.name,
+        image: proLink.company?.image,
       };
     });
 
@@ -324,7 +327,7 @@ const ProductsForm: React.FC = () => {
                       key={i}
                       className={`p-2 mb-2 flex gap-2 items-center text-sm text-[#DEE1E2] rounded-md cursor-pointer hover:bg-blue-200/60 ${
                         productData?.company?.find(
-                          (com) => com.id === company._id
+                          (com) => com?._id === company?._id
                         )
                           ? "bg-rose-600"
                           : ""
@@ -332,7 +335,7 @@ const ProductsForm: React.FC = () => {
                       onClick={() =>
                         selectMultipleOption("company", {
                           name: company?.name,
-                          id: company?._id,
+                          _id: company?._id,
                           image: company?.image,
                         })
                       }
