@@ -14,6 +14,7 @@ const companySchema = new mongoose.Schema({
 const ProductLinkSchema = new mongoose.Schema({
   url: { type: String },
   company: { type: String },
+  image: { type: String },
 });
 
 const ProductSchemaModel = new mongoose.Schema(
