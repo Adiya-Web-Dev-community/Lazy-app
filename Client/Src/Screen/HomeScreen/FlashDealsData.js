@@ -15,8 +15,8 @@ const FlashDealsData = {
       ],
     },
     {
-      title: 'MOTO G34',
-      Img: require('../assets/Moto.jpg'),
+      title: 'Samsungs',
+      Img: require('../assets/Samsungs.jpg'),
       details: [
         {
           Img: require('../assets/Moto.jpg'),

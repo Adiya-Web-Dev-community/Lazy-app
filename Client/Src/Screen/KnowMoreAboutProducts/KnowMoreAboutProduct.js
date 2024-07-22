@@ -9,8 +9,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {WebView} from 'react-native-webview';
-import { COLORS } from '../../Theme/Colors';
-import { scale,verticalScale,moderateScale } from '../../utils/Scaling';
+import {COLORS} from '../../Theme/Colors';
+import {scale, verticalScale, moderateScale} from '../../utils/Scaling';
 import Header from '../../Components/Header/Header';
 
 export default function KnowMoreAboutProduct() {
@@ -22,7 +22,6 @@ export default function KnowMoreAboutProduct() {
 
   return (
     <ScrollView style={styles.container}>
-      {/* <Header /> */}
       <Modal
         visible={modalVisible}
         onRequestClose={() => {
@@ -108,6 +107,7 @@ const styles = StyleSheet.create({
     height: verticalScale(40),
     margin: scale(8),
     borderRadius: moderateScale(8),
+    paddingLeft: scale(10),
   },
   Btntxt: {
     paddingVertical: verticalScale(8),

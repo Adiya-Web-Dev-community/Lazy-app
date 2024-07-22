@@ -100,21 +100,22 @@
 
   const styles = StyleSheet.create({
     container: {
-      height: verticalScale(200),
+      height: verticalScale(170),
       marginVertical: verticalScale(20),
     },
     image: {
-      width: width - 40,
-      height: '100%',
+      width: width - 32,
+      height: '95%',
       resizeMode: 'cover',
-      marginHorizontal: scale(9),
+      borderRadius:moderateScale(10),
+      marginHorizontal:scale(5)
     },
     button: {
-      width: width - 45,
-      height: '100%',
+      width: width - 38,
+      height: '95%',
       justifyContent: 'center',
       alignItems: 'center',
-      marginHorizontal: scale(7),
+      marginHorizontal: scale(5),
       backgroundColor: COLORS.White,
       borderWidth: moderateScale(1),
       borderStyle: 'dotted',
@@ -132,15 +133,16 @@
       alignSelf: 'center',
     },
     dot: {
-      height:scale (11),
-      width:scale (11),
+      height:scale (10),
+      width:scale (10),
       borderRadius:moderateScale (10), 
       backgroundColor: COLORS.Black, 
-      marginHorizontal: 5,
+      marginHorizontal:scale (5),
+      bottom:scale(10)
     },
     activeDot: {
-      height:scale (11),
-      width:scale (11),
+      height:scale (10),
+      width:scale (10),
       borderRadius:moderateScale (10), 
       backgroundColor: COLORS.White, 
     },

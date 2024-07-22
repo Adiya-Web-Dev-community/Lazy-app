@@ -11,7 +11,7 @@ import Signup from '../Screen/Singup/Singup';
 import Home from '../Screen/HomeScreen/Home';
 import Profile from '../Screen/ProfileScreen/Profile';
 import {COLORS} from '../Theme/Colors';
-import {scale, verticalScale} from '../utils/Scaling';
+import {moderateScale, scale, verticalScale} from '../utils/Scaling';
 import Redeem from '../Screen/Redeem/Redeem';
 import Claim from '../Screen/Claim/Claim';
 import Info from '../Screen/Info/Guide/Info';
@@ -30,6 +30,7 @@ import MissingCashback from '../Screen/MissingCashback/MissingCashback';
 import Authlogin from '../utils/Authlogin';
 import Notification from '../Screen/Notification/Notification';
 import Logout from '../Screen/LogOut/Logout';
+import CustomDrawerContent from '../Components/CustomDrawerContent ';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -48,11 +49,26 @@ function DrawerTab({route, navigation}) {
   }, [navigation, fromProfile]);
 
   return (
-    <Drawer.Navigator initialRouteName="Home">
+    <Drawer.Navigator
+      initialRouteName="Home"
+      drawerContent={props => <CustomDrawerContent {...props} />}>
       <Drawer.Screen
         name="Home"
         component={BottomTab}
         options={({navigation}) => ({
+          title: 'LazyApp',
+          headerStyle: {
+            elevation: scale(10),
+            shadowColor: '#000',
+            shadowOpacity: 0.25,
+            shadowRadius: moderateScale(4),
+            shadowOffset: {width: 0, height: 2},
+            backgroundColor: '#f1f2f4',
+          },
+          headerTitleStyle: {
+            color: COLORS.green,
+            fontWeight: 'bold',
+          },
           headerRight: () => (
             <View style={{flexDirection: 'row'}}>
               <TouchableOpacity
@@ -84,7 +100,7 @@ function DrawerTab({route, navigation}) {
           <Drawer.Screen name="EarnMore" component={EarnMore} />
           <Drawer.Screen name="TelegramChannel" component={TelegramChannel} />
           <Drawer.Screen
-            name="KnowMoreAboutProduct"
+            name="Know More About Products THROUGH MINI VIDEOS"
             component={KnowMoreAboutProduct}
           />
           <Drawer.Screen name="ReferAndEarn" component={ReferAndEarn} />
