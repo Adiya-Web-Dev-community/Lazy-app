@@ -22,7 +22,6 @@ import {WebView} from 'react-native-webview';
 import RecommendedData from './RecommendedData';
 import Table from '../../Components/Table/Table';
 import ImageSlider from '../../Components/Slider/ImageSlider';
-import CategoryTable from '../../Components/Table/CategoryTable';
 import FlatLisItem from '../../Components/FlatList/FlatLisItem';
 import {
   getCategories,
@@ -33,6 +32,8 @@ import CategoriesList from '../../Components/Category/CategoriesList ';
 import HomeSlider from '../../Components/Slider/HomeSlider';
 import SectionHeader from '../../Components/SectionHeader/SectionHeader ';
 import RenderHTML from 'react-native-render-html';
+import FlashDealCategory from '../../Components/Category/FlashDealCategory';
+import RecommendedList from '../../Components/Category/RecommendedList ';
 
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -92,33 +93,15 @@ export default function Home() {
     return () => backHandler.remove();
   }, [selectedCategory, selectedFlashDeal, selectedRecommended]);
 
-  // const handleItemPress = item => {
-  //   if (selectedItem?.itemName === item.itemName) {
-  //     setSelectedItem(null);
-  //   } else {
-  //     setSelectedItem(item);
-  //   }
-  // };
-
-  // const handleItemPress = async item => {
-  //   try {
-  //     const productDetails = await getProductById(item.id);
-  //     setSelectedItem(productDetails);
-  //     console.log('Product details', productDetails);
-  //   } catch (error) {
-  //     console.log('Error fetching product details:', error.message);
-  //   }
-  // };
-
   const handleItemPress = async item => {
     try {
       const productDetails = await getProductById(item.id);
       if (productDetails) {
         productDetails.feature = productDetails.feature || [];
-        productDetails.description = productDetails.description  || [];
-        
-        console.log('Table', productDetails.feature);
-        console.log('description', productDetails.description);
+        productDetails.description = productDetails.description || [];
+        productDetails.productsLink = productDetails.productsLink || [];
+        // console.log('Table', productDetails.feature);
+        // console.log('description', productDetails.description);
         setSelectedItem(productDetails);
         // console.log('Product details', productDetails);
       }
@@ -127,14 +110,21 @@ export default function Home() {
     }
   };
 
-  const handleFlashDealPress = deal => {
-    setSelectedFlashDeal(deal);
-    setSelectedItem(deal.details[0]);
+  const renderHTMLContent = () => {
+    if (Array.isArray(selectedItem.feature)) {
+      return selectedItem.feature
+        .map(feature => <p>${JSON.stringify(feature)}</p>)
+        .join('');
+    }
+    return selectedItem.feature || '';
+  };
+
+  const handleFlashDealPress = flashDeal => {
+    setSelectedFlashDeal(flashDeal);
   };
 
   const handleRecommendedPress = item => {
     setSelectedRecommended(item);
-    setSelectedItem(item.details[0]);
   };
 
   const handleBackPress = () => {
@@ -148,7 +138,7 @@ export default function Home() {
       const response = await getProductsByCategory(category.name);
       if (response && Array.isArray(response)) {
         const products = response.map(product => ({
-          id: product._id,
+          id: product._id,  
           name: product.name,
           description: product.description || '',
           images: product.images || [],
@@ -175,7 +165,6 @@ export default function Home() {
     if (!selectedItem || !selectedItem.productsLink) {
       return null;
     }
-
     const iconMap = {
       'Note bookes': 'book',
       amazon: 'amazon',
@@ -207,7 +196,7 @@ export default function Home() {
         {!selectedCategory && !selectedFlashDeal && !selectedRecommended && (
           <HomeSlider />
         )}
-        {!selectedItem && (
+        {!selectedItem && !selectedFlashDeal && !selectedRecommended && (
           <CategoriesList
             categories={Categories}
             handleCategoryPress={handleCategoryPress}
@@ -239,7 +228,7 @@ export default function Home() {
           </>
         )}
         {selectedItem && (
-          <View style={styles.itemDetails}>
+          <ScrollView style={styles.itemDetails}>
             <TouchableOpacity
               onPress={handleBackPress}
               style={styles.backButton}>
@@ -248,38 +237,55 @@ export default function Home() {
             <Text style={styles.itemName}>{selectedItem.name}</Text>
             <ImageSlider />
             <View style={styles.ICONROW}>{renderIcons()}</View>
-            {/* <Text style={styles.DescriptionTxt}>
-              {selectedItem.Description}
-            </Text> */}
-             <RenderHTML
+
+            <RenderHTML
               contentWidth={styles.container.width}
-              source={{ html: selectedItem.description }}
-              baseStyle={styles.DescriptionTxt} 
+              source={{html: selectedItem.description}}
+              baseStyle={styles.DescriptionTxt}
             />
-            <Text style={styles.Description2Txt}>  
+            <Text style={styles.Description2Txt}>
               {selectedItem.Description2}
             </Text>
-            {/* <Image source={selectedItem.Img} style={styles.Img2} /> */}
             <Image source={{uri: selectedItem.images[0]}} style={styles.Img2} />
-            <View>
-              <Table />
+
+            <RenderHTML
+              contentWidth={scale(400)}
+              source={{html: renderHTMLContent()}}
+              baseStyle={{
+                marginHorizontal: scale(10),
+                color: COLORS.Black,
+                padding: scale(5),
+              }}
+            />
+            <View style={styles.BottomBtnContainer}>
+              {selectedItem.productsLink.map((link, index) => (
+                <View style={styles.ImgndBtn} key={index}>
+                  <Image
+                    source={
+                      link.image
+                        ? {uri: link.image}
+                        : require('../assets/Logo1.webp')
+                    }
+                    style={styles.Bottoming}
+                  />
+                  <View style={{alignSelf: 'center'}}>
+                    <TouchableOpacity
+                      style={styles.BottomBtn}
+                      onPress={() => Linking.openURL(link.url)}>
+                      <Text style={styles.BottomBtnTxt}>BUY NOW</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.Companytxt}>({link.company})</Text>
+                  </View>
+                </View>
+              ))}
             </View>
-            <View style={styles.itemtxt}>
-              <Text style={styles.itemtxts}>{selectedItem.itemName}</Text>
-              <TouchableOpacity
-                style={{
-                  backgroundColor: COLORS.green,
-                  borderRadius: moderateScale(8),
-                }}>
-                <Text style={styles.BtnTxt}>BUY NOW</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          </ScrollView>
         )}
         {!selectedCategory && !selectedFlashDeal && !selectedRecommended && (
           <View style={styles.SeachContainer}>
             <TextInput
               placeholder="Search products..."
+              vishvaa
               placeholderTextColor={COLORS.White}
               style={{paddingVertical: 1}}
             />
@@ -294,31 +300,39 @@ export default function Home() {
         {!selectedFlashDeal && !selectedCategory && !selectedRecommended && (
           <>
             <SectionHeader title="Flash Deals" />
-            <FlatList
+            <FlashDealCategory
               data={FlashDeals}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              renderItem={({item}) => (
-                <View style={styles.cardContainer}>
-                  <View style={styles.flashDealItem}>
-                    <ImageBackground
-                      source={item.Img}
-                      style={styles.flashDealImage}>
-                      <View style={styles.flashDealTextContainer}>
-                        <Text style={styles.flashDealTitle}>{item.title}</Text>
-                      </View>
-                    </ImageBackground>
-                  </View>
-                  <TouchableOpacity
-                    style={styles.FlastBtn}
-                    onPress={() => handleFlashDealPress(item)}>
-                    <Text style={styles.FlastBtnTxt}>{item.title}</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-              keyExtractor={(item, index) => index.toString()}
+              handleFlashDealPress={handleFlashDealPress}
             />
           </>
+        )}
+        {selectedFlashDeal && (
+          <View style={{flex: 1, backgroundColor: COLORS.White}}>
+            <TouchableOpacity style={styles.backButton}>
+              <AntDesign name="arrowleft" size={24} color={COLORS.Black} />
+            </TouchableOpacity>
+            <FlatLisItem
+              data={FlashDealsData.FlashDeals}
+              renderItem={({item}) => (
+                <View>
+                  <Text style={styles.itemName}>{item.title}</Text>
+                  <ImageSlider />
+                  {item.details.map((detail, index) => (
+                    <View key={index}>
+                      <Text style={styles.FlashDealDescription}>
+                        {detail.Description}
+                      </Text>
+                      <Text style={styles.FlashDealDescription2}>
+                        {detail.Description2}
+                      </Text>
+                      <Image source={detail.Img2} style={styles.FlashImg} />
+                    </View>
+                  ))}
+                  <Table />
+                </View>
+              )}
+            />
+          </View>
         )}
         {!selectedFlashDeal && !selectedCategory && !selectedRecommended && (
           <View>
@@ -330,28 +344,41 @@ export default function Home() {
               <Text style={styles.HowItTxt}>How it works?</Text>
             </View>
             <SectionHeader title="Recommended" />
-            <FlatLisItem
+            <RecommendedList
               data={Recommended}
-              style={{
-                backgroundColor: '#D1F2EB',
-                marginHorizontal: scale(10),
-                borderRadius: moderateScale(5),
-              }}
-              showsHorizontalScrollIndicator={false}
-              numColumns={2}
-              columnWrapperStyle={styles.row}
-              renderItem={({item}) => (
-                <TouchableOpacity
-                  style={styles.recommendedItem}
-                  onPress={() => handleRecommendedPress(item)}>
-                  <Image source={item.Img} style={styles.recommendedImage} />
-                  <Text style={styles.recommendedTitle}>{item.title}</Text>
-                </TouchableOpacity>
-              )}
-              keyExtractor={(item, index) => index.toString()}
+              handlePress={handleRecommendedPress}
             />
           </View>
         )}
+        {selectedRecommended && (
+          <View style={{flex: 1, backgroundColor: COLORS.White}}>
+            <TouchableOpacity style={styles.backButton}>
+              <AntDesign name="arrowleft" size={24} color={COLORS.Black} />
+            </TouchableOpacity>
+            <FlatLisItem
+              data={RecommendedData.Recommended}
+              renderItem={({item}) => (
+                <View>
+                  <Text style={styles.itemName}>{item.title}</Text>
+                  <ImageSlider />
+                  {item.details.map((detail, index) => (
+                    <View key={index}>
+                      <Text style={styles.FlashDealDescription}>
+                        {detail.Description}
+                      </Text>
+                      <Text style={styles.FlashDealDescription2}>
+                        {detail.Description2}
+                      </Text>
+                      <Image source={detail.Img2} style={styles.FlashImg} />
+                    </View>
+                  ))}
+                  <Table />
+                </View>
+              )}
+            />
+          </View>
+        )}
+
         {!selectedFlashDeal && !selectedCategory && !selectedRecommended && (
           <View>
             <View style={styles.SectionHeader}>
@@ -366,31 +393,10 @@ export default function Home() {
                 />
               </TouchableOpacity>
             </View>
-            <FlatList
+            <FlashDealCategory
               data={FlashDeals}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              renderItem={({item}) => (
-                <View style={styles.cardContainer}>
-                  <View style={styles.flashDealItem}>
-                    <ImageBackground
-                      source={item.Img}
-                      style={styles.flashDealImage}>
-                      <View style={styles.flashDealTextContainer}>
-                        <Text style={styles.flashDealTitle}>{item.title}</Text>
-                      </View>
-                    </ImageBackground>
-                  </View>
-                  <TouchableOpacity
-                    style={styles.FlastBtn}
-                    onPress={() => handleFlashDealPress(item)}>
-                    <Text style={styles.FlastBtnTxt}>{item.title}</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-              keyExtractor={(item, index) => index.toString()}
+              handleFlashDealPress={handleFlashDealPress}
             />
-            <CategoryTable />
           </View>
         )}
       </ScrollView>
@@ -426,13 +432,14 @@ const styles = StyleSheet.create({
     marginBottom: scale(5),
   },
   itemDetails: {
-    alignItems: 'center',
-    padding: scale(10),
+    backgroundColor: COLORS.White,
   },
   BannerImg: {
     height: verticalScale(170),
-    width: scale(340),
+    width: scale(330),
     resizeMode: 'cover',
+    alignSelf: 'center',
+    borderRadius: moderateScale(8),
   },
   ViewAllButton: {
     flexDirection: 'row',
@@ -446,30 +453,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: moderateScale(20),
     color: COLORS.Black,
+    textAlign: 'center',
   },
   itemimg: {
     height: scale(320),
     width: scale(350),
   },
-  BYEBTN: {
-    backgroundColor: COLORS.green,
-    width: scale(300),
-    height: scale(40),
-    margin: scale(20),
-  },
-  BYEBTNTXT: {
-    color: COLORS.White,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    paddingVertical: verticalScale(5),
-    fontSize: moderateScale(18),
-  },
+
   DescriptionTxt: {
     fontWeight: 'bold',
     color: COLORS.Black,
     fontSize: moderateScale(20),
     margin: scale(15),
     paddingHorizontal: scale(30),
+    textAlign: 'center',
   },
   Description2Txt: {
     textAlign: 'center',
@@ -478,26 +475,21 @@ const styles = StyleSheet.create({
   Img2: {
     height: scale(325),
     width: scale(325),
-    margin: scale(20),
+    alignSelf: 'center',
+    marginVertical: verticalScale(20),
   },
   itemtxt: {
     flexDirection: 'row',
     backgroundColor: COLORS.White,
     justifyContent: 'space-around',
     width: '100%',
-    bottom: scale(-8),
     height: scale(40),
   },
   itemtxts: {
     color: COLORS.Black,
     textAlignVertical: 'center',
   },
-  BtnTxt: {
-    color: COLORS.White,
-    width: scale(150),
-    textAlign: 'center',
-    paddingVertical: verticalScale(10),
-  },
+
   cardContainer: {
     margin: scale(10),
     padding: scale(10),
@@ -633,5 +625,66 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: '100%',
+  },
+  BottomBtnContainer: {
+    marginTop: scale(70),
+    borderTopWidth: scale(0.5),
+    paddingVertical: verticalScale(10),
+  },
+  BottomTxt: {
+    width: scale(100),
+    color: COLORS.Black,
+    fontSize: moderateScale(15),
+    fontWeight: 'bold',
+  },
+  BottomBtn: {
+    backgroundColor: COLORS.green,
+    width: scale(140),
+    height: scale(35),
+    borderRadius: moderateScale(5),
+    marginVertical: verticalScale(10),
+    marginHorizontal: scale(5),
+    alignSelf: 'center',
+  },
+  BottomBtnTxt: {
+    textAlign: 'center',
+    color: COLORS.White,
+    paddingVertical: verticalScale(8),
+  },
+  Companytxt: {
+    color: COLORS.Black,
+    alignSelf: 'center',
+    fontWeight: 'bold',
+    fontSize: moderateScale(17),
+  },
+  Bottoming: {
+    height: scale(125),
+    width: scale(125),
+    borderRadius: moderateScale(5),
+  },
+  ImgndBtn: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: scale(10),
+  },
+  FlashDealDescription: {
+    color: COLORS.Black,
+    fontSize: moderateScale(18),
+    textAlign: 'center',
+    width: scale(225),
+    alignSelf: 'center',
+    fontWeight: 'bold',
+  },
+  FlashDealDescription2: {
+    textAlign: 'center',
+    paddingVertical: verticalScale(15),
+    color: COLORS.Black,
+    fontSize: moderateScale(15),
+    paddingHorizontal: scale(18),
+  },
+  FlashImg: {
+    height: scale(300),
+    width: scale(250),
+    alignSelf: 'center',
   },
 });

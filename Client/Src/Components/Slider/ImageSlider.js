@@ -108,10 +108,10 @@
       height: '95%',
       resizeMode: 'cover',
       borderRadius:moderateScale(10),
-      marginHorizontal:scale(5)
+      marginHorizontal:scale(15)
     },
     button: {
-      width: width - 38,
+      width: width - 30,
       height: '95%',
       justifyContent: 'center',
       alignItems: 'center',
