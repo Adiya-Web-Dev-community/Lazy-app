@@ -30,17 +30,17 @@ export const getProductById = async productId => {
   }
 };
 
-export const uploadImage = async (imageUrl, productId) => {
+export const UploadImage = async (productId, imageUrl) => {
   try {
-    const response = await axios.put(
-      `http://localhost:8000/api/product/user/product/${productId}`,
+    const response = await Instance.put(
+      `/api/product/user/product/${productId}`,
       {
         image: imageUrl,
       },
     );
+    console.log('All Data image', response);
     return response.data;
   } catch (error) {
-    console.error('Error uploading image:', error);
     throw error;
   }
 };

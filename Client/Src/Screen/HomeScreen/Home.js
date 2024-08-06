@@ -138,7 +138,7 @@ export default function Home() {
       const response = await getProductsByCategory(category.name);
       if (response && Array.isArray(response)) {
         const products = response.map(product => ({
-          id: product._id,  
+          id: product._id,
           name: product.name,
           description: product.description || '',
           images: product.images || [],
@@ -194,7 +194,9 @@ export default function Home() {
     <View style={styles.container}>
       <ScrollView style={styles.content}>
         {!selectedCategory && !selectedFlashDeal && !selectedRecommended && (
-          <HomeSlider />
+          <View>
+            <HomeSlider />
+          </View>
         )}
         {!selectedItem && !selectedFlashDeal && !selectedRecommended && (
           <CategoriesList
@@ -218,7 +220,9 @@ export default function Home() {
                     }
                     style={styles.detailImage}
                   />
-                  <Text style={{color: COLORS.Black}}>{item.name}</Text>
+                  <Text style={{color: COLORS.Black, fontWeight: '500'}}>
+                    {item.name}
+                  </Text>
                 </TouchableOpacity>
               )}
               keyExtractor={(item, index) => index.toString()}
@@ -235,9 +239,8 @@ export default function Home() {
               <AntDesign name="arrowleft" size={24} color={COLORS.Black} />
             </TouchableOpacity>
             <Text style={styles.itemName}>{selectedItem.name}</Text>
-            <ImageSlider />
+            <ImageSlider productId={selectedItem?._id} />
             <View style={styles.ICONROW}>{renderIcons()}</View>
-
             <RenderHTML
               contentWidth={styles.container.width}
               source={{html: selectedItem.description}}
@@ -308,30 +311,27 @@ export default function Home() {
         )}
         {selectedFlashDeal && (
           <View style={{flex: 1, backgroundColor: COLORS.White}}>
-            <TouchableOpacity style={styles.backButton}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => setSelectedFlashDeal(null)}>
               <AntDesign name="arrowleft" size={24} color={COLORS.Black} />
             </TouchableOpacity>
-            <FlatLisItem
-              data={FlashDealsData.FlashDeals}
-              renderItem={({item}) => (
-                <View>
-                  <Text style={styles.itemName}>{item.title}</Text>
-                  <ImageSlider />
-                  {item.details.map((detail, index) => (
-                    <View key={index}>
-                      <Text style={styles.FlashDealDescription}>
-                        {detail.Description}
-                      </Text>
-                      <Text style={styles.FlashDealDescription2}>
-                        {detail.Description2}
-                      </Text>
-                      <Image source={detail.Img2} style={styles.FlashImg} />
-                    </View>
-                  ))}
-                  <Table />
+            <View>
+              <Text style={styles.itemName}>{selectedFlashDeal.title}</Text>
+              <ImageSlider />
+              {selectedFlashDeal.details.map((detail, index) => (
+                <View key={index}>
+                  <Text style={styles.FlashDealDescription}>
+                    {detail.Description}
+                  </Text>
+                  <Text style={styles.FlashDealDescription2}>
+                    {detail.Description2}
+                  </Text>
+                  <Image source={detail.Img2} style={styles.FlashImg} />
                 </View>
-              )}
-            />
+              ))}
+              <Table />
+            </View>
           </View>
         )}
         {!selectedFlashDeal && !selectedCategory && !selectedRecommended && (
@@ -352,30 +352,27 @@ export default function Home() {
         )}
         {selectedRecommended && (
           <View style={{flex: 1, backgroundColor: COLORS.White}}>
-            <TouchableOpacity style={styles.backButton}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => setSelectedRecommended(null)}>
               <AntDesign name="arrowleft" size={24} color={COLORS.Black} />
             </TouchableOpacity>
-            <FlatLisItem
-              data={RecommendedData.Recommended}
-              renderItem={({item}) => (
-                <View>
-                  <Text style={styles.itemName}>{item.title}</Text>
-                  <ImageSlider />
-                  {item.details.map((detail, index) => (
-                    <View key={index}>
-                      <Text style={styles.FlashDealDescription}>
-                        {detail.Description}
-                      </Text>
-                      <Text style={styles.FlashDealDescription2}>
-                        {detail.Description2}
-                      </Text>
-                      <Image source={detail.Img2} style={styles.FlashImg} />
-                    </View>
-                  ))}
-                  <Table />
+            <View>
+              <Text style={styles.itemName}>{selectedRecommended.title}</Text>
+              <ImageSlider />
+              {selectedRecommended.details.map((detail, index) => (
+                <View key={index}>
+                  <Text style={styles.FlashDealDescription}>
+                    {detail.Description}
+                  </Text>
+                  <Text style={styles.FlashDealDescription2}>
+                    {detail.Description2}
+                  </Text>
+                  <Image source={detail.Img2} style={styles.FlashImg} />
                 </View>
-              )}
-            />
+              ))}
+              <Table />
+            </View>
           </View>
         )}
 
@@ -425,6 +422,7 @@ const styles = StyleSheet.create({
     padding: scale(10),
     width: scale(160),
     backgroundColor: COLORS.White,
+    elevation: scale(5),
   },
   detailImage: {
     width: scale(155),

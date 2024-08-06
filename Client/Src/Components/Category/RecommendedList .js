@@ -41,12 +41,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: moderateScale(1),
     borderColor: '#ccc',
-    borderRadius: moderateScale(10),
+    borderRadius: moderateScale(7),
     padding: scale(5),
     width: scale(150),
     margin: scale(3),
     backgroundColor: COLORS.White,
     marginVertical: verticalScale(5),
+    paddingVertical: verticalScale(5),
+    elevation: scale(15),
   },
   image: {
     width: scale(129),
@@ -56,6 +58,7 @@ const styles = StyleSheet.create({
   title: {
     color: COLORS.Black,
     textAlign: 'center',
+    fontWeight: 'bold',
   },
 });
 
