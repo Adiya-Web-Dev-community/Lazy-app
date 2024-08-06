@@ -11,25 +11,26 @@ import Signup from '../Screen/Singup/Singup';
 import Home from '../Screen/HomeScreen/Home';
 import Profile from '../Screen/ProfileScreen/Profile';
 import {COLORS} from '../Theme/Colors';
-import {scale, verticalScale} from '../utils/Scaling';
+import {moderateScale, scale, verticalScale} from '../utils/Scaling';
 import Redeem from '../Screen/Redeem/Redeem';
 import Claim from '../Screen/Claim/Claim';
 import Info from '../Screen/Info/Guide/Info';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import EarnMore from '../Screen/EarnMore/EarnMore';
-import LazybatWorks from '../Screen/LazybatWorks/LazybatWorks';
-import TelegramChannel from '../Screen/TelegramChannel/TelegramChannel';
-import ContactUS from '../Screen/ContactUS/ContactUS';
-import RateUS from '../Screen/RateUS/RateUS';
-import Privacy from '../Screen/PrivacyPolicy/Privacy';
-import DrawerProfile from '../Screen/DrawerProfile/DrawerProfile';
-import AccountSettings from '../Screen/AccountSetting/AccountSettings';
-import KnowMoreAboutProduct from '../Screen/KnowMoreAboutProducts/KnowMoreAboutProduct';
-import ReferAndEarn from '../Screen/ReferAndEarn/ReferAndEarn';
-import MissingCashback from '../Screen/MissingCashback/MissingCashback';
+import EarnMore from '../Screen/DrawerScreen/EarnMore';
+import LazybatWorks from '../Screen/DrawerScreen/LazybatWorks';
+import TelegramChannel from '../Screen/DrawerScreen/TelegramChannel';
+import ContactUS from '../Screen/DrawerScreen/ContactUS';
+import RateUS from '../Screen/DrawerScreen/RateUS';
+import Privacy from '../Screen/DrawerScreen/Privacy';
+import DrawerProfile from '../Screen/DrawerScreen/DrawerProfile';
+import AccountSettings from '../Screen/DrawerScreen/AccountSettings';
+import KnowMoreAboutProduct from '../Screen/DrawerScreen/KnowMoreAboutProduct';
+import ReferAndEarn from '../Screen/DrawerScreen/ReferAndEarn';
+import MissingCashback from '../Screen/DrawerScreen/MissingCashback';
 import Authlogin from '../utils/Authlogin';
 import Notification from '../Screen/Notification/Notification';
-import Logout from '../Screen/LogOut/Logout';
+import Logout from '../Screen/DrawerScreen/Logout';
+import CustomDrawerContent from '../Components/CustomDrawerContent ';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -48,11 +49,26 @@ function DrawerTab({route, navigation}) {
   }, [navigation, fromProfile]);
 
   return (
-    <Drawer.Navigator initialRouteName="Home">
+    <Drawer.Navigator
+      initialRouteName="Home"
+      drawerContent={props => <CustomDrawerContent {...props} />}>
       <Drawer.Screen
         name="Home"
         component={BottomTab}
         options={({navigation}) => ({
+          title: 'LazyApp',
+          headerStyle: {
+            elevation: scale(10),
+            shadowColor: '#000',
+            shadowOpacity: 0.25,
+            shadowRadius: moderateScale(4),
+            shadowOffset: {width: 0, height: 2},
+            backgroundColor: '#f1f2f4',
+          },
+          headerTitleStyle: {
+            color: COLORS.green,
+            fontWeight: 'bold',
+          },
           headerRight: () => (
             <View style={{flexDirection: 'row'}}>
               <TouchableOpacity
@@ -84,7 +100,7 @@ function DrawerTab({route, navigation}) {
           <Drawer.Screen name="EarnMore" component={EarnMore} />
           <Drawer.Screen name="TelegramChannel" component={TelegramChannel} />
           <Drawer.Screen
-            name="KnowMoreAboutProduct"
+            name="Know More About Products THROUGH MINI VIDEOS"
             component={KnowMoreAboutProduct}
           />
           <Drawer.Screen name="ReferAndEarn" component={ReferAndEarn} />

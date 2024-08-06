@@ -1,7 +1,7 @@
 const RecommendedData = {
     Recommended: [
       {
-        title: 'MOTO G34',
+        title: 'Vivo',
         Img: require('../assets/Moto.jpg'),
         details: [
           {
@@ -15,7 +15,7 @@ const RecommendedData = {
         ],
       },
       {
-        title: 'MOTO G34',
+        title: 'Oppo',
         Img: require('../assets/Moto.jpg'),
         details: [
           {
@@ -29,7 +29,7 @@ const RecommendedData = {
         ],
       },
       {
-        title: 'MOTO G34',
+        title: 'One pluse',
         Img: require('../assets/Moto.jpg'),
         details: [
           {
@@ -43,7 +43,7 @@ const RecommendedData = {
         ],
       },
       {
-        title: 'MOTO G34',
+        title: 'Iphone',
         Img: require('../assets/Moto.jpg'),
         details: [
           {
@@ -57,7 +57,7 @@ const RecommendedData = {
         ],
       },
       {
-        title: 'MOTO G34',
+        title: 'Redmi',
         Img: require('../assets/Moto.jpg'),
         details: [
           {

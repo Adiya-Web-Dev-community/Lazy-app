@@ -11,10 +11,11 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Input from '../../Components/TextInput/Input';
-import { scale,verticalScale,moderateScale } from '../../utils/Scaling';
-import { COLORS } from '../../Theme/Colors';
+import {scale, verticalScale, moderateScale} from '../../utils/Scaling';
+import {COLORS} from '../../Theme/Colors';
 import {Instance} from '../../api/Instance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 export default function Signup({navigation}) {
   const [email, setEmail] = useState('');
@@ -50,14 +51,18 @@ export default function Signup({navigation}) {
     if (valid) {
       setLoading(true);
       try {
-        const response = await Instance.post('/api/user/register', {
-          email,
-          password,
-        });
+        const response = await Instance.post(
+          'http://192.168.235.164:8000/api/user/register',
+          {
+            email,
+            password,
+          },
+        );
         console.log('Response:', response.data);
         if (response.data.success) {
           const token = response.data.token;
           console.log('Signup successful', token);
+          console.log('Received Token:', token);
           Alert.alert('Signup successful!', 'Welcome to LazyApp');
           navigation.navigate('DrawerTab');
         } else {
@@ -114,13 +119,17 @@ export default function Signup({navigation}) {
             end={{x: 1, y: 0}}
             style={styles.SignupBtn}>
             {loading ? (
-              <ActivityIndicator size="small" color={COLORS.White} style={styles.Loader}/>
+              <ActivityIndicator
+                size="small"
+                color={COLORS.White}
+                style={styles.Loader}
+              />
             ) : (
               <Text style={styles.BtnTxt}>SIGNUP</Text>
             )}
           </LinearGradient>
         </TouchableOpacity>
-        <Text style={styles.txt}> 
+        <Text style={styles.txt}>
           Already have an account?
           <Text onPress={() => navigation.navigate('Login')}>Login</Text>
         </Text>
@@ -162,7 +171,7 @@ const styles = StyleSheet.create({
   SignupBtn: {
     borderRadius: moderateScale(100),
     width: scale(150),
-    height:scale(38),
+    height: scale(38),
     alignSelf: 'center',
     alignItems: 'center',
     paddingVertical: verticalScale(5),
@@ -178,7 +187,7 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(18),
     textAlign: 'center',
   },
-  Loader:{
-    marginVertical:verticalScale(4)
-  }
+  Loader: {
+    marginVertical: verticalScale(4),
+  },
 });

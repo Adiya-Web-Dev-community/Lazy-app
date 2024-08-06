@@ -8,7 +8,7 @@ export default function FlatLisItem({
   showsHorizontalScrollIndicator,
   style,
   numColumns,
-  columnWrapperStyle
+  columnWrapperStyle,
 }) {
   return (
     <View style={styles.container}>

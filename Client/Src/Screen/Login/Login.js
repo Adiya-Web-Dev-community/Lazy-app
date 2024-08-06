@@ -12,8 +12,9 @@ import LinearGradient from 'react-native-linear-gradient';
 import Input from '../../Components/TextInput/Input';
 import {scale, verticalScale, moderateScale} from '../../utils/Scaling';
 import {COLORS} from '../../Theme/Colors';
-import {Instance} from '../../api/Instance';
+import { Instance } from '../../api/Instance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 export default function Login({navigation}) {
   const [email, setEmail] = useState('');
@@ -37,22 +38,19 @@ export default function Login({navigation}) {
     } else {
       setEmailError('');
     }
-
     if (password.length < 6) {
       setPasswordError('Password must be at least 6 characters');
       valid = false;
     } else {
       setPasswordError('');
     }
-
     if (valid) {
       try {
-        const response = await Instance.post('/api/user/login', {
+        const response = await Instance.post('http://192.168.23.164:8000/api/user/login', {
           email: email,
           password: password,
         });
         console.log('Login Response:', response.data);
-
         if (response.data.success) {
           const token = response.data.token;
           await AsyncStorage.setItem('userToken', token);
