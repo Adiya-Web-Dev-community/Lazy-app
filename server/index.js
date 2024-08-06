@@ -20,6 +20,8 @@ const adminRoute = require("./routes/adminRoute");
 const categoryRoute = require("./routes/categoryRoute");
 const companyRoute=require("./routes/companyRoute");
 const productRoute=require("./routes/productRoute")
+const blogRoute=require("./routes/blogRoute");
+const faqRoute=require("./routes/faqRoute")
 databaseConnect();
 
 const routes = [
@@ -42,6 +44,14 @@ const routes = [
   {
     path: `${rootEndPoint}/product/`,
     func: productRoute,
+  },
+  {
+    path: `${rootEndPoint}/blog/`,
+    func: blogRoute,
+  },
+  {
+    path: `${rootEndPoint}/faq/`,
+    func: faqRoute,
   },
 ];
 routes.forEach(({ path, func }) => {
