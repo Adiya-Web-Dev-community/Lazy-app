@@ -6,28 +6,40 @@ const app = express();
 const databaseConnect = require("./config/database");
 const rootEndPoint = require("./config/endpoint");
 const corsOptions = {
-  origin: '*', 
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  allowedHeaders: 'Content-Type,authorization', 
+  origin: "*",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  allowedHeaders: "Content-Type,authorization",
 };
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 mongoose.set("strictQuery", false);
 require("dotenv").config();
+databaseConnect();
+
 
 const usersRoute = require("./routes/userRoute");
 const adminRoute = require("./routes/adminRoute");
 const categoryRoute = require("./routes/categoryRoute");
-const companyRoute=require("./routes/companyRoute");
-const productRoute=require("./routes/productRoute")
-const blogRoute=require("./routes/blogRoute");
-const faqRoute=require("./routes/faqRoute")
-databaseConnect();
+const companyRoute = require("./routes/companyRoute");
+const productRoute = require("./routes/productRoute");
+const blogRoute = require("./routes/blogRoute");
+const faqRoute = require("./routes/faqRoute");
+const prosconsRoute = require("./routes/prosconsRoute");
+const infoguideRoute = require("./routes/infoguideRoute");
+
 
 const routes = [
   {
     path: `${rootEndPoint}/user/`,
     func: usersRoute,
+  },
+  {
+    path: `${rootEndPoint}/proscons/`,
+    func: prosconsRoute,
+  },
+  {
+    path: `${rootEndPoint}/infoguide/`,
+    func: infoguideRoute,
   },
   {
     path: `${rootEndPoint}/admin/`,

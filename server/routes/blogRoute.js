@@ -49,9 +49,4 @@ router.get("/blogslug/:slug",getSingleBlogBySlug)
 router.post("/review",CreateReview)
 router.get("/review/:blogId",getReviewByBlogId);
 
-
-
-
-
-
 module.exports = router;
