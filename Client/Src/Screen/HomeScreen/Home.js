@@ -34,8 +34,10 @@ import SectionHeader from '../../Components/SectionHeader/SectionHeader ';
 import RenderHTML from 'react-native-render-html';
 import FlashDealCategory from '../../Components/Category/FlashDealCategory';
 import RecommendedList from '../../Components/Category/RecommendedList ';
+import Switch from '../../Components/Switch/Switch';
+import SwitchMain from '../../Components/Switch/Switch';
 
-export default function Home() {
+export default function Home({navigation}) {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedFlashDeal, setSelectedFlashDeal] = useState(null);
@@ -195,6 +197,51 @@ export default function Home() {
       <ScrollView style={styles.content}>
         {!selectedCategory && !selectedFlashDeal && !selectedRecommended && (
           <View>
+            <View style={styles.TITLEBTNCONTAINER}>
+              <Image
+                source={require('../assets/L1.png')}
+                style={{height: 60, width: 159}}
+              />
+              <View>
+                <SwitchMain />
+              </View>
+              <TouchableOpacity
+                style={styles.FeedBtn}
+                onPress={() => navigation.navigate('BuzzFeed')}>
+                <Text style={styles.FeedBtnTxt}>The Buzz Feed</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.TrustedContainer}>
+              <TouchableOpacity style={styles.TrustedBox}>
+                <Text style={styles.TrustedTxt}>
+                  Trusted/Best{'\n'}
+                  Product{'\n'}
+                  <Text style={{color: COLORS.yellow}}>
+                    Verified By{'\n'}
+                    Lazybat Team
+                  </Text>
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.TrustedBox}>
+                <Text style={[styles.TrustedTxt, {paddingTop: 2}]}>
+                  Brand Hub{'\n'}
+                  <Text style={{color: COLORS.yellow}}>
+                    Non-Verified{'\n'}
+                    Product
+                  </Text>
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.TrustedBox}>
+                <Text style={styles.TrustedTxt}>
+                  Suggest Us{'\n'}
+                  <Text style={{color: COLORS.yellow}}>
+                    Help Us Discover{'\n'}
+                    Hidden Gems.
+                  </Text>
+                </Text>
+              </TouchableOpacity>
+            </View>
+
             <HomeSlider />
           </View>
         )}
@@ -413,6 +460,43 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-around',
     marginBottom: 10,
+  },
+  FeedBtn: {
+    borderWidth: moderateScale(1),
+    paddingVertical: verticalScale(10),
+    paddingHorizontal: scale(20),
+    borderRadius: moderateScale(8),
+  },
+  FeedBtnTxt: {
+    color: COLORS.red,
+    fontWeight: 'bold',
+    fontSize: moderateScale(15),
+  },
+  TITLEBTNCONTAINER: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    marginVertical: verticalScale(20),
+  },
+  TrustedContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: scale(10),
+  },
+  TrustedBox: {
+    flex: 1,
+    borderWidth: moderateScale(1),
+    marginHorizontal: scale(5),
+    alignItems: 'center',
+    paddingVertical: verticalScale(10),
+    borderRadius: moderateScale(8),
+    backgroundColor: COLORS.green,
+    padding: scale(2),
+    paddingHorizontal: 5,
+  },
+  TrustedTxt: {
+    color: COLORS.White,
+    textAlign: 'center',
   },
   detailItem: {
     alignItems: 'center',
