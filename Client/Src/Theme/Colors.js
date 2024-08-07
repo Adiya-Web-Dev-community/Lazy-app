@@ -3,7 +3,9 @@ const COLORS = {
     White:'white',
     Black:'black',
     green:'#2471A3',
-    grey:'grey'
+    grey:'grey',
+    red:'red',
+    yellow:'yellow'
   };
   
   export {COLORS};
