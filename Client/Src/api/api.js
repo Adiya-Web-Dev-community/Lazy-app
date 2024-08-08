@@ -44,3 +44,13 @@ export const UploadImage = async (productId, imageUrl) => {
     throw error;
   }
 };
+
+
+export const getPost = async () => {
+  try {
+    const response = await Instance.get('/api/blog/all/category');
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

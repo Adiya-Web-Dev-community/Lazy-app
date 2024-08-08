@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Image,
   StyleSheet,
@@ -13,40 +13,36 @@ import {COLORS} from '../../Theme/Colors';
 import {moderateScale, scale, verticalScale} from '../../utils/Scaling';
 import SwitchMain from '../../Components/Switch/Switch';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import BuzzFeedData from './BuzzFeedData';
+import {getPost} from '../../api/api';
 
 export default function BuzzFeed() {
   const [selectedCommentId, setSelectedCommentId] = useState(null);
   const [commentText, setCommentText] = useState('');
   const [showDetails, setShowDetails] = useState(false);
-  const [selectedPostId, setSelectedPostId] = useState(null);
   const [selectedPostData, setSelectedPostData] = useState(null);
-  const [likes, setLikes] = useState(
-    BuzzFeedData.BuzzFeeds.map(item => ({id: item.id, count: 0, liked: false})),
-  );
+  const [likes, setLikes] = useState([]);
+  const [posts, setPosts] = useState([]);
 
-  const handleCommentPress = id => {
-    setSelectedCommentId(selectedCommentId === id ? null : id);
-  };
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const data = await getPost();
+        console.log('get post:', data);
+        setPosts(data);
+        setLikes(data.map(item => ({id: item._id, count: 0, liked: false})));
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      }
+    };
+    fetchPosts();
+  }, []);
+
+ 
 
   const handleCommentSubmit = () => {
     console.log('Comment submitted:', commentText);
     setCommentText('');
     setSelectedCommentId(null);
-  };
-
-  const handleLikePress = id => {
-    setLikes(prevLikes =>
-      prevLikes.map(like =>
-        like.id === id
-          ? {
-              ...like,
-              count: like.liked ? like.count - 1 : like.count + 1,
-              liked: !like.liked,
-            }
-          : like,
-      ),
-    );
   };
 
   const handlePostPress = post => {
@@ -67,61 +63,42 @@ export default function BuzzFeed() {
               <Text style={styles.FeedBtnTxt}>The Buzz Feed</Text>
             </TouchableOpacity>
           </View>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.scrollViewContainer}
-            style={styles.scrollView}>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>All Category</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Category 1</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Category 2</Text>
-            </TouchableOpacity>
-          </ScrollView>
+          <View style={styles.SCROLL}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <TouchableOpacity style={styles.button}>
+                <Text style={styles.buttonText}>All Category</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.button}>
+                <Text style={styles.buttonText}>Category 2</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.button}>
+                <Text style={styles.buttonText}>Category 3</Text>
+              </TouchableOpacity>
+            </ScrollView>
+          </View>
           <FlatList
-            data={BuzzFeedData.BuzzFeeds}
+            data={posts}
             showsVerticalScrollIndicator={false}
             renderItem={({item}) => {
-              const likeData = likes.find(like => like.id === item.id);
               return (
                 <>
                   <TouchableOpacity onPress={() => handlePostPress(item)}>
                     <View style={styles.postContainer}>
                       <View style={styles.profileContainer}>
                         <Image
-                          source={item.profileImage}
+                          source={{uri: item.image}}
                           style={styles.profileImage}
+                          onError={() => console.log('Image failed to load')}
                         />
-                        <Text style={styles.username}>{item.Username}</Text>
+                        <Text style={styles.username}>{item.name}</Text>
                       </View>
-                      <Image source={item.image} style={styles.postImage} />
+                      <Image
+                        source={{uri: item.image}}
+                        style={styles.postImage}
+                        onError={() => console.log('Image failed to load')}
+                      />
                       <Text style={styles.description}>{item.description}</Text>
-                      <View style={styles.iconContainer}>
-                        <TouchableOpacity
-                          style={styles.iconButton}
-                          onPress={() => handleLikePress(item.id)}>
-                          <Icon
-                            name="thumb-up"
-                            size={24}
-                            color={likeData.liked ? COLORS.green : COLORS.Black}
-                          />
-                          <Text style={styles.iconText}>
-                            {likeData.count} Like
-                            {likeData.count !== 1 ? 's' : ''}
-                          </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          style={styles.iconButton}
-                          onPress={() => handleCommentPress(item.id)}>
-                          <Icon name="comment" size={24} color={COLORS.Black} />
-                          <Text style={styles.iconText}>Comment</Text>
-                        </TouchableOpacity>
-                      </View>
-                      {selectedCommentId === item.id && (
+                      {selectedCommentId === item._id && (
                         <View style={styles.commentContainer}>
                           <TextInput
                             style={styles.commentInput}
@@ -141,7 +118,7 @@ export default function BuzzFeed() {
                 </>
               );
             }}
-            keyExtractor={item => item.id}
+            keyExtractor={item => item._id}
             style={styles.flatList}
           />
         </>
@@ -154,12 +131,13 @@ export default function BuzzFeed() {
             <Text style={{color: 'green'}}>Back</Text>
           </TouchableOpacity>
           <View style={styles.detailsContainer}>
-            <Text style={styles.USERNAME}>{selectedPostData.Username}</Text>
+            <Text style={styles.USERNAME}>{selectedPostData.name}</Text>
             <Image
-              source={selectedPostData.image}
+              source={{uri: selectedPostData.image}}
               style={styles.detailsImage}
+              onError={() => console.log('Image failed to load')}
             />
-            {selectedPostData.details.map((detail, index) => (
+            {selectedPostData.details?.map((detail, index) => (
               <View key={index}>
                 <Text style={styles.detailsText}>{detail.Description}</Text>
                 <Text style={styles.details2}>{detail.Description2}</Text>
@@ -181,6 +159,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
+    marginVertical: verticalScale(5),
+  },
+  SCROLL: {
+    flexDirection: 'row',
     marginVertical: verticalScale(10),
   },
   logo: {
@@ -198,22 +180,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: moderateScale(15),
   },
-  scrollView: {
-    marginTop: verticalScale(10),
-  },
   scrollViewContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
     paddingVertical: verticalScale(10),
+    height: scale(70),
+    backgroundColor: 'green',
   },
   button: {
     backgroundColor: COLORS.green,
-    paddingVertical: verticalScale(3.5),
+    paddingVertical: verticalScale(5),
     paddingHorizontal: scale(20),
     borderRadius: moderateScale(8),
     marginHorizontal: scale(5),
     alignItems: 'center',
-    height: scale(30),
+    height: scale(35),
     borderWidth: scale(0.8),
   },
   buttonText: {
