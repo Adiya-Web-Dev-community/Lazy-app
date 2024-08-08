@@ -324,7 +324,6 @@ export interface CompanyDataUpdateType {
   status?: string;
   updatedAt?: string;
   website?: string;
-
   _id?: string;
 }
 
@@ -387,7 +386,6 @@ export interface MutationObjectCompanyType {
 }
 
 //pagination
-
 export interface PaginationProps<T> {
   currentPage: number;
   apiData: T[];
@@ -405,7 +403,6 @@ export interface SideBarPropsType {
 }
 
 //header
-
 export interface HeaderProps {
   onToggleSidebarSmall: () => void;
   isOpen: {
@@ -460,10 +457,73 @@ export interface UploadImageFunction {
 }
 
 //Text Editor
-
 export interface Meta {
   filetype?: string;
   fieldname?: string;
 }
 
 export type Callback = (url: string, meta: { title: string }) => void;
+
+//Blog Category
+export interface CategoryGetData {
+  _id: string;
+  name: string;
+  image: string;
+}
+
+// Blog
+export interface BrandType {
+  name: string;
+  image: string;
+  link: string;
+}
+//get type
+export interface BlogData {
+  _id: string;
+  thumnail: string[];
+  title: string;
+  slug: string;
+  category: string;
+  content: string;
+  brand: BrandType;
+  updatedAt: string;
+  createdAt: string;
+}
+
+export interface BlogResponseData {
+  data?: BlogData[];
+}
+
+//getting response after sending data on backend
+export interface BlogPostResponseType {
+  success?: boolean;
+  message?: string;
+  data?: BlogData;
+}
+
+/// for sending data on backend
+export interface BlogPostType {
+  thumnail: string[];
+  title: string;
+  slug: string;
+  category: string;
+  content: string;
+  brand: BrandType;
+}
+export interface MutationObjectBlogType {
+  path: string;
+  condition: "creat" | "update";
+  data: BlogPostType;
+}
+
+//blog form state
+export interface BlogStateType {
+  title: string;
+  category: string;
+  content: string;
+  brandName: string;
+  webLink: string;
+  imageSrc: string;
+  image: string;
+  thumnail: string[];
+}
