@@ -14,6 +14,7 @@ router.put("/:id",isAdmin,update);
 router.delete("/:id",isAdmin,Delete);
 
 //For Public
-router.get("/:productId",getbyProsuctId)
+router.get("/:productId",getbyProsuctId);
+
 
 module.exports = router;

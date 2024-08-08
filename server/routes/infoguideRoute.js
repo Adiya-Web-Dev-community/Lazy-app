@@ -16,7 +16,6 @@ router.delete("/:id",isAdmin,Delete);
 
 
 //For Public
-
 router.get("/",getAll)
 router.get("/getbyid/:id",getById)
 

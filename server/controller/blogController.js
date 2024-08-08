@@ -46,7 +46,7 @@ const getSingleBlogBySlug = async (req, res) => {
 const getBlogsByCategory = async (req, res) => {
   try {
     const blogs = await Blog.find({ category: req.params.category });
-    res.status(200).json({ success: true, data: blogs });
+    res.status(200).json(blogs);
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
   }
@@ -104,7 +104,7 @@ const getReviewByBlogId = async (req, res) => {
 const GetAllRevies = async (req, res) => {
   try {
     const reviews = await BlogReview.find();
-    res.status(200).json({ success: true, data: reviews });
+    res.status(200).json(reviews);
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
   }
