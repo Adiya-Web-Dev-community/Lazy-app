@@ -30,6 +30,7 @@ const getSingleBlogByID = async (req, res) => {
     res.status(400).json({ success: false, error: error.message });
   }
 };
+
 const getSingleBlogBySlug = async (req, res) => {
   try {
     const blog = await Blog.findOne({ slug: req.params.slug });
@@ -43,6 +44,7 @@ const getSingleBlogBySlug = async (req, res) => {
     res.status(400).json({ success: false, error: error.message });
   }
 };
+
 const getBlogsByCategory = async (req, res) => {
   try {
     const blogs = await Blog.find({ category: req.params.category });
