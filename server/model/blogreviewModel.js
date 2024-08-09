@@ -18,8 +18,8 @@ const blogreviewModel = new mongoose.Schema(
       type: Number,
     },
     isVerify: {
-      type: String,
-      default:false
+      type: Boolean,
+      default: false,
     },
   },
   {

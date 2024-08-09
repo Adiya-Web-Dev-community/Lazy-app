@@ -170,3 +170,22 @@ export const categoryProductHeadings = [
   "Date Added",
   "View",
 ];
+
+//heading for blog
+export const listHeadingBlog = [
+  "Title",
+  "Category",
+  // "Content",
+  "Br.Name",
+  "Br.Image",
+  "Br.Web",
+  "Setting",
+];
+//heading for blog Review
+export const listHeadingBlogReview = [
+  "Name",
+  "Email",
+  "Rating",
+  "Status",
+  "Setting",
+];

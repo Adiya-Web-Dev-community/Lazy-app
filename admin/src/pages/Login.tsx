@@ -49,15 +49,16 @@ const Login = () => {
       }
     },
     onSuccess: (data: LoginApiResponse) => {
-      console.log("Login successful:", data, data?.token);
-      if (data?.success) {
-        localStorage.setItem("admin", data?.token ? data?.token : "");
-      }
+      console.log("Login successful:", data);
+
+      // if (data?.success) {
+      //   localStorage.setItem("admin", data?.token ? data?.token : "");
+      // }
       toast.dismiss();
       toast.success(`Login successful`);
-
+      clearField();
       // Handle success (e.g., redirect to dashboard)
-      setTimeout(() => navigate("/products"), 1000);
+      setTimeout(() => navigate("/login/verify-email"), 1000);
     },
     onError: (error: ApiError) => {
       console.error("Login error:", error);
@@ -94,7 +95,9 @@ const Login = () => {
       method: "post",
       data: loginObjectData,
     });
+  };
 
+  const clearField = () => {
     setLoginObj({
       email: "",
       password: "",

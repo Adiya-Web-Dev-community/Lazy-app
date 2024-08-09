@@ -304,7 +304,7 @@ export interface CompaniesType {
   webLink: string;
   status: string;
   products: number;
-  joinDate: string;
+
   imageSrc: string;
   image: string;
 }
@@ -527,3 +527,84 @@ export interface BlogStateType {
   image: string;
   thumnail: string[];
 }
+
+//blog Reviwe
+
+//get
+export interface BlogReviewType {
+  _id: string;
+  blogId: string;
+  name: string;
+  email: string;
+  star: number;
+  isVerify: boolean;
+}
+
+export interface BlogResponseGetType {
+  data: BlogReviewType[];
+}
+
+//verified
+export interface VerifiedElementDataType {
+  success: boolean;
+  message: string;
+}
+
+//providing props data for delet api
+export interface VerifyPathType {
+  path: string;
+}
+
+//Info
+
+//Info state
+export interface InfoGuidStateType {
+  creat: boolean;
+  updateId: string;
+  updateTitle: string;
+  updateThumnail: string;
+  updateVideo: string;
+}
+
+//form props typpes
+export interface InfoGuidProps {
+  formHandler: Dispatch<SetStateAction<InfoGuidStateType>>;
+  infoFormData: InfoGuidStateType;
+  refetch: () => void;
+}
+
+//post
+export interface InfoGuidPostType {
+  title: string;
+  thumnail: string;
+  videourl: string;
+}
+// export interface CategorySendingPostType {
+//   name: string;
+//   image: string;
+// }
+// export interface CategoryPostResponseDataType {
+//   name: string;
+//   image: string;
+//   _id: string;
+// }
+
+//use for mutation type defination
+export interface InfoGuidePostResponseType {
+  success?: boolean;
+  message?: string;
+  data?: InfoGuidGetType;
+}
+export interface MutationObjectInfoGuideType {
+  path: string;
+  condition: "creat" | "update";
+  data: InfoGuidPostType;
+}
+
+//Get
+export interface InfoGuidGetType extends InfoGuidPostType {
+  _id: string;
+}
+// export interface InfoGuidGetResponseType {
+//   data: InfoGuidGetType[];
+// }

@@ -85,7 +85,7 @@ const UpdateProfile = () => {
       console.log("Update Profile successful:", data);
       toast.dismiss();
       console.log(data);
-      toast.success(`${data?.data?.message}`);
+      toast.success(`${data?.message}`);
       // Handle success (e.g., redirect to dashboard)
       setTimeout(() => navigate("/products"), 1000);
     },
@@ -214,10 +214,11 @@ const UpdateProfile = () => {
                 name="image"
                 onChange={handleImageChange}
                 className="hidden"
-                id="file-upload"
+                id="image-upload"
+                accept="image/*"
               />
               <label
-                htmlFor="file-upload"
+                htmlFor="image-upload"
                 className={`px-4  pl-10 relative ${
                   progressStatus ? "pb-2" : ""
                 } w-full  bg-blue-50 text-gray-400 h-10  focus:border-blue-300  border-2 rounded-md placeholder:text-gray-400 cursor-pointer flex items-center justify-between`}
@@ -241,7 +242,14 @@ const UpdateProfile = () => {
             </div>
           </div>
 
-          <button className="col-span-2 px-4 py-2 mt-4 text-white bg-blue-400 border rounded-md disabled:bg-gray-600">
+          <button
+            className="col-span-2 px-4 py-2 mt-4 text-white bg-blue-400 border rounded-md disabled:bg-gray-600"
+            disabled={
+              !updateProfileObj.image ||
+              !updateProfileObj.fullName ||
+              !updateProfileObj.contact
+            }
+          >
             Update
           </button>
         </form>

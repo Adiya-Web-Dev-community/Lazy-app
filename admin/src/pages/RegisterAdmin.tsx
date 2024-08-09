@@ -94,8 +94,9 @@ const RegisterAdmin: React.FC = () => {
     onSuccess: (data: ApiResponse<RegisterResponse>) => {
       console.log("Register successful:", data);
       toast.dismiss();
+      clearField();
       console.log(data);
-      toast.success(`${data?.data?.message}`);
+      toast.success(`${data?.message}`);
       navigate("/login");
       // Handle success (e.g., redirect to dashboard)
     },
@@ -150,6 +151,9 @@ const RegisterAdmin: React.FC = () => {
 
     setPhoneNumberError("");
     setPassWordError("");
+  };
+
+  const clearField = () => {
     setRegistorObj({
       fullName: "",
       contact: "",
