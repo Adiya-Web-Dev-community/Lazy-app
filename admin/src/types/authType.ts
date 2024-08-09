@@ -10,7 +10,6 @@ export interface LoginData {
 export interface LoginApiResponse {
   success?: boolean;
   message?: string;
-  token?: string;
 }
 
 export interface MutationObjectLoginType {
@@ -97,13 +96,20 @@ export interface OtpVerificationData {
   email: string;
   otp: number;
 }
-export interface OtpVerificationResponse {
-  success: boolean;
-  message: string;
+
+export interface MutationObjectOtpType {
+  path: string;
+  method: "post";
+  data: OtpVerificationData;
+}
+
+export interface OtpApiResponse {
+  success?: boolean;
+  message?: string;
+  token?: string;
 }
 
 //update
-
 export interface UpdateSendingPostType {
   name: string;
   image: string;
