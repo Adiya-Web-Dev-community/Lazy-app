@@ -20,6 +20,8 @@ export default {
         customBlog: "40px  1.2fr 1.6fr 2.2fr 1.4fr 1fr 0.8fr",
         customReviewBlog: "40px  1.2fr 1.6fr 1.6fr 1fr  0.8fr",
         customInfoGuide: "40px  1.2fr 1.6fr 1.6fr  0.8fr",
+        customFaq: "40px  1fr 1fr 0.8fr  0.8fr",
+        customFaqProfile: "40px  1fr 1fr",
       },
     },
   },
