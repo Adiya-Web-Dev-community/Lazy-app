@@ -18,8 +18,9 @@ import ConfirmDeleteModal from "../components/modal/ConfirmDeleteModal";
 import { useState } from "react";
 import Pagination from "../components/pagination/Pagination";
 import CategoryLoading from "../components/loading-elemnts/CategoryLoading";
-import useBlogCategory from "../hooks/useBlogCategory";
+
 import BlogCategoryForm from "./BlogCategoryForm";
+import { useBlogCategory } from "../api/querys";
 
 const BlogCategory: React.FC = () => {
   const [isCategoryForm, setCategoryForm] = useState<CategoryStateType>({
@@ -58,8 +59,6 @@ const BlogCategory: React.FC = () => {
     indexOfLastItem
   );
 
-  // console.log(currentCategory, "pagination");
-
   const handleClick = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -72,13 +71,11 @@ const BlogCategory: React.FC = () => {
     mutationFn: async (deletObj) => {
       toast.loading("Checking Details");
       try {
-        // console.log(path, method);
         const response = await apiRequest<UniDelet, DeletElementData>({
           url: deletObj.path,
           method: "delete",
         });
 
-        // return { data: response.data };
         return response as ApiResponse<DeletElementData>;
       } catch (error) {
         console.log(error);
@@ -215,66 +212,55 @@ const BlogCategory: React.FC = () => {
             </section>
 
             <div className=" h-[380px] overflow-y-auto [&::-webkit-scrollbar]:hidden min-w-[600px] bg-[#252525]">
-              {
-                isPending ? (
-                  <CategoryLoading />
-                ) : isError ? (
-                  <p className="flex items-center justify-center w-full h-full text-2xl font-bold text-center text-rose-600">
-                    Check Internet connection or Contact to Admin
-                  </p>
-                ) : (
-                  currentCategory?.map((category, i) => (
-                    <section
-                      key={i}
-                      className="grid items-center gap-6 py-2 pl-6 pr-4 border-t-2 text-[#DEE1E2] border-[#1A1A1A] grid-cols-customeBlogCategory group hover:bg-[#2c2c2c]"
-                    >
-                      <span>{i + 1}</span>
+              {isPending ? (
+                <CategoryLoading />
+              ) : isError ? (
+                <p className="flex items-center justify-center w-full h-full text-2xl font-bold text-center text-rose-600">
+                  Check Internet connection or Contact to Admin
+                </p>
+              ) : (
+                currentCategory?.map((category, i) => (
+                  <section
+                    key={i}
+                    className="grid items-center gap-6 py-2 pl-6 pr-4 border-t-2 text-[#DEE1E2] border-[#1A1A1A] grid-cols-customeBlogCategory group hover:bg-[#2c2c2c]"
+                  >
+                    <span>{i + 1}</span>
 
-                      <div className="flex items-center justify-center">
-                        {category?.image ? (
-                          <img
-                            src={category?.image}
-                            alt="user Image"
-                            className="object-contain w-24 h-24 rounded-lg"
-                          />
-                        ) : (
-                          <span className="flex items-center w-24 h-24 text-sm font-bold text-gray-400">
-                            No Image
-                          </span>
-                        )}
-                      </div>
+                    <div className="flex items-center justify-center">
+                      {category?.image ? (
+                        <img
+                          src={category?.image}
+                          alt="user Image"
+                          className="object-contain w-24 h-24 rounded-lg"
+                        />
+                      ) : (
+                        <span className="flex items-center w-24 h-24 text-sm font-bold text-gray-400">
+                          No Image
+                        </span>
+                      )}
+                    </div>
 
-                      <span className="flex justify-center ml-2 text-sm font-semibold md:text-base">
-                        {category?.name}
-                      </span>
+                    <span className="flex justify-center ml-2 text-sm font-semibold md:text-base">
+                      {category?.name}
+                    </span>
 
-                      <div className="flex justify-center gap-4">
-                        <button
-                          className="px-3 py-2 text-sm font-semibold rounded-md bg-emerald-800 hover:bg-emerald-700 "
-                          onClick={() => updateCategory(category)}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          className="px-3 py-2 text-sm font-semibold rounded-md bg-rose-800 hover:bg-rose-700"
-                          onClick={() => deletCategory(category?._id)}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                      {/* <div className="grid justify-center gap-2">
-                        <button
-                          className="px-2 py-2 text-sm rounded-md bg-sky-800 hover:bg-sky-700"
-                          onClick={() => handlingNavigate(category?.name)}
-                        >
-                          <FiEye className="w-6 h-4" />
-                        </button>
-                      </div> */}
-                    </section>
-                  ))
-                )
-                // )
-              }
+                    <div className="flex justify-center gap-4">
+                      <button
+                        className="px-3 py-2 text-sm font-semibold rounded-md bg-emerald-800 hover:bg-emerald-700 "
+                        onClick={() => updateCategory(category)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="px-3 py-2 text-sm font-semibold rounded-md bg-rose-800 hover:bg-rose-700"
+                        onClick={() => deletCategory(category?._id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </section>
+                ))
+              )}
             </div>
           </section>
 

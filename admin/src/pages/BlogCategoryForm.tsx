@@ -5,7 +5,7 @@ import { TiArrowBackOutline } from "react-icons/ti";
 import { useMutation } from "@tanstack/react-query";
 
 import { toast } from "react-toastify";
-// import { SingleCategoryResponseData } from "../types/contentType";
+
 import { apiRequest } from "../api/adminApi";
 import { ApiError, ApiResponse } from "../types/apiType";
 import {

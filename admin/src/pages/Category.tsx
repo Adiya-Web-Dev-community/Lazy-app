@@ -13,7 +13,7 @@ import {
   UpdateCatgeoryData,
 } from "../types/contentType";
 import { apiRequest } from "../api/adminApi";
-import { useCategories } from "../hooks/useCategories";
+
 import CreatCategory from "./CreatCategory";
 import { FiEye } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
@@ -21,6 +21,7 @@ import ConfirmDeleteModal from "../components/modal/ConfirmDeleteModal";
 import { useState } from "react";
 import Pagination from "../components/pagination/Pagination";
 import CategoryLoading from "../components/loading-elemnts/CategoryLoading";
+import { useCategories } from "../api/querys";
 
 const Category: React.FC = () => {
   const [isCategoryForm, setCategoryForm] = useState<CategoryStateType>({
@@ -254,7 +255,7 @@ const Category: React.FC = () => {
                         )}
                       </div>
 
-                      <span className="ml-2 text-sm font-semibold md:text-base">
+                      <span className="flex justify-center ml-2 text-sm font-semibold md:text-base">
                         {category?.name}
                       </span>
 
@@ -287,29 +288,7 @@ const Category: React.FC = () => {
               }
             </div>
           </section>
-          {/* <div className="flex items-center justify-center w-full mt-4">
-            <div className="flex justify-start w-full">
-              <p className="text-[#DEE1E2] text-sm font-medium">
-                <span>Total Item: </span>{" "}
-                <span>0{currentCategory?.length}</span>
-              </p>
-            </div>
-            <div className="flex justify-start w-full">
-              {Array.from({ length: totalPages }, (_, index) => (
-                <button
-                  key={index + 1}
-                  className={`mx-1 px-3 py-1  rounded  ${
-                    currentPage === index + 1
-                      ? "bg-emerald-800 text-[#DEE1E2]"
-                      : "bg-gray-400"
-                  }`}
-                  onClick={() => handleClick(index + 1)}
-                >
-                  {index + 1}
-                </button>
-              ))}
-            </div>
-          </div> */}
+
           <Pagination
             currentPage={currentPage}
             apiData={categoryApiData ?? []}

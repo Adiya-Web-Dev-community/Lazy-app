@@ -104,8 +104,6 @@ const VerifyEmailResetPass: React.FC = () => {
     }
   };
 
-  //   const [createPost, responseInfo] = useCreateMutation();
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -123,30 +121,17 @@ const VerifyEmailResetPass: React.FC = () => {
       }));
     }
 
-    // toast.loading("Checking Passwords");
-
     const resetPasswordObj: ResetPasswordData = {
-      //   oldPassword: resetPassword.oldPassword,
       newPassword: resetPassword.newPassword,
       otp: resetPassword.otp,
       email: resetPassword.email,
     };
 
-    // mutation.mutate(resetPasswordObj);
     mutation.mutate({
       path: "api/admin/verifyotp",
       method: "post",
       data: resetPasswordObj,
     });
-    console.log(resetPasswordObj);
-
-    // setResetPassword({
-    //   //   oldPassword: "",
-    //   newPassword: "",
-    //   confirmPassword: "",
-    //   otp: "",
-    //   email: "",
-    // });
   };
 
   return (

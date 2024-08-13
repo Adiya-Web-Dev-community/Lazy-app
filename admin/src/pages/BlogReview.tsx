@@ -18,9 +18,9 @@ import { useState } from "react";
 
 import Pagination from "../components/pagination/Pagination";
 
-import useBlogReview from "../hooks/useBlogReview";
 import StarRating from "../components/StarRating";
 import BlogReviewLoading from "../components/loading-elemnts/BlogReviewLoading";
+import { useBlogReview } from "../api/querys";
 const BlogReview: React.FC = () => {
   const [isDeletModal, setDeletModal] = useState<ProductDeleteStateType>({
     delet: false,
@@ -29,44 +29,16 @@ const BlogReview: React.FC = () => {
   const { isPending, isError, data, refetch } = useBlogReview();
   console.log(data);
 
-  const blogData = data?.data?.data;
+  const blogData = data?.data;
   console.log(blogData, "blog Review data");
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 5;
   //calculation of page
-  //   const indexOfLastItem = currentPage * itemsPerPage;
-  //   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-  //   const currentReview = blogData?.slice(indexOfFirstItem, indexOfLastItem);
-  const currentReview = [
-    {
-      _id: "Mansoor",
-      blogId: "123",
-      name: "Mansoor",
-      email: "mansoor4tech@gmail.com",
-      star: 4,
-      isVerify: false,
-    },
-    {
-      _id: "Abdullah",
-      blogId: "345",
-      name: "Abdullah",
-      email: "abdullah4tech@gmail.com",
-      star: 2,
-      isVerify: true,
-    },
-    {
-      _id: "Osama",
-      blogId: "567",
-      name: "Osama",
-      email: "osama4tech@gmail.com",
-      star: 1,
-      isVerify: true,
-    },
-  ];
-
-  //   console.log(currentReview, "pagination");
+  const currentReview = blogData?.slice(indexOfFirstItem, indexOfLastItem);
 
   const handleClick = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -133,7 +105,7 @@ const BlogReview: React.FC = () => {
           VerifiedElementDataType
         >({
           url: verfiry.path,
-          method: "delete",
+          method: "put",
         });
 
         // return { data: response.data };
@@ -242,19 +214,6 @@ const BlogReview: React.FC = () => {
                 // onFocus={() => setCurrentPage(1)}
               />
             </div>
-            {/* <div className="relative flex items-center self-end ">
-              <button
-                className={` px-2 py-1 
-                           bg-emerald-800  hover:bg-emerald-700 text-[#DEE1E2] font-semibold
-                      }    rounded shadow-xl md:px-4 md:py-2  sm:self-center`}
-              >
-                <Link to={"/blog/form"}>
-                  <span className="hidden md:inline-block">Create Blog</span>
-
-                  <IoIosSend className="w-6 h-6 md:hidden" />
-                </Link>
-              </button> 
-            </div>*/}
           </div>
           <section
             className={`w-full overflow-auto   border-2 [&::-webkit-scrollbar]:hidden rounded-lg border-[#1A1A1A] shadow-md bg-[#1A1A1A]`}
@@ -275,13 +234,12 @@ const BlogReview: React.FC = () => {
             </section>
             <div className=" h-[380px] overflow-y-auto [&::-webkit-scrollbar]:hidden min-w-[1200px] bg-[#252525]">
               {isPending ? (
-                // Loading element for the table
                 <BlogReviewLoading />
               ) : isError ? (
                 <p className="flex items-center justify-center w-full h-full text-2xl font-bold text-center text-rose-600">
                   Check Internet connection or Contact to Admin
                 </p>
-              ) : (
+              ) : (currentReview ?? [])?.length > 0 ? (
                 currentReview?.map((review, i) => (
                   <section
                     key={i}
@@ -328,6 +286,10 @@ const BlogReview: React.FC = () => {
                     </div>
                   </section>
                 ))
+              ) : (
+                <p className="flex items-center justify-center w-full h-full text-2xl font-bold text-center text-emerald-600">
+                  Please Add Review
+                </p>
               )}
             </div>
           </section>

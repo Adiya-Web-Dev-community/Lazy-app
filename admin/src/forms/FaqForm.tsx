@@ -3,8 +3,7 @@ import { FaCaretDown } from "react-icons/fa";
 import { MdAdd, MdOutlineDelete } from "react-icons/md";
 import { TiArrowBackOutline } from "react-icons/ti";
 import { toast } from "react-toastify";
-import { useCategories } from "../hooks/useCategories";
-import SunTextEditor from "../components/textEditor/SunTextEditor";
+
 import {
   FAQPostResponseType,
   FaqPostType,
@@ -16,7 +15,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 
 import JoditTextEditor from "../components/textEditor/JoditTextEditor";
-import useSingleFaq from "../hooks/useSingleFaq";
+import { useCategories, useSingleFaq } from "../api/querys";
 
 interface FaqItemType {
   question: string;
@@ -40,36 +39,11 @@ const FaqForm: React.FC = () => {
 
   const { id } = useParams();
 
-  const { data, error, isLoading } = useCategories();
-  const {
-    data: singleFaqData,
-    error: singleError,
-    isError,
-  } = useSingleFaq(id ?? "0");
-  //   {
-  //     "_id": "66b6056e862582c182241788",
-  //     "name": "google",
-  //     "category": "semiElectronics",
-  //     "content": `<div class=\"se-component se-video-container __se__float-none\">
-  //     <figure style=\"width: 431px; height: 242px; padding-bottom: 242px;\">
-  //     <iframe src=\"https://www.youtube.com/embed/zUbTnrxPrd0?si=iDQ5kZumIYmHk7OO\" data-proportion=\"true\" data-size=\"431px,242px\" data-align=\"none\" data-file-name=\"zUbTnrxPrd0?si=iDQ5kZumIYmHk7OO\" data-file-size=\"0\" data-origin=\"100%,56.25%\" style=\"width: 431px; height: 242px;\">
-  //     </iframe>
-  //     </figure></div>`,
-  //     "items": [
-  //         {
-  //             "question": "first question",
-  //             "answer": "answer",
-  //             "_id": "66b6056e862582c182241789"
-  //         }
-  //     ],
-  //     "createdAt": "2024-08-09T12:02:54.668Z",
-  //     "updatedAt": "2024-08-09T12:02:54.668Z",
-  //     "__v": 0
-  // }
-
-  const isUpdate = Object.keys(singleFaqData ?? []).length !== 0;
+  const { data } = useCategories();
+  const { data: singleFaqData, isError } = useSingleFaq(id ?? "0");
 
   const updateObjectData = singleFaqData?.data?.data;
+  const isUpdate = Object.keys(updateObjectData || {}).length !== 0;
 
   useEffect(() => {
     console.log("process");
@@ -83,6 +57,7 @@ const FaqForm: React.FC = () => {
         items: updateObjectData?.items ?? [{ question: "", answer: "" }],
       }));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isUpdate, singleFaqData, id]);
 
   console.log(
@@ -177,7 +152,6 @@ const FaqForm: React.FC = () => {
     },
 
     onSuccess: () => {
-      // console.log(data, data?.statusText);
       toast.dismiss();
       clearHandler();
 
@@ -208,9 +182,6 @@ const FaqForm: React.FC = () => {
         data: faqData,
       });
     }
-
-    // toast.success("FAQ Submitted Successfully");
-    // Perform your API call here
   };
 
   // console.log()
@@ -231,10 +202,6 @@ const FaqForm: React.FC = () => {
     });
     navigate("/faq");
   };
-
-  // console.log(faqData);
-
-  //   const categories = ["General Information", "Shipping", "Returns"];
 
   return (
     <div className="px-4 pt-4 md:pl-0">
@@ -290,14 +257,7 @@ const FaqForm: React.FC = () => {
                   ))}
                 </ul>
               </div>
-              {/* <textarea
-                value={faqData?.content}
-                onChange={handleChange}
-                name="content"
-                className="w-full h-24 py-4 px-4 font-medium border-gray-400 md:col-span-2 bg-[#252525] focus:border-[#DEE1E2] border-transparent border rounded-md outline-none"
-                placeholder="FAQ Content"
-                required
-              /> */}
+
               <div className="md:col-span-2">
                 <JoditTextEditor
                   content={faqData?.content}
@@ -336,7 +296,6 @@ const FaqForm: React.FC = () => {
                         type="button"
                         onClick={() => removeItem(index)}
                         className="px-2 py-1 mb-4 text-sm font-bold rounded justify-self-end bg-rose-800 hover:bg-rose-700 focus:outline-none focus:shadow-outline disabled:bg-gray-700 disabled:cursor-not-allowed"
-                        //   disabled={inputFields.length === 1}
                       >
                         <MdOutlineDelete className="w-4 h-4" />
                       </button>

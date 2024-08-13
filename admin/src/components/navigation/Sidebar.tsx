@@ -3,13 +3,16 @@
 import { NavLink } from "react-router-dom";
 
 import { RxCross1, RxHamburgerMenu } from "react-icons/rx";
-import { MdOutlineCategory } from "react-icons/md";
+import { MdOutlineCategory, MdOutlineReviews } from "react-icons/md";
 
 import { RiBuilding2Line } from "react-icons/ri";
 
 import { GiBatMask } from "react-icons/gi";
 import { AiOutlineProduct } from "react-icons/ai";
 import { SideBarPropsType } from "../../types/contentType";
+import { BiLogoBlogger } from "react-icons/bi";
+import { FaBook } from "react-icons/fa";
+import { TbIcons, TbMessageQuestion } from "react-icons/tb";
 
 const SideBar: React.FC<SideBarPropsType> = ({
   isOpen,
@@ -151,7 +154,7 @@ const SideBar: React.FC<SideBarPropsType> = ({
               }`
             }
           >
-            <RiBuilding2Line className="w-6 h-6" />
+            <MdOutlineCategory className="w-6 h-6" />
 
             <span
               className={`mx-1 p-1  text-[15px] font-montserrat ${
@@ -176,7 +179,7 @@ const SideBar: React.FC<SideBarPropsType> = ({
               }`
             }
           >
-            <RiBuilding2Line className="w-6 h-6" />
+            <BiLogoBlogger className="w-6 h-6" />
 
             <span
               className={`mx-1 p-1  text-[15px] font-montserrat ${
@@ -201,7 +204,7 @@ const SideBar: React.FC<SideBarPropsType> = ({
               }`
             }
           >
-            <RiBuilding2Line className="w-6 h-6" />
+            <MdOutlineReviews className="w-6 h-6" />
 
             <span
               className={`mx-1 p-1  text-[15px] font-montserrat ${
@@ -226,7 +229,7 @@ const SideBar: React.FC<SideBarPropsType> = ({
               }`
             }
           >
-            <RiBuilding2Line className="w-6 h-6" />
+            <FaBook className="w-6 h-6" />
 
             <span
               className={`mx-1 p-1  text-[15px] font-montserrat ${
@@ -234,6 +237,56 @@ const SideBar: React.FC<SideBarPropsType> = ({
               } `}
             >
               Info Guide
+            </span>
+          </NavLink>
+          <NavLink
+            to={"/faq"}
+            className={({ isActive }) =>
+              ` relative group rounded-md flex font-medium items-center
+                    ${
+                      isOpen.large
+                        ? "m-0 p-1 justify-center"
+                        : "m-1 p-2 w-[95%]"
+                    } h-[2.7rem]   ${
+                isActive
+                  ? " bg-gradient-to-r from-emerald-800 text-white font-semibold"
+                  : "hover:from-emerald-700 hover:bg-gradient-to-r  hover:text-white text-gray-400"
+              }`
+            }
+          >
+            <TbMessageQuestion className="w-6 h-6" />
+
+            <span
+              className={`mx-1 p-1  text-[15px] font-montserrat ${
+                isOpen.large ? "hidden" : ""
+              } `}
+            >
+              FAQ
+            </span>
+          </NavLink>
+          <NavLink
+            to={"/proscons"}
+            className={({ isActive }) =>
+              ` relative group rounded-md flex font-medium items-center
+                    ${
+                      isOpen.large
+                        ? "m-0 p-1 justify-center"
+                        : "m-1 p-2 w-[95%]"
+                    } h-[2.7rem]   ${
+                isActive
+                  ? " bg-gradient-to-r from-emerald-800 text-white font-semibold"
+                  : "hover:from-emerald-700 hover:bg-gradient-to-r  hover:text-white text-gray-400"
+              }`
+            }
+          >
+            <TbIcons className="w-6 h-6" />
+
+            <span
+              className={`mx-1 p-1  text-[15px] font-montserrat ${
+                isOpen.large ? "hidden" : ""
+              } `}
+            >
+              Pros & Cons
             </span>
           </NavLink>
         </div>

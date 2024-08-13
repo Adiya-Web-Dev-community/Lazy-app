@@ -6,8 +6,6 @@ import { ApiError, ApiResponse } from "../types/apiType";
 import { Link, useNavigate } from "react-router-dom";
 import { TiArrowBackOutline } from "react-icons/ti";
 import { FaCaretDown } from "react-icons/fa6";
-import useCompanies from "../hooks/useCompanies";
-import { useCategories } from "../hooks/useCategories";
 
 import {
   FormProductKeys,
@@ -24,6 +22,7 @@ import DynamicInputFields from "../components/DynamicInputFiled.js";
 
 import FileUploadForm from "../components/multiple_imag/MultipleImageUploadeForm.js";
 import TextEditor from "../components/textEditor/TextEditor.js";
+import { useCategories, useCompanies } from "../api/querys.js";
 
 const ProductsForm: React.FC = () => {
   const [isOpen, setOpen] = useState<StateOpenCloseType>({
@@ -218,7 +217,6 @@ const ProductsForm: React.FC = () => {
   };
 
   const statusData = ["Active", "Draft"];
-  // const statusData = ["Active", "in-Active", "Pending"];
 
   return (
     <div className="px-4 pt-4 md:pl-0">

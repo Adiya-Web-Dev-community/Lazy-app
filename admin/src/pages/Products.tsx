@@ -19,8 +19,9 @@ import { BsEye } from "react-icons/bs";
 import { FaStarOfLife } from "react-icons/fa";
 import InformAleartModal from "../components/modal/InformAleartModal";
 import ConfirmDeleteModal from "../components/modal/ConfirmDeleteModal";
-import useProduct from "../hooks/useProduct";
+
 import ProductsLoading from "../components/loading-elemnts/ProductsLoading";
+import { useProduct } from "../api/querys";
 
 const Products: React.FC = () => {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ const Products: React.FC = () => {
   const { data, refetch, isError, isPending } = useProduct();
 
   console.log(data, "product");
-  // const productData: ProductData[] | undefined = data?.data;
+
   const productData = data?.data;
 
   console.log(data);
@@ -46,11 +47,6 @@ const Products: React.FC = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
   const currentProduct = productData?.slice(indexOfFirstItem, indexOfLastItem);
-  // const currentProduct: ProductData[] | undefined = productData
-  //   ? productData?.slice(indexOfFirstItem, indexOfLastItem)
-  //   : [];
-
-  // const totalPages = Math.ceil(productsData.length / itemsPerPage);
 
   const handleClick = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -64,16 +60,13 @@ const Products: React.FC = () => {
     mutationFn: async (deletObj) => {
       toast.loading("Checking Details");
       try {
-        // console.log(path, method);
         const response = await apiRequest<UniDelet, DeletElementData>({
           url: deletObj.path,
           method: "delete",
         });
 
-        // return { data: response.data };
         return response as ApiResponse<DeletElementData>;
       } catch (error) {
-        // console.log(error);
         const apiError: ApiError = {
           message: (error as ApiError)?.message || "An error occurred",
           status: (error as ApiError)?.status || 500,
@@ -104,7 +97,6 @@ const Products: React.FC = () => {
   };
 
   const updateProduct = (product: ProductData) => {
-    // dispatch(addDishData(dishData));
     navigate(`/products/form/${product?._id}`);
   };
 
@@ -169,7 +161,6 @@ const Products: React.FC = () => {
                    bg-emerald-800  hover:bg-emerald-700 relative -z-6 text-[#DEE1E2]
                   rounded shadow-xl md:px-4 md:py-2  sm:self-center`}
               >
-                {/* <Link to={"/dishes/form"}> */}
                 <Link to={"/products/form"}>
                   <span className="hidden md:inline-block">Add Product</span>
 
@@ -249,14 +240,12 @@ const Products: React.FC = () => {
                       {product?.createdAt?.split("T")[0]}
                     </span>
                     <div className="flex items-center justify-center">
-                      {/* <button> */}
                       <Link
                         to={`/products/${product._id}`}
                         className="flex justify-center px-4 py-2 ml-2 text-sm font-semibold bg-teal-800 rounded-md hover:bg-emerald-700"
                       >
                         <BsEye className="w-4 h-4" />
                       </Link>
-                      {/* </button> */}
                     </div>
                     <div className="grid justify-center gap-2">
                       <button

@@ -21,14 +21,6 @@ import {
 const ForgetPassword: React.FC = () => {
   const [email, setEmail] = useState<string>("");
 
-  //reset passsword response data
-  //   {
-  //     "data": {
-  //         "success": true,
-  //         "message": "Reset password link sent to your email"
-  //     }
-  // }
-
   const navigate = useNavigate();
 
   const mutation = useMutation<
