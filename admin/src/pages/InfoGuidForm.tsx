@@ -5,7 +5,7 @@ import { TiArrowBackOutline } from "react-icons/ti";
 import { useMutation } from "@tanstack/react-query";
 
 import { toast } from "react-toastify";
-// import { SingleCategoryResponseData } from "../types/contentType";
+
 import { apiRequest } from "../api/adminApi";
 import { ApiError, ApiResponse } from "../types/apiType";
 import {
@@ -98,7 +98,6 @@ const InfoGuidForm: React.FC<InfoGuidProps> = ({
           data: data,
         });
 
-        // return { data: response.data };
         return response;
       } catch (error) {
         const apiError: ApiError = {

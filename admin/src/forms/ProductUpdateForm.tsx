@@ -6,8 +6,6 @@ import { ApiError, ApiGetResponse, ApiResponse } from "../types/apiType";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { TiArrowBackOutline } from "react-icons/ti";
 import { FaCaretDown } from "react-icons/fa6";
-import useCompanies from "../hooks/useCompanies";
-import { useCategories } from "../hooks/useCategories";
 
 import {
   CompanyData,
@@ -28,6 +26,7 @@ import DynamicInputFields from "../components/DynamicInputFiled.js";
 import FileUploadForm from "../components/multiple_imag/MultipleImageUploadeForm.js";
 import TextEditor from "../components/textEditor/TextEditor.js";
 import { apiGetRequest } from "../api/adminGetApi.js";
+import { useCategories, useCompanies } from "../api/querys.js";
 
 const ProductUpdateForm: React.FC = () => {
   const [isOpen, setOpen] = useState<StateOpenCloseType>({
@@ -168,6 +167,7 @@ const ProductUpdateForm: React.FC = () => {
         productsLink: formatingProdutLink,
       }));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isUpdate]);
 
   //for text Data

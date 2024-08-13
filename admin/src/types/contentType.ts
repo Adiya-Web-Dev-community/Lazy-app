@@ -455,6 +455,13 @@ export interface UploadImageFunction {
     setProgressStatus: Dispatch<SetStateAction<number | null>>
   ): Promise<string>;
 }
+export interface UploadMultiInputImageFunction {
+  (
+    folderName: string,
+    file: File,
+    handlingProgress: (preogress: number | null) => void
+  ): Promise<string>;
+}
 
 //Text Editor
 export interface Meta {
@@ -477,6 +484,10 @@ export interface BrandType {
   image: string;
   link: string;
 }
+
+export interface BrandGetResponseType extends BrandType {
+  _id: string;
+}
 //get type
 export interface BlogData {
   _id: string;
@@ -485,13 +496,18 @@ export interface BlogData {
   slug: string;
   category: string;
   content: string;
-  brand: BrandType;
+  brand: BrandGetResponseType[];
   updatedAt: string;
   createdAt: string;
 }
 
 export interface BlogResponseData {
   data?: BlogData[];
+}
+
+//singlResponse of get
+export interface SinglBlogResponseData {
+  data?: BlogData;
 }
 
 //getting response after sending data on backend
@@ -508,7 +524,7 @@ export interface BlogPostType {
   slug: string;
   category: string;
   content: string;
-  brand: BrandType;
+  brand: BrandType[];
 }
 export interface MutationObjectBlogType {
   path: string;
@@ -517,15 +533,24 @@ export interface MutationObjectBlogType {
 }
 
 //blog form state
+
+export interface BrandTypes {
+  _id: string;
+  name: string;
+  image: string;
+  link: string;
+}
+
+// export interface ThumnailsTypes {
+//   _id: string;
+//   image: string;
+// }
 export interface BlogStateType {
   title: string;
   category: string;
   content: string;
-  brandName: string;
-  webLink: string;
-  imageSrc: string;
-  image: string;
   thumnail: string[];
+  brand: BrandTypes[];
 }
 
 //blog Reviwe
@@ -608,3 +633,81 @@ export interface InfoGuidGetType extends InfoGuidPostType {
 // export interface InfoGuidGetResponseType {
 //   data: InfoGuidGetType[];
 // }
+
+//FAQ
+
+//post type
+
+export interface ItemsTypes {
+  question: string;
+  answer: string;
+}
+export interface FaqPostType {
+  name: string;
+  category: string;
+  content: string;
+  items: ItemsTypes[];
+}
+
+//get type
+export interface ItemsGetTypes extends ItemsTypes {
+  _id: string;
+}
+export interface FaqGetType extends FaqPostType {
+  items: ItemsGetTypes[];
+  _id: string;
+}
+
+export interface FaqGetResponseType {
+  data: FaqGetType[];
+}
+export interface FaqSingleGetResponseType {
+  data: FaqGetType;
+}
+
+export interface FAQPostResponseType {
+  success?: boolean;
+  message?: string;
+  data?: FaqGetType;
+}
+
+//passing data
+
+export interface MutationFAQObjectType {
+  path: string;
+  method: "post" | "put";
+  data: FaqPostType;
+}
+
+//prosCons
+
+export interface ProsConsPostType {
+  productId: string;
+  title: string;
+  pros: string[];
+  cons: string[];
+}
+
+export interface ProsConsGetType extends ProsConsPostType {
+  _id: string;
+}
+
+export interface ProsConsResponseData {
+  data: ProsConsGetType[];
+}
+export interface ProsConsSingleResponseData {
+  data: ProsConsGetType[];
+}
+
+export interface ProsConsPostResponseType {
+  success?: boolean;
+  message?: string;
+  data?: ProsConsGetType;
+}
+
+/// for sending data on backend
+export interface MutationObjectProsConsType {
+  path: string;
+  condition: "creat" | "update";
+  data: ProsConsPostType;
+}

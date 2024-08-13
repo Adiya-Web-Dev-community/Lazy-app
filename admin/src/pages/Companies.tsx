@@ -13,7 +13,7 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { apiRequest } from "../api/adminApi";
 import { listHeadingCompanies } from "../components/content_data/contentData";
-import useCompanies from "../hooks/useCompanies";
+
 import { useDispatch } from "react-redux";
 import { addingData } from "../store/companies";
 import ConfirmDeleteModal from "../components/modal/ConfirmDeleteModal";
@@ -21,6 +21,7 @@ import { useState } from "react";
 import ConfirmationDialog from "../components/modal/ConfirmationDialog";
 import Pagination from "../components/pagination/Pagination";
 import CompaniesLoading from "../components/loading-elemnts/CompaniesLoading";
+import { useCompanies } from "../api/querys";
 
 const Companies: React.FC = () => {
   const navigate = useNavigate();
