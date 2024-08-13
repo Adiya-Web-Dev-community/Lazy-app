@@ -13,7 +13,7 @@ router.delete("/:id",isAdmin,DeleteProduct);
 
 router.get("/bycategory/:category",GetProductByCategory);
 router.get("/:id",GetProductById);
-router.get("/flash",getflashSaleProducts);
-router.get("/recomended",getRecommendedProducts);
+router.get("/flash/prod",getflashSaleProducts);
+router.get("/recomended/prod",getRecommendedProducts);
 router.put("/image/:id",UpdateProductImage);
 module.exports = router;
