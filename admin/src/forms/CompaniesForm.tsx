@@ -39,7 +39,7 @@ const CompaniesForm: React.FC = () => {
     webLink: companyUpdateData?.website || "",
     status: companyUpdateData?.status || "",
     products: companyUpdateData?.productcount || 0,
-    joinDate: "",
+
     imageSrc:
       companyUpdateData?.image?.slice(
         67,
@@ -174,7 +174,7 @@ const CompaniesForm: React.FC = () => {
       name: companiesData.name,
       email: companiesData.email,
       phone: companiesData.phone,
-      image: companyUpdateData?.image ?? companiesData?.image ?? "",
+      image: companiesData?.image ?? "",
 
       address: companiesData.address,
       website: companiesData.webLink,
@@ -211,7 +211,7 @@ const CompaniesForm: React.FC = () => {
       webLink: "",
       status: "",
       products: 0,
-      joinDate: "",
+
       imageSrc: "",
       image: "",
     });
@@ -262,15 +262,16 @@ const CompaniesForm: React.FC = () => {
                   name="image"
                   onChange={handleImageChange}
                   className="hidden"
-                  id="file-upload"
+                  id="image-upload"
+                  accept="image/*"
                 />
                 <label
-                  htmlFor="file-upload"
+                  htmlFor="image-upload"
                   className={`px-4 py-2 pl-24 relative ${
                     progressStatus ? "pb-2" : ""
                   } w-full text-base bg-[#252525] focus:border-[#DEE1E2] border-transparent border rounded-md text-gray-400 cursor-pointer flex items-center justify-between`}
                 >
-                  {companiesData?.imageSrc || "Choose a file"}
+                  {companiesData?.imageSrc || "Choose a Image"}
                   <span className="text-gray-400 text-[15px] absolute top-0 h-full flex items-center left-0 rounded-tl-md rounded-bl-md px-3 font-medium bg-[#1A1A1A]">
                     Browse
                   </span>
@@ -373,7 +374,16 @@ const CompaniesForm: React.FC = () => {
               <button
                 className="px-4 py-2 text-white rounded-md bg-emerald-800 hover:bg-emerald-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
                 type="submit"
-                disabled={isError}
+                disabled={
+                  !companiesData.name ||
+                  !companiesData.address ||
+                  !companiesData.email ||
+                  !companiesData.image ||
+                  !companiesData.phone ||
+                  !companiesData.products ||
+                  !companiesData.status ||
+                  !companiesData.webLink
+                }
               >
                 {isUpdate ? "Update" : "Submit"}
               </button>

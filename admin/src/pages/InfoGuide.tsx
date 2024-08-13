@@ -6,54 +6,62 @@ import { useMutation } from "@tanstack/react-query";
 
 import { toast } from "react-toastify";
 import {
-  CategoryStateType,
   DeletElementData,
+  InfoGuidGetType,
+  InfoGuidStateType,
   ProductDeleteStateType,
   UniDelet,
-  UpdateCatgeoryData,
 } from "../types/contentType";
 import { apiRequest } from "../api/adminApi";
 
 import ConfirmDeleteModal from "../components/modal/ConfirmDeleteModal";
 import { useState } from "react";
 import Pagination from "../components/pagination/Pagination";
-import CategoryLoading from "../components/loading-elemnts/CategoryLoading";
-import useBlogCategory from "../hooks/useBlogCategory";
-import BlogCategoryForm from "./BlogCategoryForm";
 
-const BlogCategory: React.FC = () => {
-  const [isCategoryForm, setCategoryForm] = useState<CategoryStateType>({
+import useInfoGuide from "../hooks/useInfoGuide";
+import InfoGuidForm from "./InfoGuidForm";
+import VideoModal from "../components/modal/VideoModal";
+import InfoGuideLoading from "../components/loading-elemnts/InfoGuideLoading";
+
+const InfoGuide: React.FC = () => {
+  const [isInfoForm, seInfoForm] = useState<InfoGuidStateType>({
     creat: false,
     updateId: "",
-    updateData: "",
-    updateImage: "",
+    updateTitle: "",
+    updateThumnail: "",
+    updateVideo: "",
   });
   const [isDeletModal, setDeletModal] = useState<ProductDeleteStateType>({
     delet: false,
     deletElementId: "",
   });
 
-  const categoryHeading = ["Image", "Category Name", "Setting"];
+  const [videoModal, setVideoModal] = useState({
+    conditon: false,
+    url: "",
+  });
+
+  const infoGuidHeading = ["Title", "Thumnail", "Video", "Setting"];
 
   const handlingCategory = () => {
-    setCategoryForm((prev) => ({
+    seInfoForm((prev) => ({
       ...prev,
       creat: !prev.creat,
     }));
   };
 
-  const { isPending, isError, data, error, refetch } = useBlogCategory();
+  const { isPending, isError, data, error, refetch } = useInfoGuide();
 
-  const categoryApiData = data?.data;
+  const infoGuidApiData = data?.data;
+  console.log(data, error, infoGuidApiData, "category");
 
-  console.log(data, error, categoryApiData, "category blog");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 5;
   //calculation of page
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-  const currentCategory = categoryApiData?.slice(
+  const currentInfoGuide = infoGuidApiData?.slice(
     indexOfFirstItem,
     indexOfLastItem
   );
@@ -112,19 +120,20 @@ const BlogCategory: React.FC = () => {
     },
   });
 
-  const deletCategory = (id: string) => {
+  const deletHandler = (id: string) => {
     setDeletModal((prev) => ({
       ...prev,
       delet: true,
       deletElementId: id,
     }));
   };
-  const updateCategory = (category: UpdateCatgeoryData) => {
-    setCategoryForm((prev) => ({
+  const updateHandler = (category: InfoGuidGetType) => {
+    seInfoForm((prev) => ({
       ...prev,
       updateId: category._id,
-      updateData: category.name,
-      updateImage: category?.image,
+      updateTitle: category.title,
+      updateThumnail: category.thumnail,
+      updateVideo: category?.videourl,
     }));
   };
 
@@ -138,24 +147,44 @@ const BlogCategory: React.FC = () => {
 
   const confirmhandler = () => {
     const deleteObj: UniDelet = {
-      path: `/api/blog/category/${isDeletModal?.deletElementId}`,
+      path: `/api/infoguide/${isDeletModal?.deletElementId}`,
     };
 
     // Proceed with the deletion
     mutation.mutate(deleteObj);
   };
 
+  const handlingVideo = (url: string) => {
+    setVideoModal((prev) => ({
+      ...prev,
+      conditon: true,
+      url: url,
+    }));
+  };
+
+  const handleCloseVideoModal = () => {
+    setVideoModal((prev) => ({
+      ...prev,
+      conditon: false,
+      url: "",
+    }));
+  };
+
   return (
     <>
-      {(isCategoryForm.creat || isCategoryForm.updateId) && (
-        <BlogCategoryForm
-          isCategoryForm={isCategoryForm}
-          setCategoryForm={setCategoryForm}
+      {(isInfoForm.creat || isInfoForm.updateId) && (
+        <InfoGuidForm
+          infoFormData={isInfoForm}
+          formHandler={seInfoForm}
           refetch={refetch}
         />
       )}
       {isDeletModal?.delet && (
         <ConfirmDeleteModal onClose={closehandler} onConfirm={confirmhandler} />
+      )}
+
+      {videoModal.conditon && (
+        <VideoModal url={videoModal.url} onClose={handleCloseVideoModal} />
       )}
       <section
         className={`  md:pl-0 p-4 h-full rounded-md font-philosopher  mx-auto [&::-webkit-scrollbar]:hidden`}
@@ -169,7 +198,7 @@ const BlogCategory: React.FC = () => {
         >
           <div className="flex items-center mb-2 md:mb-6">
             <h1 className=" text-[28px] font-bold md:text-4xl text-[#DEE1E2]">
-              Blog Category
+              Info Guide
             </h1>
           </div>
           <div className="flex justify-between mb-4">
@@ -201,13 +230,15 @@ const BlogCategory: React.FC = () => {
           <section
             className={`w-full overflow-auto  border-2  [&::-webkit-scrollbar]:hidden rounded-lg border-[#1A1A1A] shadow-md bg-[#1A1A1A]`}
           >
-            <section className="grid gap-4 p-2 pb-2 min-w-[600px] font-medium  grid-cols-customeBlogCategory text-[#DEE1E2] md:font-semibold bg-[#1A1A1A]">
+            <section className="grid gap-4 p-2 pb-2 min-w-[600px] font-medium  grid-cols-customInfoGuide text-[#DEE1E2] md:font-semibold bg-[#1A1A1A]">
               <p className="pl-2 md:text-lg">SrNo.</p>
 
-              {categoryHeading.map((heading, index) => (
+              {infoGuidHeading.map((heading, index) => (
                 <p
                   key={index}
-                  className={`   md:text-lg ${"justify-self-center"}`}
+                  className={`   md:text-lg ${
+                    index !== 0 ? "justify-self-center" : "ml-6"
+                  }`}
                 >
                   {heading.charAt(0).toUpperCase() + heading.slice(1)}
                 </p>
@@ -217,59 +248,66 @@ const BlogCategory: React.FC = () => {
             <div className=" h-[380px] overflow-y-auto [&::-webkit-scrollbar]:hidden min-w-[600px] bg-[#252525]">
               {
                 isPending ? (
-                  <CategoryLoading />
+                  <InfoGuideLoading />
                 ) : isError ? (
                   <p className="flex items-center justify-center w-full h-full text-2xl font-bold text-center text-rose-600">
                     Check Internet connection or Contact to Admin
                   </p>
                 ) : (
-                  currentCategory?.map((category, i) => (
+                  currentInfoGuide?.map((info, i) => (
                     <section
                       key={i}
-                      className="grid items-center gap-6 py-2 pl-6 pr-4 border-t-2 text-[#DEE1E2] border-[#1A1A1A] grid-cols-customeBlogCategory group hover:bg-[#2c2c2c]"
+                      className="grid items-center gap-6 py-2 pl-6 pr-4 border-t-2 text-[#DEE1E2] border-[#1A1A1A] grid-cols-customInfoGuide group hover:bg-[#2c2c2c]"
                     >
                       <span>{i + 1}</span>
 
+                      <span className="ml-2 text-sm font-semibold md:text-base">
+                        {info?.title}
+                      </span>
+
                       <div className="flex items-center justify-center">
-                        {category?.image ? (
+                        {info?.thumnail ? (
                           <img
-                            src={category?.image}
-                            alt="user Image"
+                            src={info?.thumnail}
+                            alt={info?.title}
                             className="object-contain w-24 h-24 rounded-lg"
                           />
                         ) : (
-                          <span className="flex items-center w-24 h-24 text-sm font-bold text-gray-400">
+                          <span className="text-sm font-bold text-gray-400">
                             No Image
                           </span>
                         )}
                       </div>
-
-                      <span className="flex justify-center ml-2 text-sm font-semibold md:text-base">
-                        {category?.name}
+                      <span
+                        className="flex justify-center ml-2 text-sm font-semibold cursor-pointer hover:underline hover:text-sky-400"
+                        typeof="button"
+                        onClick={() => handlingVideo(info?.videourl)}
+                      >
+                        {info?.videourl ? "View Video" : "--"}
                       </span>
 
-                      <div className="flex justify-center gap-4">
+                      {/* <div className="grid justify-center gap-2">
+                        <button
+                          className="px-2 py-2 text-sm rounded-md bg-sky-800 hover:bg-sky-700"
+                          onClick={() => handlingNavigate(info?.name)}
+                        >
+                          <FiEye className="w-6 h-4" />
+                        </button>
+                      </div> */}
+                      <div className="grid justify-center gap-4">
                         <button
                           className="px-3 py-2 text-sm font-semibold rounded-md bg-emerald-800 hover:bg-emerald-700 "
-                          onClick={() => updateCategory(category)}
+                          onClick={() => updateHandler(info)}
                         >
                           Edit
                         </button>
                         <button
                           className="px-3 py-2 text-sm font-semibold rounded-md bg-rose-800 hover:bg-rose-700"
-                          onClick={() => deletCategory(category?._id)}
+                          onClick={() => deletHandler(info?._id)}
                         >
                           Delete
                         </button>
                       </div>
-                      {/* <div className="grid justify-center gap-2">
-                        <button
-                          className="px-2 py-2 text-sm rounded-md bg-sky-800 hover:bg-sky-700"
-                          onClick={() => handlingNavigate(category?.name)}
-                        >
-                          <FiEye className="w-6 h-4" />
-                        </button>
-                      </div> */}
                     </section>
                   ))
                 )
@@ -277,10 +315,32 @@ const BlogCategory: React.FC = () => {
               }
             </div>
           </section>
-
+          {/* <div className="flex items-center justify-center w-full mt-4">
+                <div className="flex justify-start w-full">
+                  <p className="text-[#DEE1E2] text-sm font-medium">
+                    <span>Total Item: </span>{" "}
+                    <span>0{currentCategory?.length}</span>
+                  </p>
+                </div>
+                <div className="flex justify-start w-full">
+                  {Array.from({ length: totalPages }, (_, index) => (
+                    <button
+                      key={index + 1}
+                      className={`mx-1 px-3 py-1  rounded  ${
+                        currentPage === index + 1
+                          ? "bg-emerald-800 text-[#DEE1E2]"
+                          : "bg-gray-400"
+                      }`}
+                      onClick={() => handleClick(index + 1)}
+                    >
+                      {index + 1}
+                    </button>
+                  ))}
+                </div>
+              </div> */}
           <Pagination
             currentPage={currentPage}
-            apiData={categoryApiData ?? []}
+            apiData={infoGuidApiData ?? []}
             itemsPerPage={itemsPerPage}
             handleClick={handleClick}
           />
@@ -290,4 +350,4 @@ const BlogCategory: React.FC = () => {
   );
 };
 
-export default BlogCategory;
+export default InfoGuide;

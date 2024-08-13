@@ -21,6 +21,9 @@ import ProductUpdateForm from "../forms/ProductUpdateForm";
 import Blog from "../pages/Blog";
 import BlogForm from "../forms/BlogForm";
 import BlogCategory from "../pages/BlogCategory";
+import BlogReview from "../pages/BlogReview";
+import InfoGuide from "../pages/InfoGuide";
+import EmailVerification from "../pages/EmailVerification";
 
 const route = createBrowserRouter([
   {
@@ -43,6 +46,10 @@ const route = createBrowserRouter([
       {
         path: "update-profile",
         element: <UpdateProfile />,
+      },
+      {
+        path: "verify-email",
+        element: <EmailVerification />,
       },
       {
         path: "",
@@ -79,6 +86,12 @@ const route = createBrowserRouter([
 
       //blog-Category
       { path: "/blog-category", element: <BlogCategory /> },
+
+      //blog-Review
+      { path: "/blog-review", element: <BlogReview /> },
+
+      // info-guide
+      { path: "/info-guide", element: <InfoGuide /> },
     ],
   },
 ]);
