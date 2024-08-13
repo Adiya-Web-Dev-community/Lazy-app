@@ -48,7 +48,7 @@ const CompaniesForm: React.FC = () => {
     image: companyUpdateData?.image || "",
   });
 
-  const isUpdate = Object.keys(companyUpdateData || []).length !== 0;
+  const isUpdate = Object.keys(companyUpdateData || {}).length !== 0;
 
   console.log(companyUpdateData, "from company form");
 
@@ -91,7 +91,7 @@ const CompaniesForm: React.FC = () => {
         throw apiError;
       }
     },
-    // onSuccess: (data: ApiResponse<DeletCategoryData>) => {
+
     onSuccess: (data) => {
       console.log(data, "company created");
       toast.dismiss();
@@ -155,7 +155,6 @@ const CompaniesForm: React.FC = () => {
         setProgressStatus
       );
 
-      // console.log(imageUrl, selectedFile, "<<frommodal?>>");
       setCompaniesData((prev) => ({
         ...prev,
         image: imageUrl,

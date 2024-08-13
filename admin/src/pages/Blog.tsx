@@ -2,7 +2,7 @@ import { IoIosSend } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
 
 import {
-  CompanyDataUpdateType,
+  BlogData,
   DeletElementData,
   ProductDeleteStateType,
   UniDelet,
@@ -12,30 +12,27 @@ import { useMutation } from "@tanstack/react-query";
 
 import { toast } from "react-toastify";
 import { apiRequest } from "../api/adminApi";
-import { listHeadingCompanies } from "../components/content_data/contentData";
+import { listHeadingBlog } from "../components/content_data/contentData";
 
-import { useDispatch } from "react-redux";
-import { addingData } from "../store/companies";
 import ConfirmDeleteModal from "../components/modal/ConfirmDeleteModal";
 import { useState } from "react";
 import ConfirmationDialog from "../components/modal/ConfirmationDialog";
 import Pagination from "../components/pagination/Pagination";
 import CompaniesLoading from "../components/loading-elemnts/CompaniesLoading";
-import { useCompanies } from "../api/querys";
+import { useBlog } from "../api/querys";
 
-const Companies: React.FC = () => {
+const Blog = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const [isDeletModal, setDeletModal] = useState<ProductDeleteStateType>({
     delet: false,
     deletElementId: "",
   });
-  const { isPending, isError, data, refetch } = useCompanies();
+  const { isPending, isError, data, refetch } = useBlog();
   console.log(data);
 
-  const companyData = data?.data?.data;
-  console.log(companyData, "companies");
+  const blogData = data?.data?.data;
+  console.log(blogData, "companies");
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 5;
@@ -43,10 +40,7 @@ const Companies: React.FC = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-  const currentCompanies = companyData?.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
+  const currentCompanies = blogData?.slice(indexOfFirstItem, indexOfLastItem);
 
   console.log(currentCompanies, "pagination");
 
@@ -127,7 +121,7 @@ const Companies: React.FC = () => {
     },
   });
 
-  const deletcompany = (id: string) => {
+  const deletHandler = (id: string) => {
     setDeletModal((prev) => ({
       ...prev,
       delet: true,
@@ -135,10 +129,10 @@ const Companies: React.FC = () => {
     }));
   };
 
-  const updatecompany = (data: CompanyDataUpdateType) => {
+  const updateHandler = (data: BlogData) => {
     console.log(data);
-    dispatch(addingData(data));
-    navigate("/companies/form");
+    // dispatch(addingData(data));
+    navigate(`/blog/form/${data._id}`);
   };
 
   const closehandler = () => {
@@ -151,7 +145,7 @@ const Companies: React.FC = () => {
 
   const confirmhandler = () => {
     const deleteObj: UniDelet = {
-      path: `/api/company/delete/${isDeletModal?.deletElementId}`,
+      path: `/api/blog/${isDeletModal?.deletElementId}`,
     };
 
     console.log(deleteObj);
@@ -176,14 +170,14 @@ const Companies: React.FC = () => {
       >
         <section
           className={` md:p-8 p-6
-  
-h-full
-        border-gray-200 
-    rounded-md  font-philosopher max-w-full w-full shadow-md`}
+      
+    h-full
+            border-gray-200 
+        rounded-md  font-philosopher max-w-full w-full shadow-md`}
         >
           <div className="flex items-center mb-2 md:mb-6">
             <h1 className=" text-[28px] font-bold md:text-4xl text-[#DEE1E2]">
-              Companies
+              Blogs List
             </h1>
           </div>
           <div className="flex justify-between mb-4">
@@ -192,8 +186,8 @@ h-full
                 type="search"
                 placeholder={`Search`}
                 className={` p-2 text-sm md:text-base  sm:px-4 py-1 border-[2px] border-transparent 
-           bg-[#252525] focus:border-gray-800
-        shadow-inner rounded-[0.26rem] outline-none `}
+               bg-[#252525] focus:border-gray-800
+            shadow-inner rounded-[0.26rem] outline-none `}
                 // value={searchQuery}
                 // onChange={(e) => setSearchQuery(e.target.value)}
                 // onFocus={() => setCurrentPage(1)}
@@ -202,11 +196,11 @@ h-full
             <div className="relative flex items-center self-end ">
               <button
                 className={` px-2 py-1 
-                   bg-emerald-800  hover:bg-emerald-700 text-[#DEE1E2] font-semibold
-              }    rounded shadow-xl md:px-4 md:py-2  sm:self-center`}
+                       bg-emerald-800  hover:bg-emerald-700 text-[#DEE1E2] font-semibold
+                  }    rounded shadow-xl md:px-4 md:py-2  sm:self-center`}
               >
-                <Link to={"/companies/form"}>
-                  <span className="hidden md:inline-block">Add Company</span>
+                <Link to={"/blog/form"}>
+                  <span className="hidden md:inline-block">Create Blog</span>
 
                   <IoIosSend className="w-6 h-6 md:hidden" />
                 </Link>
@@ -216,10 +210,10 @@ h-full
           <section
             className={`w-full overflow-auto   border-2 [&::-webkit-scrollbar]:hidden rounded-lg border-[#1A1A1A] shadow-md bg-[#1A1A1A]`}
           >
-            <section className="grid grid-cols-customCompanies pb-2 p-2  gap-4  text-[#DEE1E2] min-w-[1200px] font-medium md:font-semibold bg-[#1A1A1A]">
+            <section className="grid grid-cols-customBlog pb-2 p-2  gap-4  text-[#DEE1E2] min-w-[1200px] font-medium md:font-semibold bg-[#1A1A1A]">
               <p className="pl-2 md:text-lg">SrNo.</p>
 
-              {listHeadingCompanies.map((heading, index) => (
+              {listHeadingBlog.map((heading, index) => (
                 <p
                   key={index}
                   className={`   md:text-lg ${
@@ -239,73 +233,74 @@ h-full
                   Check Internet connection or Contact to Admin
                 </p>
               ) : (
-                currentCompanies?.map((company, i) => (
+                currentCompanies?.map((blog, i) => (
                   <section
                     key={i}
-                    className="grid items-center gap-6 py-2 pl-6 pr-4 border-t-2 text-[#DEE1E2] border-[#1A1A1A] grid-cols-customCompanies group hover:bg-[#2c2c2c]"
+                    className="grid items-center gap-6 py-2 pl-6 pr-4 border-t-2 text-[#DEE1E2] border-[#1A1A1A] grid-cols-customBlog group hover:bg-[#2c2c2c]"
                   >
                     <span>{i + 1}</span>
 
                     <span
                       className={`  font-semibold text-center  rounded-full  `}
                     >
-                      {company?.name}
+                      {blog?.title}
                     </span>
 
-                    <span className="text-sm font-semibold break-words break-all text-ellipsis">
-                      {company?.email}
+                    <span className="flex justify-center text-sm font-semibold break-words break-all text-ellipsis">
+                      {blog?.category}
                     </span>
 
-                    <div className="flex items-center justify-center">
-                      {company?.image ? (
-                        <img
-                          src={company?.image}
-                          alt="user Image"
-                          className="object-contain w-24 h-24 rounded-lg"
-                        />
+                    <span className="grid gap-2 ml-2 text-sm font-semibold ">
+                      {blog?.brand.map((brand) => (
+                        <li key={brand._id}>{brand.name}</li>
+                      ))}
+                    </span>
+
+                    <div className="flex items-center justify-center gap-2">
+                      {blog?.brand ? (
+                        blog?.brand.map((brand) => (
+                          <img
+                            key={brand._id}
+                            src={brand?.image}
+                            alt={`${brand?.name}`}
+                            className="object-contain w-24 h-24 rounded-lg"
+                          />
+                        ))
                       ) : (
                         <span className="text-sm font-bold text-gray-400">
                           No Image
                         </span>
                       )}
                     </div>
-                    <span className="flex justify-center ml-2 text-sm font-semibold ">
-                      {company?.phone || "--"}
-                    </span>
-                    <span className="flex justify-center ml-2 text-sm font-semibold ">
-                      {company?.address || "--"}
-                    </span>
-                    <span
-                      onClick={() =>
-                        company?.website && handleLinkClick(company.website)
-                      }
-                      className={`ml-2 text-sm font-semibold text-center ${
-                        company?.website ? "underline text-sky-400 " : ""
-                      } break-words break-all cursor-pointer `}
-                    >
-                      {company?.website ? "WebSite" : "----"}
-                    </span>
 
-                    <span className="flex justify-center ml-2 text-sm font-semibold ">
-                      {company?.status}
+                    <span
+                      className={`ml-2 text-sm font-semibold grid gap-2   break-words break-all cursor-pointer `}
+                    >
+                      {blog?.brand.map((brand) => (
+                        <li
+                          key={brand._id}
+                          className={`${
+                            brand?.link ? "underline text-sky-400 " : ""
+                          }`}
+                          onClick={() =>
+                            brand?.link && handleLinkClick(brand?.link)
+                          }
+                        >
+                          {brand?.link ? "WebSite" : "----"}
+                        </li>
+                      ))}
                     </span>
-                    <span className="flex justify-center ml-2 text-sm font-semibold ">
-                      {company?.productcount || 0}
-                    </span>
-                    {/* <span className="flex justify-center ml-2 text-sm font-semibold ">
-                  {company?.dateAdded || "---"}
-                </span> */}
 
                     <div className="grid justify-center gap-2">
                       <button
                         className="px-3 py-2 text-sm font-semibold rounded-md bg-emerald-800 hover:bg-emerald-700"
-                        onClick={() => updatecompany(company)}
+                        onClick={() => updateHandler(blog)}
                       >
                         Edit
                       </button>
                       <button
                         className="px-3 py-2 text-sm font-semibold rounded-md bg-rose-800 hover:bg-rose-700"
-                        onClick={() => deletcompany(company._id || "")}
+                        onClick={() => deletHandler(blog?._id || "")}
                       >
                         Delete
                       </button>
@@ -318,7 +313,7 @@ h-full
 
           <Pagination
             currentPage={currentPage}
-            apiData={companyData ?? []}
+            apiData={blogData ?? []}
             itemsPerPage={itemsPerPage}
             handleClick={handleClick}
           />
@@ -328,4 +323,4 @@ h-full
   );
 };
 
-export default Companies;
+export default Blog;

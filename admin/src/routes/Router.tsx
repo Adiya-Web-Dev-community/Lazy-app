@@ -24,6 +24,11 @@ import BlogCategory from "../pages/BlogCategory";
 import BlogReview from "../pages/BlogReview";
 import InfoGuide from "../pages/InfoGuide";
 import EmailVerification from "../pages/EmailVerification";
+import Faq from "../pages/Faq";
+import FaqForm from "../forms/FaqForm";
+import ProfileFaq from "../pages/ProfileFaq";
+import ProsCons from "../pages/ProsCons";
+import ProsConsForm from "../forms/ProsConsForm";
 
 const route = createBrowserRouter([
   {
@@ -40,20 +45,20 @@ const route = createBrowserRouter([
         element: <VerifyEmailResetPass />,
       },
       {
-        path: "reset-password",
-        element: <ForgetPassword />,
-      },
-      {
         path: "update-profile",
         element: <UpdateProfile />,
       },
       {
-        path: "verify-email",
-        element: <EmailVerification />,
+        path: "reset-password",
+        element: <ForgetPassword />,
       },
       {
         path: "",
         element: <Login />,
+      },
+      {
+        path: "verify-email",
+        element: <EmailVerification />,
       },
     ],
   },
@@ -83,6 +88,7 @@ const route = createBrowserRouter([
       // blog
       { path: "/blog", element: <Blog /> },
       { path: "/blog/form", element: <BlogForm /> },
+      { path: "/blog/form/:id", element: <BlogForm /> },
 
       //blog-Category
       { path: "/blog-category", element: <BlogCategory /> },
@@ -92,6 +98,17 @@ const route = createBrowserRouter([
 
       // info-guide
       { path: "/info-guide", element: <InfoGuide /> },
+
+      // faq
+      { path: "/faq", element: <Faq /> },
+      { path: "/faq/form", element: <FaqForm /> },
+      { path: "/faq/form/:id", element: <FaqForm /> },
+      { path: "/faq/:id", element: <ProfileFaq /> },
+
+      //proscons
+      { path: "/proscons", element: <ProsCons /> },
+      { path: "/proscons/form", element: <ProsConsForm /> },
+      { path: "/proscons/form/:id", element: <ProsConsForm /> },
     ],
   },
 ]);

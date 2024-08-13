@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 
 import { MdAdd } from "react-icons/md";
@@ -6,23 +5,15 @@ import { TiArrowBackOutline } from "react-icons/ti";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import ConfirmationDialog from "../components/modal/ConfirmationDialog";
-import { ApiError, ApiGetResponse } from "../types/apiType";
-import { ProductData } from "../types/contentType";
-import { apiGetRequest } from "../api/adminGetApi";
+
+import { useProductProfile } from "../api/querys";
 
 const ProductProfile: React.FC = () => {
   const { id } = useParams();
 
   const [activeTab, setActivetab] = useState<string>("info");
 
-  const { data } = useQuery<ApiGetResponse<ProductData>, ApiError>({
-    queryKey: ["single_product"],
-    queryFn: async () => {
-      return await apiGetRequest<ProductData>({
-        url: `api/product/${id}`,
-      });
-    },
-  });
+  const { data } = useProductProfile(id ?? "0");
 
   const [dialogCrendial, setDialogCrendial] = useState({
     targetUrl: "",
@@ -39,7 +30,6 @@ const ProductProfile: React.FC = () => {
   const navigate = useNavigate();
 
   const handleFeature = () => {
-    // navigate(`/products/${id}/feature/form`);
     navigate(`/products/form/${id}`);
   };
 
@@ -221,60 +211,6 @@ const ProductProfile: React.FC = () => {
                   }}
                   className="mb-2"
                 />
-                {/* <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              
-                <div className="flex items-center col-span-1 gap-4 sm:col-span-2 md:col-span-3 lg:col-span-4">
-                  <h4 className="mb-2 text-xl font-semibold ">
-                    Display Features
-                  </h4>
-                  <div className="flex items-center gap-2 ml-4">
-                    <button
-                      type="button"
-                      //   onClick={() =>
-                      //     handleRemoveFeature(categoryIndex, featureIndex)
-                      //   }
-                      className="px-2 py-1 text-sm font-bold rounded bg-rose-800 hover:bg-rose-700 focus:outline-none focus:shadow-outline disabled:bg-gray-700 disabled:cursor-not-allowed"
-                      //   disabled={category.features.length === 1}
-                    >
-                      <MdOutlineDelete className="w-4 h-4" />
-                    </button>
-                    <button
-                      type="button"
-                      //   onClick={() =>
-                      //     handleRemoveFeature(categoryIndex, featureIndex)
-                      //   }
-                      className="px-2 py-1 text-sm font-bold rounded bg-emerald-800 hover:bg-emerald-700 focus:outline-none focus:shadow-outline disabled:bg-gray-700 disabled:cursor-not-allowed"
-                      //   disabled={category.features.length === 1}
-                    >
-                      <MdOutlineEdit className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-                <div>
-                  <span className="text-lg font-semibold text-gray-500">
-                    Display Size
-                  </span>
-                  <span className="ml-2 font-bold">16.51 cm (6.5 inch)</span>
-                </div>
-                <div>
-                  <span className="text-lg font-semibold text-gray-500">
-                    Resolution
-                  </span>
-                  <span className="ml-2 font-bold">1600 x 720 Pixels</span>
-                </div>
-                <div>
-                  <span className="text-lg font-semibold text-gray-500">
-                    Resolution Type
-                  </span>
-                  <span className="ml-2 font-bold">HD+</span>
-                </div>
-                <div>
-                  <span className="text-lg font-semibold text-gray-500">
-                    GPU
-                  </span>
-                  <span className="ml-2 font-bold">Adreno 619</span>
-                </div>
-              </div> */}
               </div>
             )}
           </section>

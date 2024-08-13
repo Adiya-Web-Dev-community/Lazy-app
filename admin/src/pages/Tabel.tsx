@@ -1,33 +1,18 @@
 import { useState } from "react";
-
 import { Link, useParams } from "react-router-dom";
-
-import { ProductData } from "../types/contentType";
-import { ApiError, ApiGetResponse } from "../types/apiType";
-import { useQuery } from "@tanstack/react-query";
-
 import { categoryProductHeadings } from "../components/content_data/contentData";
 import { BsEye } from "react-icons/bs";
 import Pagination from "../components/pagination/Pagination";
-import { apiGetRequest } from "../api/adminGetApi";
+
 import { TiArrowBackOutline } from "react-icons/ti";
 
 import CategoryTypeProductsLoading from "../components/loading-elemnts/CategoryTypeProductsLoading";
+import { useSingleCategories } from "../api/querys";
 
 const Tabel = () => {
   const { id } = useParams();
 
-  const { isPending, isError, error, data } = useQuery<
-    ApiGetResponse<ProductData[]>,
-    ApiError
-  >({
-    queryKey: [`category/${id}`],
-    queryFn: async () => {
-      return await apiGetRequest<ProductData[]>({
-        url: `api/product/bycategory/${id}`,
-      });
-    },
-  });
+  const { isPending, isError, error, data } = useSingleCategories(id ?? "0");
 
   console.log(id, data, isError, error);
 

@@ -18,10 +18,10 @@ import ConfirmDeleteModal from "../components/modal/ConfirmDeleteModal";
 import { useState } from "react";
 import Pagination from "../components/pagination/Pagination";
 
-import useInfoGuide from "../hooks/useInfoGuide";
 import InfoGuidForm from "./InfoGuidForm";
 import VideoModal from "../components/modal/VideoModal";
 import InfoGuideLoading from "../components/loading-elemnts/InfoGuideLoading";
+import { useInfoGuide } from "../api/querys";
 
 const InfoGuide: React.FC = () => {
   const [isInfoForm, seInfoForm] = useState<InfoGuidStateType>({
@@ -65,8 +65,6 @@ const InfoGuide: React.FC = () => {
     indexOfFirstItem,
     indexOfLastItem
   );
-
-  // console.log(currentCategory, "pagination");
 
   const handleClick = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -315,29 +313,7 @@ const InfoGuide: React.FC = () => {
               }
             </div>
           </section>
-          {/* <div className="flex items-center justify-center w-full mt-4">
-                <div className="flex justify-start w-full">
-                  <p className="text-[#DEE1E2] text-sm font-medium">
-                    <span>Total Item: </span>{" "}
-                    <span>0{currentCategory?.length}</span>
-                  </p>
-                </div>
-                <div className="flex justify-start w-full">
-                  {Array.from({ length: totalPages }, (_, index) => (
-                    <button
-                      key={index + 1}
-                      className={`mx-1 px-3 py-1  rounded  ${
-                        currentPage === index + 1
-                          ? "bg-emerald-800 text-[#DEE1E2]"
-                          : "bg-gray-400"
-                      }`}
-                      onClick={() => handleClick(index + 1)}
-                    >
-                      {index + 1}
-                    </button>
-                  ))}
-                </div>
-              </div> */}
+
           <Pagination
             currentPage={currentPage}
             apiData={infoGuidApiData ?? []}
