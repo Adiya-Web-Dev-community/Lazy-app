@@ -9,7 +9,7 @@ router.post("/login",Login);
 router.get("/get-myself",isAdmin,GetData);
 router.put("/update-profile",isAdmin,UpdateProfile);
 router.post("/forgetpassword",ForGetPassword);
-router.post("/verifyotp",VeriFyOTP)
-router.post("/forgot/verifyotp",fogotVerifyOTP)
+router.post("/verifyotp",VeriFyOTP);
+router.post("/forgot/verifyotp",fogotVerifyOTP);
 
 module.exports = router;

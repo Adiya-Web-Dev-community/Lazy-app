@@ -101,17 +101,17 @@ const fogotVerifyOTP = async (req, res) => {
   try {
     const user = await User.findOne({ email, otp }).select("-password");
     if (!user) {
-      ChangePasswordFail_Alert(email);
+      // ChangePasswordFail_Alert(email);
       return res.status(401).json({ success: false, message: "Invalid OTP" });
     }
-    const hashPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashPassword;
-    await user.save();
+    // const hashPassword = await bcrypt.hash(newPassword, 10);
+    // user.password = hashPassword;
+    // await user.save();
 
     return res.status(201).json({
       success: true,
       message: "password changes successful",
-      token: user,
+      data: user,
     });
   } catch (error) {
     res.status(500).json({
@@ -221,14 +221,6 @@ const UpdateProfile = async (req, res) => {
     });
   }
 };
-module.exports = {
-  Register,
-  Login,
-  GetData,
-  UpdateProfile,
-  ForGetPassword,
-  VeriFyOTP,
-  fogotVerifyOTP
-};
 
-module.exports={Register,Login,GetData,UpdateProfile,ForGetPassword,VeriFyOTP}
+
+module.exports={Register,Login,GetData,UpdateProfile,ForGetPassword,VeriFyOTP,fogotVerifyOTP}
