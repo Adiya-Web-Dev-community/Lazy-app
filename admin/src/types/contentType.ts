@@ -133,7 +133,7 @@ export interface ProductsLinkType {
 }
 
 export interface FormProductTypes {
-  description?: string;
+  description: string;
   imageSrc?: string;
   image?: string[];
 
@@ -146,10 +146,12 @@ export interface FormProductTypes {
     name?: string;
     id?: string;
   };
-  feature?: string;
+  feature: string;
   available?: boolean;
   status?: string;
   productsLink?: ProductsLinkType[] | undefined;
+  flashSale: boolean;
+  recommended: boolean;
 }
 
 //produt get data types
@@ -181,6 +183,8 @@ export interface ProductData {
     indexOfLastItem: number
   ): ProductData | undefined;
   map: ProductData | undefined;
+  flashSale: boolean;
+  recommended: boolean;
 }
 export interface ProductResponseData {
   data?: ProductData[];
@@ -221,6 +225,8 @@ export interface ProductPostResponseDataType {
   _id?: string; //
   createdAt?: string; //
   updatedAt?: string; //
+  flashSale: boolean;
+  recommended: boolean;
 }
 export interface ProductPostResponseType {
   success?: boolean;
@@ -239,6 +245,8 @@ export interface ProductSendingPostType {
   productsLink?: ProductLinkSentType[];
   feature?: string;
   available?: boolean;
+  flashSale: boolean;
+  recommended: boolean;
 }
 
 export interface MutationObjectType {

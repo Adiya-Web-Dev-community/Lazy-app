@@ -64,7 +64,7 @@ const VerifyEmailResetPass: React.FC = () => {
       console.log("Password Successfully Change:", data);
       toast.dismiss();
       toast.success(`Password Successfully Change`);
-      navigate("/");
+      setTimeout(() => navigate("/login"), 1000);
       //   returnToHome();
       // Handle success (e.g., redirect to dashboard)
     },
@@ -128,7 +128,7 @@ const VerifyEmailResetPass: React.FC = () => {
     };
 
     mutation.mutate({
-      path: "api/admin/verifyotp",
+      path: "api/admin/forgot/verifyotp",
       method: "post",
       data: resetPasswordObj,
     });

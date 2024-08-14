@@ -219,7 +219,7 @@ const InfoGuide: React.FC = () => {
                     }    rounded shadow-xl md:px-4 md:py-2  sm:self-center`}
                 onClick={handlingCategory}
               >
-                <span className="hidden md:inline-block">Creat Category</span>
+                <span className="hidden md:inline-block">Creat Guide</span>
 
                 <IoIosSend className="w-6 h-6 md:hidden" />
               </button>
