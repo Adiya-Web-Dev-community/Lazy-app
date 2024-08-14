@@ -30,18 +30,55 @@ const JoditTextEditor: React.FC<Props> = ({ OnChangeEditor, content }) => {
       readonly: false,
       height: 400,
       theme: "dark",
+      removeButtons: ["image", "video"],
+      // buttons: [
+      //   "bold",
+      //   "italic",
+      //   "underline",
+      //   "strikethrough",
+      //   "superscript",
+      //   "subscript",
+      //   "ul",
+      //   "ol",
+      //   "outdent",
+      //   "indent",
+      //   "align",
+      //   "font",
+      //   "fontsize",
+      //   "paragraph",
+      //   "classSpan",
+      //   "eraser",
+      //   "cut",
+      //   "copy",
+      //   "paste",
+      //   "hr",
+      //   "table",
+      //   "link",
+      //   "unlink",
+      //   "symbole",
+      //   "file",
+      //   "fullsize",
+      //   "preview",
+      //   "print",
+      //   "source",
+      //   "undo",
+      //   "redo",
+      //   // "dots", // The overflow menu (three dots)
+      // ],
 
       extraButtons: [
-        {
-          name: "alertButton",
+        // {
+        //   name: "alertButton",
 
-          iconURL: "https://cdn-icons-png.flaticon.com/512/130/130304.png",
-          exec: () => {
-            alert("Button works!");
-          },
-        },
+        //   iconURL: "https://cdn-icons-png.flaticon.com/512/130/130304.png",
+        //   exec: () => {
+        //     alert("Button works!");
+        //   },
+        // },
 
         {
+          name: "customVideo",
+
           tooltip: "Insert Video",
           icon: "video", // You can use a video-related icon here
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -120,6 +157,7 @@ const JoditTextEditor: React.FC<Props> = ({ OnChangeEditor, content }) => {
         },
 
         {
+          name: "customImage",
           tooltip: "Insert Image",
           icon: "image", // You can use an image-related icon here
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
