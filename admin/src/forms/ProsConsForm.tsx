@@ -252,7 +252,7 @@ const ProsConsForm: React.FC = () => {
                         }`}
                         onClick={() => selectOption(product._id ?? "")}
                       >
-                        <span>{product.name}</span>
+                        <span>{product?.name}</span>
                       </li>
                     )
                   )}

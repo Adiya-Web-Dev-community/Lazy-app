@@ -24,9 +24,10 @@ import { IoMdArrowRoundDown } from "react-icons/io";
 import DynamicInputFields from "../components/DynamicInputFiled.js";
 
 import FileUploadForm from "../components/multiple_imag/MultipleImageUploadeForm.js";
-import TextEditor from "../components/textEditor/TextEditor.js";
+
 import { apiGetRequest } from "../api/adminGetApi.js";
 import { useCategories, useCompanies } from "../api/querys.js";
+import JoditTextEditor from "../components/textEditor/JoditTextEditor.js";
 
 const ProductUpdateForm: React.FC = () => {
   const [isOpen, setOpen] = useState<StateOpenCloseType>({
@@ -94,6 +95,8 @@ const ProductUpdateForm: React.FC = () => {
   const isUpdate = Object.keys(singleProduct || [])?.length !== 0;
   const singleProductObject = singleProduct?.data;
 
+  console.log(singleProduct, "singelProduct");
+
   const { data: category } = useCategories();
   const { data: company } = useCompanies();
 
@@ -131,6 +134,8 @@ const ProductUpdateForm: React.FC = () => {
     available: singleProductObject?.available || false,
     status: singleProductObject?.status || "",
     productsLink: formatingProdutLink || [],
+    flashSale: false,
+    recommended: false,
   });
 
   console.log(productData, companies);
@@ -152,19 +157,21 @@ const ProductUpdateForm: React.FC = () => {
     if (isUpdate) {
       setProductData((prev) => ({
         ...prev,
-        description: singleProductObject?.description,
+        description: singleProductObject?.description || "",
 
         image: singleProductObject?.images,
 
         name: singleProductObject?.name,
 
         company: filterCompanies(companies, singleProductObject?.company ?? []),
-        feature: singleProductObject?.feature,
+        feature: singleProductObject?.feature || "",
         category: findCategory,
 
         available: singleProductObject?.available,
         status: singleProductObject?.status,
         productsLink: formatingProdutLink,
+        flashSale: singleProductObject?.flashSale || false,
+        recommended: singleProductObject?.recommended || false,
       }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -242,6 +249,8 @@ const ProductUpdateForm: React.FC = () => {
       productsLink: productArray,
       feature: productData.feature,
       available: productData.available,
+      flashSale: productData.flashSale,
+      recommended: productData.recommended,
     };
 
     console.log(productPostObject, companyNameIcon, productArray);
@@ -271,6 +280,8 @@ const ProductUpdateForm: React.FC = () => {
       available: false,
       status: "",
       productsLink: [],
+      flashSale: false,
+      recommended: false,
     });
 
     navigate("/products");
@@ -475,9 +486,13 @@ const ProductUpdateForm: React.FC = () => {
                 <p className="mb-2 text-sm font-bold text-[#DEE1E2]">
                   Features :
                 </p>
-                <TextEditor
+                {/* <TextEditor
                   height={400}
                   value={productData.feature}
+                  OnChangeEditor={(e) => handlingDrop("feature", e)}
+                /> */}
+                <JoditTextEditor
+                  content={productData?.feature}
                   OnChangeEditor={(e) => handlingDrop("feature", e)}
                 />
               </div>
@@ -486,24 +501,54 @@ const ProductUpdateForm: React.FC = () => {
                 <p className="mb-2 text-sm font-bold text-[#DEE1E2]">
                   Description :
                 </p>
-                <TextEditor
+                {/* <TextEditor
                   height={400}
                   value={productData.description}
+                  OnChangeEditor={(e) => handlingDrop("description", e)}
+                /> */}
+                <JoditTextEditor
+                  content={productData.description}
                   OnChangeEditor={(e) => handlingDrop("description", e)}
                 />
               </div>
 
-              <div className="flex items-center pl-1">
-                <input
-                  type="checkbox"
-                  name="available"
-                  checked={productData?.available}
-                  onChange={handleChange}
-                  className="w-4 h-4 bg-[#252525] focus:border-[#DEE1E2] border-transparent border cursor-pointer"
-                />
-                <label htmlFor="available" className="pl-4 text-sm ">
-                  Available Product
-                </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 md:col-span-2">
+                <div className="flex items-center pl-1">
+                  <input
+                    type="checkbox"
+                    name="available"
+                    checked={productData.available}
+                    onChange={handleChange}
+                    className="w-4 h-4 bg-[#252525] focus:border-[#DEE1E2] border-transparent border cursor-pointer"
+                  />
+                  <label htmlFor="available" className="pl-4 text-sm ">
+                    Available Product
+                  </label>
+                </div>
+                <div className="flex items-center pl-1">
+                  <input
+                    type="checkbox"
+                    name="flashSale"
+                    checked={productData.flashSale}
+                    onChange={handleChange}
+                    className="w-4 h-4 bg-[#252525] focus:border-[#DEE1E2] border-transparent border cursor-pointer"
+                  />
+                  <label htmlFor="flashSale" className="pl-4 text-sm ">
+                    FleshSale Product
+                  </label>
+                </div>
+                <div className="flex items-center pl-1">
+                  <input
+                    type="checkbox"
+                    name="recommended"
+                    checked={productData.recommended}
+                    onChange={handleChange}
+                    className="w-4 h-4 bg-[#252525] focus:border-[#DEE1E2] border-transparent border cursor-pointer"
+                  />
+                  <label htmlFor="recommended" className="pl-4 text-sm ">
+                    Recommended Product
+                  </label>
+                </div>
               </div>
             </div>
 
