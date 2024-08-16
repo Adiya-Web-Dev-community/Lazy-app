@@ -1,15 +1,17 @@
 import React from "react";
+import { ConfirmDialogProps } from "../../types/contentType";
 
-const ConfirmationDialog = ({ show, onClose, onConfirm }) => {
-  if (!show) return null;
-
-  const handlingPropogation = (e) => {
+const ConfirmationDialog: React.FC<ConfirmDialogProps> = ({
+  onClose,
+  onConfirm,
+}) => {
+  const handlingPropogation = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 cursor-pointer bg-black/60"
+      className="fixed inset-0 z-10 flex items-center justify-center bg-opacity-50 cursor-pointer bg-black/60"
       onClick={onClose}
     >
       <div

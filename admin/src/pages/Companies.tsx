@@ -1,17 +1,19 @@
 import { IoIosSend } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
 
-import { DeletElementData, UniDelet } from "../types/contentType";
+import {
+  CompanyDataUpdateType,
+  DeletElementData,
+  ProductDeleteStateType,
+  UniDelet,
+} from "../types/contentType";
 import { ApiError, ApiResponse } from "../types/apiType";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import { toast } from "react-toastify";
 import { apiRequest } from "../api/adminApi";
-import {
-  companiesData,
-  listHeadingCompanies,
-} from "../components/content_data/contentData";
-import useCompanies from "../hooks/useCompanies";
+import { listHeadingCompanies } from "../components/content_data/contentData";
+
 import { useDispatch } from "react-redux";
 import { addingData } from "../store/companies";
 import ConfirmDeleteModal from "../components/modal/ConfirmDeleteModal";
@@ -19,21 +21,23 @@ import { useState } from "react";
 import ConfirmationDialog from "../components/modal/ConfirmationDialog";
 import Pagination from "../components/pagination/Pagination";
 import CompaniesLoading from "../components/loading-elemnts/CompaniesLoading";
+import { useCompanies } from "../api/querys";
 
-const Companies = () => {
+const Companies: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [isDeletModal, setDeletModal] = useState({
+  const [isDeletModal, setDeletModal] = useState<ProductDeleteStateType>({
     delet: false,
     deletElementId: "",
   });
-  const { isPending, isError, data, error, refetch } = useCompanies();
+  const { isPending, isError, data, refetch } = useCompanies();
+  console.log(data);
 
   const companyData = data?.data?.data;
   console.log(companyData, "companies");
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 5;
   //calculation of page
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -55,7 +59,7 @@ const Companies = () => {
     showDialog: false,
   });
 
-  const handleLinkClick = (url) => {
+  const handleLinkClick = (url: string) => {
     setDialogCrendial((prev) => ({
       ...prev,
       targetUrl: url,
@@ -85,7 +89,7 @@ const Companies = () => {
       toast.loading("Checking Details");
       try {
         // console.log(path, method);
-        const response = await apiRequest<DeletElementData>({
+        const response = await apiRequest<UniDelet, DeletElementData>({
           url: deletObj.path,
           method: "delete",
         });
@@ -93,9 +97,9 @@ const Companies = () => {
         // return { data: response.data };
         return response as ApiResponse<DeletElementData>;
       } catch (error) {
-        const apiError = {
-          message: error?.response?.data?.message || "An error occurred",
-          status: error?.response?.status || 500,
+        const apiError: ApiError = {
+          message: (error as ApiError)?.message || "An error occurred",
+          status: (error as ApiError)?.status || 500,
         };
         throw apiError;
       }
@@ -104,7 +108,7 @@ const Companies = () => {
       console.log(data);
       refetch();
       toast.dismiss();
-      toast.success(`${data?.data?.message}`);
+      toast.success(`Company Deleted`);
       setDeletModal((prev) => ({
         ...prev,
         delet: false,
@@ -123,27 +127,7 @@ const Companies = () => {
     },
   });
 
-  const deletcompany = (id) => {
-    // const isConfirmed = window.confirm(
-    //   "Are you sure you want to delete this Dish?"
-    // );
-
-    // if (isConfirmed) {
-    //   console.log(id, "delet");
-
-    //   const deleteObj: UniDelet = {
-    //     path: `/menus/${id}`,
-    //   };
-
-    //   console.log(deleteObj);
-
-    //   // Proceed with the deletion
-    //   mutation.mutate(deleteObj);
-    // } else {
-    //   // Deletion canceled by the user
-    //   console.log("Deletion canceled");
-    // }
-
+  const deletcompany = (id: string) => {
     setDeletModal((prev) => ({
       ...prev,
       delet: true,
@@ -151,7 +135,8 @@ const Companies = () => {
     }));
   };
 
-  const updatecompany = (data) => {
+  const updatecompany = (data: CompanyDataUpdateType) => {
+    console.log(data);
     dispatch(addingData(data));
     navigate("/companies/form");
   };
@@ -179,6 +164,12 @@ const Companies = () => {
     <>
       {isDeletModal?.delet && (
         <ConfirmDeleteModal onClose={closehandler} onConfirm={confirmhandler} />
+      )}
+      {dialogCrendial.showDialog && (
+        <ConfirmationDialog
+          onClose={handleCloseDialog}
+          onConfirm={handleConfirmRedirect}
+        />
       )}
       <section
         className={`  md:pl-0 p-4 h-full rounded-md font-philosopher  mx-auto [&::-webkit-scrollbar]:hidden`}
@@ -244,11 +235,11 @@ h-full
                 // Loading element for the table
                 <CompaniesLoading />
               ) : isError ? (
-                <p className="flex items-center justify-center w-full h-full font-medium text-center text-rose-800">
+                <p className="flex items-center justify-center w-full h-full text-2xl font-bold text-center text-rose-600">
                   Check Internet connection or Contact to Admin
                 </p>
               ) : (
-                (currentCompanies || companiesData)?.map((company, i) => (
+                currentCompanies?.map((company, i) => (
                   <section
                     key={i}
                     className="grid items-center gap-6 py-2 pl-6 pr-4 border-t-2 text-[#DEE1E2] border-[#1A1A1A] grid-cols-customCompanies group hover:bg-[#2c2c2c]"
@@ -258,7 +249,7 @@ h-full
                     <span
                       className={`  font-semibold text-center  rounded-full  `}
                     >
-                      {company?.name || company?.companyName}
+                      {company?.name}
                     </span>
 
                     <span className="text-sm font-semibold break-words break-all text-ellipsis">
@@ -279,7 +270,7 @@ h-full
                       )}
                     </div>
                     <span className="flex justify-center ml-2 text-sm font-semibold ">
-                      {company?.phoneNumber || "--"}
+                      {company?.phone || "--"}
                     </span>
                     <span className="flex justify-center ml-2 text-sm font-semibold ">
                       {company?.address || "--"}
@@ -292,13 +283,9 @@ h-full
                         company?.website ? "underline text-sky-400 " : ""
                       } break-words break-all cursor-pointer `}
                     >
-                      {company?.website || "----"}
+                      {company?.website ? "WebSite" : "----"}
                     </span>
-                    <ConfirmationDialog
-                      show={dialogCrendial.showDialog}
-                      onClose={handleCloseDialog}
-                      onConfirm={handleConfirmRedirect}
-                    />
+
                     <span className="flex justify-center ml-2 text-sm font-semibold ">
                       {company?.status}
                     </span>
@@ -318,7 +305,7 @@ h-full
                       </button>
                       <button
                         className="px-3 py-2 text-sm font-semibold rounded-md bg-rose-800 hover:bg-rose-700"
-                        onClick={() => deletcompany(company._id)}
+                        onClick={() => deletcompany(company._id || "")}
                       >
                         Delete
                       </button>
@@ -331,7 +318,7 @@ h-full
 
           <Pagination
             currentPage={currentPage}
-            apiData={companyData}
+            apiData={companyData ?? []}
             itemsPerPage={itemsPerPage}
             handleClick={handleClick}
           />

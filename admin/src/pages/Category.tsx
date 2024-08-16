@@ -5,9 +5,15 @@ import { ApiError, ApiResponse } from "../types/apiType";
 import { useMutation } from "@tanstack/react-query";
 
 import { toast } from "react-toastify";
-import { DeletElementData, UniDelet } from "../types/contentType";
+import {
+  CategoryStateType,
+  DeletElementData,
+  ProductDeleteStateType,
+  UniDelet,
+  UpdateCatgeoryData,
+} from "../types/contentType";
 import { apiRequest } from "../api/adminApi";
-import { useCategories } from "../hooks/useCategories";
+
 import CreatCategory from "./CreatCategory";
 import { FiEye } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
@@ -15,19 +21,21 @@ import ConfirmDeleteModal from "../components/modal/ConfirmDeleteModal";
 import { useState } from "react";
 import Pagination from "../components/pagination/Pagination";
 import CategoryLoading from "../components/loading-elemnts/CategoryLoading";
+import { useCategories } from "../api/querys";
 
-const Category = () => {
-  const [isCategoryForm, setCategoryForm] = useState({
+const Category: React.FC = () => {
+  const [isCategoryForm, setCategoryForm] = useState<CategoryStateType>({
     creat: false,
     updateId: "",
     updateData: "",
+    updateImage: "",
   });
-  const [isDeletModal, setDeletModal] = useState({
+  const [isDeletModal, setDeletModal] = useState<ProductDeleteStateType>({
     delet: false,
     deletElementId: "",
   });
 
-  const categoryHeading = ["Category Name", "Setting", "View"];
+  const categoryHeading = ["Image", "Category Name", "Setting", "View"];
 
   const handlingCategory = () => {
     setCategoryForm((prev) => ({
@@ -42,7 +50,7 @@ const Category = () => {
 
   const categoryApiData = data?.data?.data;
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 5;
   //calculation of page
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -53,7 +61,7 @@ const Category = () => {
     indexOfLastItem
   );
 
-  console.log(currentCategory, "pagination");
+  // console.log(currentCategory, "pagination");
 
   const handleClick = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -70,7 +78,7 @@ const Category = () => {
       toast.loading("Checking Details");
       try {
         // console.log(path, method);
-        const response = await apiRequest<DeletElementData>({
+        const response = await apiRequest<UniDelet, DeletElementData>({
           url: deletObj.path,
           method: "delete",
         });
@@ -78,9 +86,10 @@ const Category = () => {
         // return { data: response.data };
         return response as ApiResponse<DeletElementData>;
       } catch (error) {
-        const apiError = {
-          message: error?.response?.data?.message || "An error occurred",
-          status: error?.response?.status || 500,
+        console.log(error);
+        const apiError: ApiError = {
+          message: (error as ApiError)?.message || "An error occurred",
+          status: (error as ApiError)?.status || 500,
         };
         throw apiError;
       }
@@ -99,6 +108,7 @@ const Category = () => {
     onError: (error: ApiError) => {
       console.log(error);
       toast.dismiss();
+      toast.error(error?.message);
       setDeletModal((prev) => ({
         ...prev,
         delet: false,
@@ -107,22 +117,23 @@ const Category = () => {
     },
   });
 
-  const deletCategory = (id) => {
+  const deletCategory = (id: string) => {
     setDeletModal((prev) => ({
       ...prev,
       delet: true,
       deletElementId: id,
     }));
   };
-  const updateCategory = (category) => {
+  const updateCategory = (category: UpdateCatgeoryData) => {
     setCategoryForm((prev) => ({
       ...prev,
       updateId: category._id,
       updateData: category.name,
+      updateImage: category?.image,
     }));
   };
 
-  const handlingNavigate = (id) => {
+  const handlingNavigate = (id: string) => {
     navigate(`/category/${id}`);
   };
 
@@ -138,8 +149,6 @@ const Category = () => {
     const deleteObj: UniDelet = {
       path: `/api/admin/category/${isDeletModal?.deletElementId}`,
     };
-
-    console.log(deleteObj);
 
     // Proceed with the deletion
     mutation.mutate(deleteObj);
@@ -221,7 +230,7 @@ const Category = () => {
                 isPending ? (
                   <CategoryLoading />
                 ) : isError ? (
-                  <p className="flex items-center justify-center w-full h-full font-medium text-center text-rose-800">
+                  <p className="flex items-center justify-center w-full h-full text-2xl font-bold text-center text-rose-600">
                     Check Internet connection or Contact to Admin
                   </p>
                 ) : (
@@ -232,7 +241,21 @@ const Category = () => {
                     >
                       <span>{i + 1}</span>
 
-                      <span className="ml-2 text-sm font-semibold md:text-base">
+                      <div className="flex items-center justify-center">
+                        {category?.image ? (
+                          <img
+                            src={category?.image}
+                            alt="user Image"
+                            className="object-contain w-24 h-24 rounded-lg"
+                          />
+                        ) : (
+                          <span className="flex items-center w-24 h-24 text-sm font-bold text-gray-400">
+                            No Image
+                          </span>
+                        )}
+                      </div>
+
+                      <span className="flex justify-center ml-2 text-sm font-semibold md:text-base">
                         {category?.name}
                       </span>
 
@@ -253,7 +276,7 @@ const Category = () => {
                       <div className="grid justify-center gap-2">
                         <button
                           className="px-2 py-2 text-sm rounded-md bg-sky-800 hover:bg-sky-700"
-                          onClick={() => handlingNavigate(category?._id)}
+                          onClick={() => handlingNavigate(category?.name)}
                         >
                           <FiEye className="w-6 h-4" />
                         </button>
@@ -265,32 +288,10 @@ const Category = () => {
               }
             </div>
           </section>
-          {/* <div className="flex items-center justify-center w-full mt-4">
-            <div className="flex justify-start w-full">
-              <p className="text-[#DEE1E2] text-sm font-medium">
-                <span>Total Item: </span>{" "}
-                <span>0{currentCategory?.length}</span>
-              </p>
-            </div>
-            <div className="flex justify-start w-full">
-              {Array.from({ length: totalPages }, (_, index) => (
-                <button
-                  key={index + 1}
-                  className={`mx-1 px-3 py-1  rounded  ${
-                    currentPage === index + 1
-                      ? "bg-emerald-800 text-[#DEE1E2]"
-                      : "bg-gray-400"
-                  }`}
-                  onClick={() => handleClick(index + 1)}
-                >
-                  {index + 1}
-                </button>
-              ))}
-            </div>
-          </div> */}
+
           <Pagination
             currentPage={currentPage}
-            apiData={categoryApiData}
+            apiData={categoryApiData ?? []}
             itemsPerPage={itemsPerPage}
             handleClick={handleClick}
           />

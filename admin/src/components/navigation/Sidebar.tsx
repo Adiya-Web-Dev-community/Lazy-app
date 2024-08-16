@@ -1,26 +1,24 @@
 // Sidebar.js
-import React, { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+
+import { NavLink } from "react-router-dom";
 
 import { RxCross1, RxHamburgerMenu } from "react-icons/rx";
-import { MdOutlineCategory } from "react-icons/md";
+import { MdOutlineCategory, MdOutlineReviews } from "react-icons/md";
 
 import { RiBuilding2Line } from "react-icons/ri";
 
 import { GiBatMask } from "react-icons/gi";
 import { AiOutlineProduct } from "react-icons/ai";
+import { SideBarPropsType } from "../../types/contentType";
+import { BiLogoBlogger } from "react-icons/bi";
+import { FaBook } from "react-icons/fa";
+import { TbIcons, TbMessageQuestion } from "react-icons/tb";
 
-const SideBar = ({ isOpen, onToggleSidebarLarge, onToggleSidebarSmall }) => {
-  const [isCategory, setSidebarOpen] = useState(false);
-
-  const handlingCategory = () => {
-    setSidebarOpen((prev) => !prev);
-  };
-
-  // const handlingPropogation = (e) => {
-  //   e.stopPropagation();
-  // };
-
+const SideBar: React.FC<SideBarPropsType> = ({
+  isOpen,
+  onToggleSidebarLarge,
+  onToggleSidebarSmall,
+}) => {
   return (
     <section
       className={` h-screen  ${
@@ -30,9 +28,7 @@ const SideBar = ({ isOpen, onToggleSidebarLarge, onToggleSidebarSmall }) => {
               isOpen.large ? "w-24" : "w-64"
             }`
       }  transition-all duration-500   cursor-pointer`}
-      // onClick={onToggleSidebarSmall}
     >
-      {/* <section className="relative w-full" onClick={handlingPropogation}> */}
       <section
         className={`
     cursor-default h-full bg-[#1A1A1A] shadow-md overflow-clip   ${
@@ -54,26 +50,14 @@ const SideBar = ({ isOpen, onToggleSidebarLarge, onToggleSidebarSmall }) => {
               <RxCross1 className="w-6 h-6 text-gray-400" />
             )}
           </button>
-          {/* <div className={`w-full ml-12 ${isOpen.large ? "hidden" : ""}`}> */}
-          <div className={`w-full ml-4 ${isOpen.large ? "hidden" : ""}`}>
-            {/* <img
-              src={logo}
-              alt="Logo"
-              className={`w-[2rem] ${isOpen.large ? "hidden" : ""}`}
-              // className={`w-[10rem] `}
-            /> */}
 
+          <div className={`w-full ml-4 ${isOpen.large ? "hidden" : ""}`}>
             <p className="flex items-center text-2xl font-semibold text-gray-600 font-montserrat">
               Laz<span className="text-emerald-500">y</span>{" "}
               <GiBatMask className="text-emerald-600" />{" "}
               <span className="text-emerald-700">B</span>at
             </p>
           </div>
-          {/* <img
-            src={logoFirstWord}
-            alt="Logo"
-            className={` ${isOpen ? "" : "hidden"}`}
-          /> */}
         </div>
 
         <div
@@ -81,32 +65,6 @@ const SideBar = ({ isOpen, onToggleSidebarLarge, onToggleSidebarSmall }) => {
             isOpen.large ? "p-4" : "  p-2 pt-4 pl-4 "
           }  overflow-y-auto  [&::-webkit-scrollbar]:hidden `}
         >
-          {/* <NavLink
-            to={"/dashboard"}
-            className={({ isActive }) =>
-              ` relative group rounded-md flex font-medium items-center
-                    ${
-                      isOpen.large
-                        ? "m-0 p-1 justify-center"
-                        : "m-1 p-2 w-[95%]"
-                    } h-[2.7rem]   ${
-                isActive
-                  ? "bg-sky-400 text-white font-semibold"
-                  : "hover:bg-sky-200 hover:text-black text-gray-400"
-              }`
-            }
-            // onClick={() => handleDispatch()}
-          >
-            <LuUsers2 className="w-6 h-6" />
-
-            <span
-              className={`mx-1 p-1  text-[15px] font-montserrat ${
-                isOpen.large ? "hidden" : ""
-              } `}
-            >
-              Users
-            </span>
-          </NavLink> */}
           <NavLink
             to={"/products"}
             className={({ isActive }) =>
@@ -121,7 +79,6 @@ const SideBar = ({ isOpen, onToggleSidebarLarge, onToggleSidebarSmall }) => {
                   : "hover:from-emerald-700 hover:bg-gradient-to-r  hover:text-white text-gray-400"
               }`
             }
-            // onClick={() => handleDispatch()}
           >
             <AiOutlineProduct className="w-6 h-6" />
 
@@ -133,10 +90,7 @@ const SideBar = ({ isOpen, onToggleSidebarLarge, onToggleSidebarSmall }) => {
               Products
             </span>
           </NavLink>
-          {/* <div
-            className={` relative group rounded-md flex flex-col justify-center  font-medium 
-                      `}
-          > */}
+
           <NavLink
             to={"/category"}
             className={({ isActive }) =>
@@ -149,9 +103,7 @@ const SideBar = ({ isOpen, onToggleSidebarLarge, onToggleSidebarSmall }) => {
                   : "hover:from-emerald-700 hover:bg-gradient-to-r  hover:text-white text-gray-400"
               }`
             }
-            onClick={handlingCategory}
           >
-            {/* <div className="flex items-center"> */}
             <MdOutlineCategory className="w-6 h-6" />
             <span
               className={`mx-1 p-1  text-[15px] font-montserrat ${
@@ -160,14 +112,8 @@ const SideBar = ({ isOpen, onToggleSidebarLarge, onToggleSidebarSmall }) => {
             >
               Category
             </span>
-            {/* </div> */}
-            {/* <RiArrowDropDownLine
-                className={`${
-                  isCategory ? "rotate-180" : ""
-                } transition-all duration-300 w-6 h-6`}
-              /> */}
           </NavLink>
-          {/* </div> */}
+
           <NavLink
             to={"/companies"}
             className={({ isActive }) =>
@@ -182,7 +128,6 @@ const SideBar = ({ isOpen, onToggleSidebarLarge, onToggleSidebarSmall }) => {
                   : "hover:from-emerald-700 hover:bg-gradient-to-r  hover:text-white text-gray-400"
               }`
             }
-            // onClick={() => handleDispatch()}
           >
             <RiBuilding2Line className="w-6 h-6" />
 
@@ -194,8 +139,8 @@ const SideBar = ({ isOpen, onToggleSidebarLarge, onToggleSidebarSmall }) => {
               Company
             </span>
           </NavLink>
-          {/* <NavLink
-            to={"/orders"}
+          <NavLink
+            to={"/blog-category"}
             className={({ isActive }) =>
               ` relative group rounded-md flex font-medium items-center
                     ${
@@ -204,22 +149,146 @@ const SideBar = ({ isOpen, onToggleSidebarLarge, onToggleSidebarSmall }) => {
                         : "m-1 p-2 w-[95%]"
                     } h-[2.7rem]   ${
                 isActive
-                  ? "bg-emerald-500 text-white font-semibold"
-                  : "hover:bg-emerald-700 hover:text-white text-gray-400"
+                  ? " bg-gradient-to-r from-emerald-800 text-white font-semibold"
+                  : "hover:from-emerald-700 hover:bg-gradient-to-r  hover:text-white text-gray-400"
               }`
             }
-            // onClick={() => handleDispatch()}
           >
-            <FaCartFlatbed className="w-6 h-6" />
+            <MdOutlineCategory className="w-6 h-6" />
 
             <span
               className={`mx-1 p-1  text-[15px] font-montserrat ${
                 isOpen.large ? "hidden" : ""
               } `}
             >
-              Orders
+              Blog-Category
             </span>
-          </NavLink> */}
+          </NavLink>
+          <NavLink
+            to={"/blog"}
+            className={({ isActive }) =>
+              ` relative group rounded-md flex font-medium items-center
+                    ${
+                      isOpen.large
+                        ? "m-0 p-1 justify-center"
+                        : "m-1 p-2 w-[95%]"
+                    } h-[2.7rem]   ${
+                isActive
+                  ? " bg-gradient-to-r from-emerald-800 text-white font-semibold"
+                  : "hover:from-emerald-700 hover:bg-gradient-to-r  hover:text-white text-gray-400"
+              }`
+            }
+          >
+            <BiLogoBlogger className="w-6 h-6" />
+
+            <span
+              className={`mx-1 p-1  text-[15px] font-montserrat ${
+                isOpen.large ? "hidden" : ""
+              } `}
+            >
+              Blog
+            </span>
+          </NavLink>
+          <NavLink
+            to={"/blog-review"}
+            className={({ isActive }) =>
+              ` relative group rounded-md flex font-medium items-center
+                    ${
+                      isOpen.large
+                        ? "m-0 p-1 justify-center"
+                        : "m-1 p-2 w-[95%]"
+                    } h-[2.7rem]   ${
+                isActive
+                  ? " bg-gradient-to-r from-emerald-800 text-white font-semibold"
+                  : "hover:from-emerald-700 hover:bg-gradient-to-r  hover:text-white text-gray-400"
+              }`
+            }
+          >
+            <MdOutlineReviews className="w-6 h-6" />
+
+            <span
+              className={`mx-1 p-1  text-[15px] font-montserrat ${
+                isOpen.large ? "hidden" : ""
+              } `}
+            >
+              Blog Review
+            </span>
+          </NavLink>
+          <NavLink
+            to={"/info-guide"}
+            className={({ isActive }) =>
+              ` relative group rounded-md flex font-medium items-center
+                    ${
+                      isOpen.large
+                        ? "m-0 p-1 justify-center"
+                        : "m-1 p-2 w-[95%]"
+                    } h-[2.7rem]   ${
+                isActive
+                  ? " bg-gradient-to-r from-emerald-800 text-white font-semibold"
+                  : "hover:from-emerald-700 hover:bg-gradient-to-r  hover:text-white text-gray-400"
+              }`
+            }
+          >
+            <FaBook className="w-6 h-6" />
+
+            <span
+              className={`mx-1 p-1  text-[15px] font-montserrat ${
+                isOpen.large ? "hidden" : ""
+              } `}
+            >
+              Info Guide
+            </span>
+          </NavLink>
+          <NavLink
+            to={"/faq"}
+            className={({ isActive }) =>
+              ` relative group rounded-md flex font-medium items-center
+                    ${
+                      isOpen.large
+                        ? "m-0 p-1 justify-center"
+                        : "m-1 p-2 w-[95%]"
+                    } h-[2.7rem]   ${
+                isActive
+                  ? " bg-gradient-to-r from-emerald-800 text-white font-semibold"
+                  : "hover:from-emerald-700 hover:bg-gradient-to-r  hover:text-white text-gray-400"
+              }`
+            }
+          >
+            <TbMessageQuestion className="w-6 h-6" />
+
+            <span
+              className={`mx-1 p-1  text-[15px] font-montserrat ${
+                isOpen.large ? "hidden" : ""
+              } `}
+            >
+              FAQ
+            </span>
+          </NavLink>
+          <NavLink
+            to={"/proscons"}
+            className={({ isActive }) =>
+              ` relative group rounded-md flex font-medium items-center
+                    ${
+                      isOpen.large
+                        ? "m-0 p-1 justify-center"
+                        : "m-1 p-2 w-[95%]"
+                    } h-[2.7rem]   ${
+                isActive
+                  ? " bg-gradient-to-r from-emerald-800 text-white font-semibold"
+                  : "hover:from-emerald-700 hover:bg-gradient-to-r  hover:text-white text-gray-400"
+              }`
+            }
+          >
+            <TbIcons className="w-6 h-6" />
+
+            <span
+              className={`mx-1 p-1  text-[15px] font-montserrat ${
+                isOpen.large ? "hidden" : ""
+              } `}
+            >
+              Pros & Cons
+            </span>
+          </NavLink>
         </div>
       </section>
       <button
@@ -230,7 +299,6 @@ const SideBar = ({ isOpen, onToggleSidebarLarge, onToggleSidebarSmall }) => {
       >
         <RxCross1 className="w-6 h-6 " />
       </button>
-      {/* </section> */}
     </section>
   );
 };

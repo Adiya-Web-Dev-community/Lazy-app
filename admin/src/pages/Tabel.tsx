@@ -1,111 +1,38 @@
-import React from "react";
+import { useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { categoryProductHeadings } from "../components/content_data/contentData";
+import { BsEye } from "react-icons/bs";
+import Pagination from "../components/pagination/Pagination";
 
-import { IoIosSend } from "react-icons/io";
-import { Link, useNavigate } from "react-router-dom";
+import { TiArrowBackOutline } from "react-icons/ti";
 
-import { DeletElementData, UniDelet } from "../types/contentType";
-import { ApiError, ApiResponse } from "../types/apiType";
-import { useMutation, useQuery } from "@tanstack/react-query";
-
-import { toast } from "react-toastify";
-import { apiRequest } from "../api/adminApi";
-import {
-  productHeadings,
-  productsData,
-} from "../components/content_data/contentData";
+import CategoryTypeProductsLoading from "../components/loading-elemnts/CategoryTypeProductsLoading";
+import { useSingleCategories } from "../api/querys";
 
 const Tabel = () => {
-  const navigate = useNavigate();
+  const { id } = useParams();
 
-  // const { isPending, isError, data, error, refetch } = useQuery<
-  //   ApiResponse<MenuDataResponse>,
-  //   ApiError
-  // >({
-  //   queryKey: ["menus"],
-  //   queryFn: async () => {
-  //     return await apiRequest<MenuDataResponse>({
-  //       url: "/menus",
-  //       method: "get",
-  //     });
-  //   },
-  // });
+  const { isPending, isError, error, data } = useSingleCategories(id ?? "0");
 
-  const mutation = useMutation<
-    ApiResponse<DeletElementData>,
-    ApiError,
-    UniDelet
-  >({
-    mutationFn: async (deletObj) => {
-      toast.loading("Checking Details");
-      try {
-        // console.log(path, method);
-        const response = await apiRequest<DeletElementData>({
-          url: deletObj.path,
-          method: "delete",
-        });
+  console.log(id, data, isError, error);
 
-        // return { data: response.data };
-        return response as ApiResponse<DeletElementData>;
-      } catch (error) {
-        const apiError = {
-          message: error?.response?.data?.message || "An error occurred",
-          status: error?.response?.status || 500,
-        };
-        throw apiError;
-      }
-    },
-    onSuccess: (data: ApiResponse<DeletElementData>) => {
-      console.log(data);
-      // refetch();
-      toast.dismiss();
-      toast.success(`${data?.data?.message}`);
-    },
-    onError: (error: ApiError) => {
-      console.log(error);
-      toast.error(`${error.message}`);
-    },
-  });
+  const categoryTypeData = data?.data;
 
-  const deletProduct = (id) => {
-    const isConfirmed = window.confirm(
-      "Are you sure you want to delete this Dish?"
-    );
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 8;
 
-    if (isConfirmed) {
-      console.log(id, "delet");
+  //calculation of page
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-      const deleteObj: DishDelet = {
-        path: `/menus/${id}`,
-      };
+  const currentCategoryTypeProducts = categoryTypeData?.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
-      console.log(deleteObj);
-
-      // Proceed with the deletion
-      mutation.mutate(deleteObj);
-    } else {
-      // Deletion canceled by the user
-      console.log("Deletion canceled");
-    }
+  const handleClick = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
   };
-
-  const updateProduct = (dishData) => {
-    // dispatch(addDishData(dishData));
-    navigate("/product/form");
-  };
-
-  // console.log(data, error, "menus");
-
-  // if (isPending) {
-  //   return <span>Loading...</span>;
-  // }
-
-  // if (isError) {
-  //   return <span>Error: {error.message}</span>;
-  // }
-
-  // const productData = data?.data?.data;
-
-  // console.log(menueData?.[30].ingredient.split(","));
 
   return (
     <section
@@ -120,8 +47,11 @@ h-full
       >
         <div className="flex items-center mb-2 md:mb-6">
           <h1 className=" text-[28px] font-bold md:text-4xl text-[#DEE1E2]">
-            Electronics
+            {id}
           </h1>
+          <Link to={"/category"}>
+            <TiArrowBackOutline className="w-10 h-10 ml-4 text-emerald-600 hover:text-emerald-500" />
+          </Link>
         </div>
         <div className="flex justify-between mb-4">
           <div className={`flex items-center   `}>
@@ -136,28 +66,14 @@ h-full
               // onFocus={() => setCurrentPage(1)}
             />
           </div>
-          {/* <div className="relative flex items-center self-end ">
-            <button
-              className={` px-2 py-1 
-                   bg-emerald-800  hover:bg-emerald-700 text-[#DEE1E2]
-              }    rounded shadow-xl md:px-4 md:py-2  sm:self-center`}
-            >
-              
-              <Link to={"/products/form"}>
-                <span className="hidden md:inline-block">Add Product</span>
-
-                <IoIosSend className="w-6 h-6 md:hidden" />
-              </Link>
-            </button>
-          </div> */}
         </div>
         <section
           className={`w-full overflow-auto   border-2 [&::-webkit-scrollbar]:hidden rounded-lg  border-[#1A1A1A] shadow-md bg-[#1A1A1A]`}
         >
-          <section className="grid grid-cols-customProduct pb-2 p-2  gap-4 text-[#DEE1E2]   min-w-[1200px] font-medium md:font-semibold bg-[#1A1A1A]">
+          <section className="grid grid-cols-customCategorySingleProduct pb-2 p-2  gap-4 text-[#DEE1E2]   min-w-[1200px] font-medium md:font-semibold bg-[#1A1A1A]">
             <p className="pl-2 md:text-lg">SrNo.</p>
 
-            {productHeadings.map((heading, index) => (
+            {categoryProductHeadings.map((heading, index) => (
               <p
                 key={index}
                 className={`md:text-lg ${
@@ -169,107 +85,65 @@ h-full
             ))}
           </section>
           <div className=" h-[400px] overflow-y-auto [&::-webkit-scrollbar]:hidden min-w-[1200px] bg-[#252525]">
-            {productsData?.map((product, i) => (
-              <section
-                key={i}
-                className="grid items-center gap-6 py-2 pl-6 pr-4 border-t-2  grid-cols-customProduct group text-[#DEE1E2] border-[#1A1A1A] hover:bg-[#2c2c2c]"
-              >
-                <span>{i + 1}</span>
-
-                {/* <span
-                  className={` text-xs font-bold  text-center rounded-full   ${
-                    product?.dietry?.toLowerCase() === "veg"
-                      ? "text-green-600 bg-green-100 p-2 text-center"
-                      : product?.dietry?.toLowerCase() === "non-veg"
-                      ? "text-rose-500 bg-rose-100 p-2 text-center"
-                      : ""
-                  }`}
+            {isPending ? (
+              <CategoryTypeProductsLoading />
+            ) : isError ? (
+              <p className="flex items-center justify-center w-full h-full text-2xl font-bold text-center text-rose-600">
+                Check Internet connection or Contact to Admin or Add Products
+              </p>
+            ) : (
+              currentCategoryTypeProducts?.map((product, i) => (
+                <section
+                  key={i}
+                  className="grid  items-center gap-6 py-2 pl-6 pr-4 border-t-2  grid-cols-customCategorySingleProduct group text-[#DEE1E2] border-[#1A1A1A] hover:bg-[#2c2c2c]"
                 >
-                  {product?.dietry ? product?.dietry : "-- --"}
-                </span> */}
-                {/* <span
-                  className={` text-sm font-semibold text-center  rounded-full p-2  `}
-                >
-                  {product?.label}
-                </span> */}
-                {/* <div className="flex items-center justify-center">
-                  {product?.image ? (
-                    <img
-                      src={product?.image}
-                      alt="user Image"
-                      className="w-24 h-10 rounded-lg"
-                    />
-                  ) : (
-                    <span className="text-sm font-bold text-gray-400">
-                      No Image
-                    </span>
-                  )}
-                </div> */}
-                <span className="text-sm font-semibold md:text-base">
-                  {product?.productName}
-                </span>
+                  <span>{i + 1}</span>
 
-                <span className="flex justify-center text-sm font-semibold ">
-                  {product?.companyName}
-                </span>
-                <span className="flex justify-center ml-2 text-sm font-semibold ">
-                  {product?.category}
-                </span>
+                  <span className="text-sm font-semibold md:text-base">
+                    {product?.name}
+                  </span>
 
-                {/* <div className="flex justify-center text-sm font-semibold md:text-base">
-                  
-                  {product?.ingredient ? (
-                    <span className="flex text-xs font-semibold break-words break-all text-ellipsis md:text-sm">
-                      {product?.ingredient},
-                    </span>
-                  ) : (
-                    <span className="flex justify-center text-sm font-bold text-gray-400">
-                      Empty
-                    </span>
-                  )}
-                </div> */}
-                <span className="flex justify-center ml-2 text-sm font-semibold md:text-base">
-                  {product?.feature}
-                </span>
-                {/* <span className="flex justify-center ml-2 text-sm font-semibold md:text-base">
-                  ₹ {product?.price}
-                </span> */}
-                <span className="flex justify-center ml-2 text-sm font-semibold ">
-                  {product?.stockQuantity}
-                </span>
-                <span className="flex justify-center ml-2 text-sm font-semibold ">
-                  {product?.sku}
-                </span>
-                <span className="flex justify-center ml-2 text-sm font-semibold ">
-                  {product?.status}
-                </span>
-                <span className="flex justify-center ml-2 text-sm font-semibold ">
-                  {product?.dateAdded}
-                </span>
-                <div className="grid justify-center gap-2">
-                  <button
-                    className="px-3 py-2 text-sm rounded-md bg-emerald-800 hover:bg-emerald-700"
-                    // onClick={() => updateProduct(product)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="px-3 py-2 text-sm rounded-md bg-rose-800 hover:bg-rose-700"
-                    // onClick={() => deletProduct(product._id)}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </section>
-            ))}
+                  <span className="flex text-sm font-semibold ">
+                    {product?.company?.length !== 0
+                      ? product?.company?.map((icon) => (
+                          <img
+                            key={icon?.image}
+                            src={icon?.image}
+                            alt={`${icon?.name}`}
+                            className="w-10 h-10 ml-2 rounded-full"
+                          />
+                        ))
+                      : "----"}
+                  </span>
+                  <span className="flex justify-center ml-2 text-sm font-semibold ">
+                    {product?.category}
+                  </span>
+
+                  <span className="flex justify-center ml-2 text-sm font-semibold ">
+                    {product?.status}
+                  </span>
+                  <span className="flex justify-center ml-2 text-sm font-semibold ">
+                    {product?.createdAt?.split("T")[0]}
+                  </span>
+                  <div className="flex items-center justify-center">
+                    <Link
+                      to={`/products/${product?._id}`}
+                      className="flex justify-center px-4 py-2 ml-2 text-sm font-semibold bg-teal-800 rounded-md hover:bg-emerald-700"
+                    >
+                      <BsEye className="w-4 h-4" />
+                    </Link>
+                  </div>
+                </section>
+              ))
+            )}
           </div>
         </section>
-        {/* <Pagination
-      paginationInfo={pagination}
-      paginationUpdateds={(value) => setCurrentPage(value)}
-      currentPage={currentPage}
-      pageNumbers={pageArray}
-    /> */}
+        <Pagination
+          currentPage={currentPage}
+          apiData={categoryTypeData ?? []}
+          itemsPerPage={itemsPerPage}
+          handleClick={handleClick}
+        />
       </section>
     </section>
   );

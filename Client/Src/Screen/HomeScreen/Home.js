@@ -12,6 +12,7 @@ import {
   BackHandler,
   FlatList,
   Linking,
+  useWindowDimensions 
 } from 'react-native';
 import shoppingApp from './Data';
 import {moderateScale, scale, verticalScale} from '../../utils/Scaling';
@@ -27,6 +28,8 @@ import {
   getCategories,
   getProductsByCategory,
   getProductById,
+  getFlashDeals,
+  getRecommended,
 } from '../../api/api';
 import CategoriesList from '../../Components/Category/CategoriesList ';
 import HomeSlider from '../../Components/Slider/HomeSlider';
@@ -37,6 +40,8 @@ import RecommendedList from '../../Components/Category/RecommendedList ';
 import Switch from '../../Components/Switch/Switch';
 import SwitchMain from '../../Components/Switch/Switch';
 
+
+
 export default function Home({navigation}) {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -44,6 +49,8 @@ export default function Home({navigation}) {
   const [selectedRecommended, setSelectedRecommended] = useState(null);
   const [Categories, setCategories] = useState([]);
   const [categoryProducts, setCategoryProducts] = useState([]);
+  const [flashDeals, setFlashDeals] = useState([]);
+  const [recomendedDeals, setRecomendedDeals] = useState([]);
 
   const Categoriess = shoppingApp.Categories;
   const FlashDeals = FlashDealsData.FlashDeals;
@@ -64,6 +71,42 @@ export default function Home({navigation}) {
       }
     };
     fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    const fetchFlashDeals = async () => {
+      try {
+        const data = await getFlashDeals();
+        if (data) {
+          setFlashDeals(data);
+          console.log('Fetched Flash Deals:', data);
+        } else {
+          console.log('No flash deals data');
+        }
+      } catch (error) {
+        console.log('Error fetching flash deals:', error.message);
+      }
+    };
+
+    fetchFlashDeals();
+  }, []);
+
+  useEffect(() => {
+    const fetchRecommended = async () => {
+      try {
+        const data = await getRecommended();
+        if (data) {
+          setRecomendedDeals(data); // Ensure this matches your expected structure
+          console.log('Fetched Recommended Deals:', data);
+        } else {
+          console.log('No recommended deals data');
+        }
+      } catch (error) {
+        console.log('Error fetching recommended deals:', error.message);
+      }
+    };
+
+    fetchRecommended();
   }, []);
 
   useEffect(() => {
@@ -175,6 +218,58 @@ export default function Home({navigation}) {
     };
 
     return selectedItem.productsLink.map((link, index) => (
+      <TouchableOpacity
+        key={index}
+        style={styles.iconButton}
+        onPress={() => handleIconPress(link.url)}>
+        <AntDesign
+          name={iconMap[link.company] || 'questioncircle'}
+          size={30}
+          style={styles.icon}
+        />
+      </TouchableOpacity>
+    ));
+  };
+
+  const renderFlashDealIcons = () => {
+    if (!selectedFlashDeal || !selectedFlashDeal.productsLink) {
+      return null;
+    }
+
+    const iconMap = {
+      'Note bookes': 'book',
+      amazon: 'amazon',
+      'Material Mobile': 'mobile1',
+      Flipkart: 'shoppingcart',
+    };
+
+    return selectedFlashDeal.productsLink.map((link, index) => (
+      <TouchableOpacity
+        key={index}
+        style={styles.iconButton}
+        onPress={() => handleIconPress(link.url)}>
+        <AntDesign
+          name={iconMap[link.company] || 'questioncircle'}
+          size={30}
+          style={styles.icon}
+        />
+      </TouchableOpacity>
+    ));
+  };
+
+  const renderRecommandedIcons = () => {
+    if (!selectedRecommended || !selectedRecommended.productsLink) {
+      return null;
+    }
+
+    const iconMap = {
+      'Note bookes': 'book',
+      amazon: 'amazon',
+      'Material Mobile': 'mobile1',
+      Flipkart: 'shoppingcart',
+    };
+
+    return selectedRecommended.productsLink.map((link, index) => (
       <TouchableOpacity
         key={index}
         style={styles.iconButton}
@@ -351,36 +446,69 @@ export default function Home({navigation}) {
           <>
             <SectionHeader title="Flash Deals" />
             <FlashDealCategory
-              data={FlashDeals}
+              data={flashDeals}
               handleFlashDealPress={handleFlashDealPress}
             />
           </>
         )}
         {selectedFlashDeal && (
-          <View style={{flex: 1, backgroundColor: COLORS.White}}>
+          <ScrollView style={styles.itemDetails}>
             <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => setSelectedFlashDeal(null)}>
+              onPress={() => setSelectedFlashDeal(null)}
+              style={styles.backButton}>
               <AntDesign name="arrowleft" size={24} color={COLORS.Black} />
             </TouchableOpacity>
-            <View>
-              <Text style={styles.itemName}>{selectedFlashDeal.title}</Text>
-              <ImageSlider />
-              {selectedFlashDeal.details.map((detail, index) => (
-                <View key={index}>
-                  <Text style={styles.FlashDealDescription}>
-                    {detail.Description}
-                  </Text>
-                  <Text style={styles.FlashDealDescription2}>
-                    {detail.Description2}
-                  </Text>
-                  <Image source={detail.Img2} style={styles.FlashImg} />
+            <Text
+              style={{
+                textAlign: 'center',
+                color: COLORS.Black,
+                fontWeight: 'bold',
+                fontSize: 20,
+              }}>
+              {selectedFlashDeal.category}
+            </Text>
+            <ImageSlider productId={selectedFlashDeal?._id}/>
+            <View style={styles.ICONROW}>{renderFlashDealIcons()}</View>
+            <RenderHTML
+              contentWidth={styles.container.width}
+              source={{html: selectedFlashDeal.description}}
+              baseStyle={{
+                alignItems: 'center',
+                color: COLORS.Black,
+                fontSize: 20,
+                marginVertical: 10,
+              }}
+            />
+            <RenderHTML
+              contentWidth={styles.container.width}
+              source={{html: selectedFlashDeal.feature}}
+              baseStyle={{marginHorizontal: 45, color: COLORS.Black}}
+            />
+            <View style={styles.BottomBtnContainer}>
+              {selectedFlashDeal.company.map((link, index) => (
+                <View style={styles.ImgndBtn} key={index}>
+                  <Image
+                    source={
+                      link.image
+                        ? {uri: link.image}
+                        : require('../assets/Logo1.webp')
+                    }
+                    style={styles.Bottoming}
+                  />
+                  <View style={{alignSelf: 'center'}}>
+                    <TouchableOpacity
+                      style={styles.BottomBtn}
+                      onPress={() => Linking.openURL(link.url)}>
+                      <Text style={styles.BottomBtnTxt}>BUY NOW</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.Companytxt}>({link.name})</Text>
+                  </View>
                 </View>
               ))}
-              <Table />
             </View>
-          </View>
+          </ScrollView>
         )}
+
         {!selectedFlashDeal && !selectedCategory && !selectedRecommended && (
           <View>
             <Image
@@ -392,35 +520,67 @@ export default function Home({navigation}) {
             </View>
             <SectionHeader title="Recommended" />
             <RecommendedList
-              data={Recommended}
+              data={recomendedDeals}
               handlePress={handleRecommendedPress}
             />
           </View>
         )}
         {selectedRecommended && (
-          <View style={{flex: 1, backgroundColor: COLORS.White}}>
+          <ScrollView style={styles.itemDetails}>
             <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => setSelectedRecommended(null)}>
+              onPress={() => setSelectedFlashDeal(null)}
+              style={styles.backButton}>
               <AntDesign name="arrowleft" size={24} color={COLORS.Black} />
             </TouchableOpacity>
-            <View>
-              <Text style={styles.itemName}>{selectedRecommended.title}</Text>
-              <ImageSlider />
-              {selectedRecommended.details.map((detail, index) => (
-                <View key={index}>
-                  <Text style={styles.FlashDealDescription}>
-                    {detail.Description}
-                  </Text>
-                  <Text style={styles.FlashDealDescription2}>
-                    {detail.Description2}
-                  </Text>
-                  <Image source={detail.Img2} style={styles.FlashImg} />
+            <Text
+              style={{
+                textAlign: 'center',
+                color: COLORS.Black,
+                fontWeight: 'bold',
+                fontSize: 20,
+              }}>
+              {selectedRecommended.category}
+            </Text>
+            <ImageSlider productId={selectedRecommended?._id}/>
+            <View style={styles.ICONROW}>{renderRecommandedIcons()}</View>
+            <RenderHTML
+              contentWidth={styles.container.width}
+              source={{html: selectedRecommended.description}}
+              baseStyle={{
+                alignItems: 'center',
+                color: COLORS.Black,
+                fontSize: 20,
+                marginVertical: 10,
+              }}
+            />
+            <RenderHTML
+              contentWidth={styles.container.width}
+              source={{html: selectedRecommended.feature}}
+              baseStyle={{marginHorizontal: 45, color: COLORS.Black}}
+            />
+            <View style={styles.BottomBtnContainer}>
+              {selectedRecommended.company.map((link, index) => (
+                <View style={styles.ImgndBtn} key={index}>
+                  <Image
+                    source={
+                      link.image
+                        ? {uri: link.image}
+                        : require('../assets/Logo1.webp')
+                    }
+                    style={styles.Bottoming}
+                  />
+                  <View style={{alignSelf: 'center'}}>
+                    <TouchableOpacity
+                      style={styles.BottomBtn}
+                      onPress={() => Linking.openURL(link.url)}>
+                      <Text style={styles.BottomBtnTxt}>BUY NOW</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.Companytxt}>({link.name})</Text>
+                  </View>
                 </View>
               ))}
-              <Table />
             </View>
-          </View>
+          </ScrollView>
         )}
 
         {!selectedFlashDeal && !selectedCategory && !selectedRecommended && (
@@ -438,7 +598,7 @@ export default function Home({navigation}) {
               </TouchableOpacity>
             </View>
             <FlashDealCategory
-              data={FlashDeals}
+              data={flashDeals}
               handleFlashDealPress={handleFlashDealPress}
             />
           </View>

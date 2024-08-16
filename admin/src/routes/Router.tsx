@@ -1,24 +1,34 @@
-import React from "react";
 import PrivateRoute from "./PrivateRoute";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import DashBoard from "../pages/DashBoard";
+
 import Products from "../pages/Products";
 import ProductsForm from "../forms/ProductsForm";
 import Category from "../pages/Category";
 import Companies from "../pages/Companies";
-import CompaniesProfile from "../pages/CompaniesProfile";
+
 import CompaniesForm from "../forms/CompaniesForm";
 import Tabel from "../pages/Tabel";
-import CategoryProductForm from "../pages/CategoryProductForm";
+
 import Authentication from "../pages/Authentication";
 import Login from "../pages/Login";
 import ForgetPassword from "../pages/ForgetPassword";
 import RegisterAdmin from "../pages/RegisterAdmin";
-import DummyPage from "../pages/DummyPage";
-import FeatureForm from "../forms/FeatureForm";
+
 import ProductProfile from "../pages/ProductProfile";
 import UpdateProfile from "../pages/UpdateProfile";
 import VerifyEmailResetPass from "../pages/VerifyEmailResetPass";
+import ProductUpdateForm from "../forms/ProductUpdateForm";
+import Blog from "../pages/Blog";
+import BlogForm from "../forms/BlogForm";
+import BlogCategory from "../pages/BlogCategory";
+import BlogReview from "../pages/BlogReview";
+import InfoGuide from "../pages/InfoGuide";
+import EmailVerification from "../pages/EmailVerification";
+import Faq from "../pages/Faq";
+import FaqForm from "../forms/FaqForm";
+import ProfileFaq from "../pages/ProfileFaq";
+import ProsCons from "../pages/ProsCons";
+import ProsConsForm from "../forms/ProsConsForm";
 
 const route = createBrowserRouter([
   {
@@ -29,34 +39,26 @@ const route = createBrowserRouter([
         path: "register",
         element: <RegisterAdmin />,
       },
-      // {
-      //   path: "verify-email",
-      //   //   element: <EmailVerification />,
-      // },
-      // {
-      //   path: "verify-phone",
-      //   element: <PhoneVerification />,
-      // },
+
       {
         path: "forgot-password",
         element: <VerifyEmailResetPass />,
-      },
-      {
-        path: "reset-password",
-        element: <ForgetPassword />,
-      },
-
-      {
-        path: "update-password",
-        //   element: <ResetPassword />,
       },
       {
         path: "update-profile",
         element: <UpdateProfile />,
       },
       {
+        path: "reset-password",
+        element: <ForgetPassword />,
+      },
+      {
         path: "",
         element: <Login />,
+      },
+      {
+        path: "verify-email",
+        element: <EmailVerification />,
       },
     ],
   },
@@ -65,30 +67,53 @@ const route = createBrowserRouter([
     path: "/",
     element: <PrivateRoute />,
     children: [
-      { path: "/dashboard", element: <DashBoard /> },
-      // { path: "/dashboard/form/:id", element: <UserDataUpdateForm /> },
-
+      //product
       { path: "/products", element: <Products /> },
       { path: "/products/:id", element: <ProductProfile /> },
       { path: "/products/form", element: <ProductsForm /> },
-      // { path: "feature/form", element: <FeatureForm /> },
-      { path: "/products/:id/feature/form", element: <FeatureForm /> },
+      { path: "/products/form/:id", element: <ProductUpdateForm /> },
+      // { path: "/products/:id/feature/form", element: <FeatureForm /> },
+
+      // category
       {
         path: "/category",
         element: <Category />,
       },
       { path: "/category/:id", element: <Tabel /> },
-      //   { path: "/category/:id/form", element: <CategoryProductForm /> },
 
+      // companies
       { path: "/companies", element: <Companies /> },
-      { path: "/companies/:id", element: <CompaniesProfile /> },
       { path: "/companies/form", element: <CompaniesForm /> },
-      // { path: "/orders", element: <Orders /> },
+
+      // blog
+      { path: "/blog", element: <Blog /> },
+      { path: "/blog/form", element: <BlogForm /> },
+      { path: "/blog/form/:id", element: <BlogForm /> },
+
+      //blog-Category
+      { path: "/blog-category", element: <BlogCategory /> },
+
+      //blog-Review
+      { path: "/blog-review", element: <BlogReview /> },
+
+      // info-guide
+      { path: "/info-guide", element: <InfoGuide /> },
+
+      // faq
+      { path: "/faq", element: <Faq /> },
+      { path: "/faq/form", element: <FaqForm /> },
+      { path: "/faq/form/:id", element: <FaqForm /> },
+      { path: "/faq/:id", element: <ProfileFaq /> },
+
+      //proscons
+      { path: "/proscons", element: <ProsCons /> },
+      { path: "/proscons/form", element: <ProsConsForm /> },
+      { path: "/proscons/form/:id", element: <ProsConsForm /> },
     ],
   },
 ]);
 
-const Router = () => {
+const Router: React.FC = () => {
   return <RouterProvider router={route} />;
 };
 

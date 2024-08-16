@@ -79,7 +79,7 @@ export const productHeadings = [
   "Category",
   // "Price",
   // "Feature",
-  "Stock Qty",
+  // "Stock Qty",
   // "SKU",
   "Status",
   "Date Added",
@@ -157,4 +157,35 @@ export const categories = [
   "Books",
   "Toys & Games",
   "Beauty & Personal Care",
+];
+
+//type Category heading profile of catgory
+
+export const categoryProductHeadings = [
+  "Pr.Name",
+  "Co.Name",
+  "Category",
+
+  "Status",
+  "Date Added",
+  "View",
+];
+
+//heading for blog
+export const listHeadingBlog = [
+  "Title",
+  "Category",
+  // "Content",
+  "Br.Name",
+  "Br.Image",
+  "Br.Web",
+  "Setting",
+];
+//heading for blog Review
+export const listHeadingBlogReview = [
+  "Name",
+  "Email",
+  "Rating",
+  "Status",
+  "Setting",
 ];

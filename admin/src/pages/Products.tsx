@@ -1,42 +1,52 @@
 import { IoIosSend } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
 
-import { DeletElementData, UniDelet } from "../types/contentType";
+import {
+  DeletElementData,
+  ProductData,
+  ProductDeleteStateType,
+  UniDelet,
+} from "../types/contentType";
 import { ApiError, ApiResponse } from "../types/apiType";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import { toast } from "react-toastify";
 import { apiRequest } from "../api/adminApi";
-import {
-  productHeadings,
-  productsData,
-} from "../components/content_data/contentData";
+import { productHeadings } from "../components/content_data/contentData";
 import { useState } from "react";
 import Pagination from "../components/pagination/Pagination";
 import { BsEye } from "react-icons/bs";
 import { FaStarOfLife } from "react-icons/fa";
 import InformAleartModal from "../components/modal/InformAleartModal";
+import ConfirmDeleteModal from "../components/modal/ConfirmDeleteModal";
 
-const Products = () => {
+import ProductsLoading from "../components/loading-elemnts/ProductsLoading";
+import { useProduct } from "../api/querys";
+
+const Products: React.FC = () => {
   const navigate = useNavigate();
 
-  const [currentPage, setCurrentPage] = useState(1);
-  // const [isDeletModal, setDeletModal] = useState({
-  //   delet: false,
-  //   deletElementId: "",
-  // });
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [isDeletModal, setDeletModal] = useState<ProductDeleteStateType>({
+    delet: false,
+    deletElementId: "",
+  });
 
-  const [isInformModal, setInformModal] = useState(false);
+  const { data, refetch, isError, isPending } = useProduct();
+
+  console.log(data, "product");
+
+  const productData = data?.data;
+
+  console.log(data);
+
+  const [isInformModal, setInformModal] = useState<boolean>(false);
   const itemsPerPage = 5;
   //calculation of page
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-  const currentProduct = productsData?.slice(indexOfFirstItem, indexOfLastItem);
-
-  console.log(currentProduct, "pagination");
-
-  // const totalPages = Math.ceil(productsData.length / itemsPerPage);
+  const currentProduct = productData?.slice(indexOfFirstItem, indexOfLastItem);
 
   const handleClick = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -50,59 +60,44 @@ const Products = () => {
     mutationFn: async (deletObj) => {
       toast.loading("Checking Details");
       try {
-        // console.log(path, method);
-        const response = await apiRequest<DeletElementData>({
+        const response = await apiRequest<UniDelet, DeletElementData>({
           url: deletObj.path,
           method: "delete",
         });
 
-        // return { data: response.data };
         return response as ApiResponse<DeletElementData>;
       } catch (error) {
-        const apiError = {
-          message: error?.response?.data?.message || "An error occurred",
-          status: error?.response?.status || 500,
+        const apiError: ApiError = {
+          message: (error as ApiError)?.message || "An error occurred",
+          status: (error as ApiError)?.status || 500,
         };
         throw apiError;
       }
     },
     onSuccess: (data: ApiResponse<DeletElementData>) => {
       console.log(data);
-      // refetch();
+      refetch();
       toast.dismiss();
       toast.success(`${data?.data?.message}`);
+      closehandler();
     },
     onError: (error: ApiError) => {
       console.log(error);
+      toast.dismiss();
       toast.error(`${error.message}`);
     },
   });
 
-  const deletProduct = (id) => {
-    const isConfirmed = window.confirm(
-      "Are you sure you want to delete this Dish?"
-    );
-
-    if (isConfirmed) {
-      console.log(id, "delet");
-
-      const deleteObj: DishDelet = {
-        path: `/menus/${id}`,
-      };
-
-      console.log(deleteObj);
-
-      // Proceed with the deletion
-      mutation.mutate(deleteObj);
-    } else {
-      // Deletion canceled by the user
-      console.log("Deletion canceled");
-    }
+  const deletProduct = (id: string) => {
+    setDeletModal((prev) => ({
+      ...prev,
+      delet: true,
+      deletElementId: id,
+    }));
   };
 
-  const updateProduct = (dishData) => {
-    // dispatch(addDishData(dishData));
-    navigate("/product/form");
+  const updateProduct = (product: ProductData) => {
+    navigate(`/products/form/${product?._id}`);
   };
 
   const handlinInfo = () => {
@@ -112,8 +107,28 @@ const Products = () => {
     setInformModal(false);
   };
 
+  const closehandler = () => {
+    setDeletModal((prev) => ({
+      ...prev,
+      delet: false,
+      deletElementId: "",
+    }));
+  };
+
+  const confirmhandler = () => {
+    const deleteObj: UniDelet = {
+      path: `/api/product/${isDeletModal?.deletElementId}`,
+    };
+
+    // Proceed with the deletion
+    mutation.mutate(deleteObj);
+  };
+
   return (
     <>
+      {isDeletModal?.delet && (
+        <ConfirmDeleteModal onClose={closehandler} onConfirm={confirmhandler} />
+      )}
       {isInformModal && <InformAleartModal onClose={cancelInfo} />}
       <section
         className={`  md:pl-0 p-4 h-full rounded-md font-philosopher  mx-auto [&::-webkit-scrollbar]:hidden`}
@@ -146,7 +161,6 @@ const Products = () => {
                    bg-emerald-800  hover:bg-emerald-700 relative -z-6 text-[#DEE1E2]
                   rounded shadow-xl md:px-4 md:py-2  sm:self-center`}
               >
-                {/* <Link to={"/dishes/form"}> */}
                 <Link to={"/products/form"}>
                   <span className="hidden md:inline-block">Add Product</span>
 
@@ -171,7 +185,7 @@ const Products = () => {
                   {heading.charAt(0).toUpperCase() + heading.slice(1)}
                   <span
                     className={`${
-                      index === 6 ? "visible" : "hidden"
+                      index === 5 ? "visible" : "hidden"
                     }   rounded-full ml-2 cursor-pointer`}
                     onClick={handlinInfo}
                   >
@@ -185,97 +199,77 @@ const Products = () => {
               ))}
             </section>
             <div className=" h-[380px] overflow-y-auto [&::-webkit-scrollbar]:hidden min-w-[1200px] bg-[#252525]">
-              {currentProduct?.map((product, i) => (
-                <section
-                  key={i}
-                  className="grid items-center gap-6 py-2 pl-6 pr-4 border-t-2  grid-cols-customProduct group text-[#DEE1E2] border-[#1A1A1A] hover:bg-[#2c2c2c]"
-                >
-                  <span>{i + 1}</span>
+              {isPending ? (
+                <ProductsLoading />
+              ) : isError ? (
+                <p className="flex items-center justify-center w-full h-full text-2xl font-bold text-center text-rose-600">
+                  Check Internet connection or Contact to Admin.
+                </p>
+              ) : (
+                currentProduct?.map((product: ProductData, i: number) => (
+                  <section
+                    key={i}
+                    className="grid items-center gap-6 py-2 pl-6 pr-4 border-t-2  grid-cols-customProduct group text-[#DEE1E2] border-[#1A1A1A] hover:bg-[#2c2c2c]"
+                  >
+                    <span>{i + 1}</span>
 
-                  {/* <span
-                  className={` text-xs font-bold  text-center rounded-full   ${
-                    product?.dietry?.toLowerCase() === "veg"
-                      ? "text-green-600 bg-green-100 p-2 text-center"
-                      : product?.dietry?.toLowerCase() === "non-veg"
-                      ? "text-rose-500 bg-rose-100 p-2 text-center"
-                      : ""
-                  }`}
-                >
-                  {product?.dietry ? product?.dietry : "-- --"}
-                </span> */}
-                  {/* <span
-                  className={` text-sm font-semibold text-center  rounded-full p-2  `}
-                >
-                  {product?.label}
-                </span> */}
-                  {/* <div className="flex items-center justify-center">
-                  {product?.image ? (
-                    <img
-                      src={product?.image}
-                      alt="user Image"
-                      className="w-24 h-10 rounded-lg"
-                    />
-                  ) : (
-                    <span className="text-sm font-bold text-gray-400">
-                      No Image
+                    <span className="text-sm font-semibold md:text-base">
+                      {product?.name}
                     </span>
-                  )}
-                </div> */}
-                  <span className="text-sm font-semibold md:text-base">
-                    {product?.productName}
-                  </span>
 
-                  <span className="flex justify-center text-sm font-semibold ">
-                    {product?.companyName}
-                  </span>
-                  <span className="flex justify-center ml-2 text-sm font-semibold ">
-                    {product?.category}
-                  </span>
+                    <span className="flex text-sm font-semibold ">
+                      {product?.company?.length !== 0
+                        ? product.company?.map((icon) => (
+                            <img
+                              key={icon?.image}
+                              src={icon?.image}
+                              alt={`${icon?.name}`}
+                              className="w-10 h-10 ml-2 rounded-full"
+                            />
+                          ))
+                        : "----"}
+                    </span>
+                    <span className="flex justify-center ml-2 text-sm font-semibold ">
+                      {product?.category}
+                    </span>
 
-                  <span className="flex justify-center ml-2 text-sm font-semibold ">
-                    {product?.stockQuantity}
-                  </span>
-                  {/* <span className="flex justify-center ml-2 text-sm font-semibold ">
-                    {product?.sku}
-                  </span> */}
-                  <span className="flex justify-center ml-2 text-sm font-semibold ">
-                    {product?.status}
-                  </span>
-                  <span className="flex justify-center ml-2 text-sm font-semibold ">
-                    {product?.dateAdded}
-                  </span>
-                  <div className="flex items-center justify-center">
-                    {/* <button> */}
-                    <Link
-                      to={`/products/${i}`}
-                      className="flex justify-center px-4 py-2 ml-2 text-sm font-semibold bg-teal-800 rounded-md hover:bg-emerald-700"
-                    >
-                      <BsEye className="w-4 h-4" />
-                    </Link>
-                    {/* </button> */}
-                  </div>
-                  <div className="grid justify-center gap-2">
-                    <button
-                      className="px-3 py-2 text-sm font-semibold rounded-md bg-emerald-800 hover:bg-emerald-700"
-                      // onClick={() => updateProduct(product)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="px-3 py-2 text-sm font-semibold rounded-md bg-rose-800 hover:bg-rose-700"
-                      // onClick={() => deletProduct(product._id)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </section>
-              ))}
+                    <span className="flex justify-center ml-2 text-sm font-semibold ">
+                      {product?.status}
+                    </span>
+                    <span className="flex justify-center ml-2 text-sm font-semibold ">
+                      {product?.createdAt?.split("T")[0]}
+                    </span>
+                    <div className="flex items-center justify-center">
+                      <Link
+                        to={`/products/${product._id}`}
+                        className="flex justify-center px-4 py-2 ml-2 text-sm font-semibold bg-teal-800 rounded-md hover:bg-emerald-700"
+                      >
+                        <BsEye className="w-4 h-4" />
+                      </Link>
+                    </div>
+                    <div className="grid justify-center gap-2">
+                      <button
+                        className="px-3 py-2 text-sm font-semibold rounded-md bg-emerald-800 hover:bg-emerald-700"
+                        onClick={() => updateProduct(product)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="px-3 py-2 text-sm font-semibold rounded-md bg-rose-800 hover:bg-rose-700"
+                        onClick={() => deletProduct(product._id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </section>
+                ))
+              )}
             </div>
           </section>
 
           <Pagination
             currentPage={currentPage}
-            apiData={productsData}
+            apiData={productData ?? []}
             itemsPerPage={itemsPerPage}
             handleClick={handleClick}
           />

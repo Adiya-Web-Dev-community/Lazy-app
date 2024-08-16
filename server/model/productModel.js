@@ -3,10 +3,7 @@ const FeatureSchema = new mongoose.Schema({
   category: {
     type: String,
   },
-  fratureHeading: {
-    type: String,
-  },
-  featureValue: {
+  content: {
     type: String,
   },
 });
@@ -17,6 +14,7 @@ const companySchema = new mongoose.Schema({
 const ProductLinkSchema = new mongoose.Schema({
   url: { type: String },
   company: { type: String },
+  image: { type: String },
 });
 
 const ProductSchemaModel = new mongoose.Schema(
@@ -26,11 +24,11 @@ const ProductSchemaModel = new mongoose.Schema(
       require: true,
     },
     images: [{ type: String }],
-    feature: [FeatureSchema],
+    feature: { type: String },
     description: { type: String },
-    recommended:{type:Boolean},
-    flashSale:{type:Boolean},
-    category:{type:String},
+    recommended: { type: Boolean ,default:false},
+    flashSale: { type: Boolean, default:false },
+    category: { type: String },
     available: { type: Boolean, default: true },
     status: { type: String, enum: ["Active", "Draft"], default: "Active" },
     productsLink: [ProductLinkSchema],

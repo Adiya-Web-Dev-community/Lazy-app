@@ -7,29 +7,24 @@ import {
   FlatList,
   TouchableOpacity,
   ScrollView,
-  TextInput,
+  Linking,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/AntDesign';
 import {COLORS} from '../../Theme/Colors';
 import {moderateScale, scale, verticalScale} from '../../utils/Scaling';
 import SwitchMain from '../../Components/Switch/Switch';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import {getPost} from '../../api/api';
+import {getPost, getBlogByCategory, getReview} from '../../api/api';
 
-export default function BuzzFeed() {
-  const [selectedCommentId, setSelectedCommentId] = useState(null);
-  const [commentText, setCommentText] = useState('');
-  const [showDetails, setShowDetails] = useState(false);
-  const [selectedPostData, setSelectedPostData] = useState(null);
-  const [likes, setLikes] = useState([]);
+
+export default function BuzzFeed({navigation}) {
   const [posts, setPosts] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('All Category');
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const data = await getPost();
-        console.log('get post:', data);
         setPosts(data);
-        setLikes(data.map(item => ({id: item._id, count: 0, liked: false})));
       } catch (error) {
         console.error('Error fetching posts:', error);
       }
@@ -37,115 +32,70 @@ export default function BuzzFeed() {
     fetchPosts();
   }, []);
 
- 
+  const AllcategoryButton = [
+    'All Category',
+    ...new Set(posts.map(post => post.name)),
+  ];
 
-  const handleCommentSubmit = () => {
-    console.log('Comment submitted:', commentText);
-    setCommentText('');
-    setSelectedCommentId(null);
+  const handlePostPress = async post => {
+    navigation.navigate('BuzzFeedDetails', {name: post.name});
   };
 
-  const handlePostPress = post => {
-    setSelectedPostData(post);
-    setShowDetails(true);
+  const handleCategoryPress = category => {
+    setSelectedCategory(category);
   };
 
   return (
     <View style={styles.container}>
-      {!showDetails && (
-        <>
-          <View style={styles.header}>
-            <Image source={require('../assets/L1.png')} style={styles.logo} />
-            <View>
-              <SwitchMain />
-            </View>
-            <TouchableOpacity style={styles.FeedBtn}>
-              <Text style={styles.FeedBtnTxt}>The Buzz Feed</Text>
+      <View style={styles.header}>
+        <Image source={require('../assets/L1.png')} style={styles.logo} />
+        <SwitchMain />
+        <TouchableOpacity style={styles.FeedBtn}>
+          <Text style={styles.FeedBtnTxt}>The Buzz Feed</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.SCROLL}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {AllcategoryButton.map((category, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.button,
+                selectedCategory === category && styles.selectedButton,
+              ]}
+              onPress={() => handleCategoryPress(category)}>
+              <Text
+                style={[
+                  styles.buttonText,
+                  selectedCategory === category && styles.selectedButtonText,
+                ]}>
+                {category}
+              </Text>
             </TouchableOpacity>
-          </View>
-          <View style={styles.SCROLL}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>All Category</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>Category 2</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>Category 3</Text>
-              </TouchableOpacity>
-            </ScrollView>
-          </View>
-          <FlatList
-            data={posts}
-            showsVerticalScrollIndicator={false}
-            renderItem={({item}) => {
-              return (
-                <>
-                  <TouchableOpacity onPress={() => handlePostPress(item)}>
-                    <View style={styles.postContainer}>
-                      <View style={styles.profileContainer}>
-                        <Image
-                          source={{uri: item.image}}
-                          style={styles.profileImage}
-                          onError={() => console.log('Image failed to load')}
-                        />
-                        <Text style={styles.username}>{item.name}</Text>
-                      </View>
-                      <Image
-                        source={{uri: item.image}}
-                        style={styles.postImage}
-                        onError={() => console.log('Image failed to load')}
-                      />
-                      <Text style={styles.description}>{item.description}</Text>
-                      {selectedCommentId === item._id && (
-                        <View style={styles.commentContainer}>
-                          <TextInput
-                            style={styles.commentInput}
-                            value={commentText}
-                            onChangeText={setCommentText}
-                            placeholder="Write a comment..."
-                          />
-                          <TouchableOpacity
-                            style={styles.submitButton}
-                            onPress={handleCommentSubmit}>
-                            <Text style={styles.submitButtonText}>Submit</Text>
-                          </TouchableOpacity>
-                        </View>
-                      )}
-                    </View>
-                  </TouchableOpacity>
-                </>
-              );
-            }}
-            keyExtractor={item => item._id}
-            style={styles.flatList}
-          />
-        </>
-      )}
-      {showDetails && selectedPostData && (
-        <ScrollView>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => setShowDetails(false)}>
-            <Text style={{color: 'green'}}>Back</Text>
-          </TouchableOpacity>
-          <View style={styles.detailsContainer}>
-            <Text style={styles.USERNAME}>{selectedPostData.name}</Text>
-            <Image
-              source={{uri: selectedPostData.image}}
-              style={styles.detailsImage}
-              onError={() => console.log('Image failed to load')}
-            />
-            {selectedPostData.details?.map((detail, index) => (
-              <View key={index}>
-                <Text style={styles.detailsText}>{detail.Description}</Text>
-                <Text style={styles.details2}>{detail.Description2}</Text>
-              </View>
-            ))}
-          </View>
+          ))}
         </ScrollView>
-      )}
+      </View>
+      <FlatList
+        data={
+          selectedCategory === 'All Category'
+            ? posts
+            : posts.filter(post => post.name === selectedCategory)
+        }
+        showsVerticalScrollIndicator={false}
+        renderItem={({item}) => (
+          <TouchableOpacity onPress={() => handlePostPress(item)}>
+            <View style={styles.postContainer}>
+              <View style={styles.profileContainer}>
+                <Image source={{uri: item.image}} style={styles.profileImage} />
+                <Text style={styles.username}>{item.name}</Text>
+              </View>
+              <Image source={{uri: item.image}} style={styles.postImage} />
+            </View>
+          </TouchableOpacity>
+        )}
+        keyExtractor={item => item._id}
+        style={styles.flatList}
+      />
     </View>
   );
 }
@@ -155,6 +105,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.White,
   },
+
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -225,7 +176,7 @@ const styles = StyleSheet.create({
   },
   username: {
     fontWeight: 'bold',
-    fontSize: moderateScale(16),
+    fontSize: moderateScale(15),
     color: COLORS.Black,
   },
   postImage: {
@@ -234,72 +185,11 @@ const styles = StyleSheet.create({
     borderRadius: moderateScale(5),
     marginBottom: verticalScale(10),
   },
-  description: {
-    fontSize: moderateScale(14),
+
+  selectedButton: {
+    backgroundColor: '#24a369',
   },
-  iconContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: verticalScale(10),
-  },
-  iconButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  iconText: {
-    marginLeft: scale(5),
-    color: COLORS.gray,
-    fontSize: moderateScale(14),
-  },
-  commentContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: verticalScale(10),
-  },
-  commentInput: {
-    flex: 1,
-    borderWidth: scale(1),
-    borderColor: COLORS.gray,
-    borderRadius: moderateScale(5),
-    padding: scale(10),
-  },
-  submitButton: {
-    marginLeft: scale(10),
-    backgroundColor: COLORS.green,
-    paddingVertical: verticalScale(10),
-    paddingHorizontal: scale(20),
-    borderRadius: moderateScale(5),
-  },
-  submitButtonText: {
+  selectedButtonText: {
     color: COLORS.White,
-    fontWeight: 'bold',
-  },
-  detailsContainer: {
-    marginTop: verticalScale(10),
-  },
-  details2: {
-    paddingHorizontal: 20,
-    fontSize: 15,
-    color: COLORS.Black,
-  },
-  detailsText: {
-    paddingHorizontal: 20,
-    fontSize: 15,
-    color: COLORS.Black,
-    marginVertical: 10,
-  },
-  detailsImage: {
-    height: 220,
-    width: '100%',
-    resizeMode: 'contain',
-    marginVertical: 20,
-    borderRadius: 8,
-  },
-  USERNAME: {
-    textAlign: 'center',
-    color: COLORS.Black,
-    fontWeight: 'bold',
-    fontSize: 20,
   },
 });

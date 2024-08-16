@@ -1,19 +1,19 @@
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../../../firebase";
+import { UploadMultiInputImageFunction } from "../../types/contentType";
 const uniqueIdentifier = `image_${Date.now()}_${Math.floor(
   Math.random() * 10000
 )}`;
 
-const uploadImage = async (fileName, file, setProgressStatus) => {
+const uploadMultiInputImage: UploadMultiInputImageFunction = async (
+  fileName,
+  file,
+  handlingProgress
+) => {
   try {
-    // Create a reference to the storage bucket
-
-    // const metadata = {
-    //   contentType: "jpeg" || "png" || "webp",
-    // };
     const storageRef = ref(
       storage,
-      `${fileName.replace(/\s+/g, "")}/${uniqueIdentifier} ${file.name}`
+      `${fileName?.replace(/\s+/g, "")}/${uniqueIdentifier} ${file?.name}`
     );
 
     // Upload the file to the storage bucket
@@ -28,7 +28,7 @@ const uploadImage = async (fileName, file, setProgressStatus) => {
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         console.log("Upload is " + progress + "% done");
         // Update the progress status
-        setProgressStatus(progress);
+        handlingProgress(progress);
       },
       (error) => {
         // Handle unsuccessful uploads
@@ -40,7 +40,7 @@ const uploadImage = async (fileName, file, setProgressStatus) => {
         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
         // Reset progress status or perform any other action on upload completion
-        setProgressStatus(null);
+        handlingProgress(null);
         return downloadURL;
       }
     );
@@ -55,4 +55,4 @@ const uploadImage = async (fileName, file, setProgressStatus) => {
   }
 };
 
-export default uploadImage;
+export default uploadMultiInputImage;
