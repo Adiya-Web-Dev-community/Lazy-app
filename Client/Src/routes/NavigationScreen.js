@@ -32,6 +32,7 @@ import Notification from '../Screen/Notification/Notification';
 import Logout from '../Screen/DrawerScreen/Logout';
 import CustomDrawerContent from '../Components/CustomDrawerContent ';
 import BuzzFeed from '../Screen/BuzzFeed/BuzzFeed';
+import BuzzFeedDetails from '../Screen/BuzzFeed/BuzzFeedDetails';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -262,7 +263,12 @@ export default function NavigationScreen() {
           options={{headerShown: false}}
         />
         <Stack.Screen name="Notification" component={Notification} />
-        <Stack.Screen name='BuzzFeed' component={BuzzFeed}/>
+        <Stack.Screen name="BuzzFeed" component={BuzzFeed} />
+        <Stack.Screen
+          name="BuzzFeedDetails"
+          component={BuzzFeedDetails}
+          options={{headerShown: false}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
