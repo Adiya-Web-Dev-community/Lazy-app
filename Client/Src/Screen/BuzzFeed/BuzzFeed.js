@@ -186,8 +186,8 @@ export default function BuzzFeed() {
             </TouchableOpacity>
           </View>
           <View style={styles.detailsContainer}>
-          <ImageSlider productId={selectedPostData?._id} />
-          {blogData.map((blog, index) => (
+            <ImageSlider productId={selectedPostData?._id} />
+            {blogData.map((blog, index) => (
               <View key={index}>
                 <RenderHTML
                   contentWidth={scale(300)}
