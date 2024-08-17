@@ -1,5 +1,23 @@
 import {Instance} from './Instance';
 
+export const userlogin = async (email, password) => {
+  try {
+    const response = await Instance.post('/api/user/login', {email, password});
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const userSingup = async (email, password) => {
+  try {
+    const response = await Instance.post('/api/user/register', { email, password });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getCategories = async () => {
   try {
     const response = await Instance.get('/api/user/category');
@@ -49,7 +67,7 @@ export const UploadImage = async (productId, imageUrl) => {
 export const getPost = async () => {
   try {
     const response = await Instance.get('/api/blog/all/category');
-    console.log('Fetched posts:', response.data)
+    console.log('Fetched posts:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching posts:', error);

@@ -12,13 +12,13 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import RenderHTML from 'react-native-render-html';
 import {COLORS} from '../../Theme/Colors';
 import {scale, verticalScale, moderateScale} from '../../utils/Scaling';
-import ImageSlider from '../../Components/Slider/ImageSlider';
 import Review from './Review/Review';
 import Stars from 'react-native-stars';
 import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from 'axios';
 import {getBlogByCategory} from '../../api/api';
 import AllReviewShow from './Review/AllReviewShow';
+import ImageSlider from '../../Components/Slider/ImageSlider';
 
 export default function BuzzFeedDetails({route, navigation}) {
   const {name} = route.params;
@@ -60,7 +60,7 @@ export default function BuzzFeedDetails({route, navigation}) {
 
   useEffect(() => {
     console.log('showDetails:', showDetails);
-    console.log('selectedPostData:', selectedPostData);
+    console.log('selectedPost.....:', selectedPostData?._id);
   }, [showDetails, selectedPostData]);
 
   const fetchReviews = async postId => {
@@ -68,6 +68,7 @@ export default function BuzzFeedDetails({route, navigation}) {
       const response = await axios.get(
         `http://192.168.122.164:8000/api/blog/review/${postId}`,
       );
+
       if (response.status === 200) {
         setReviews(response.data.data);
       } else {
@@ -115,7 +116,7 @@ export default function BuzzFeedDetails({route, navigation}) {
             </TouchableOpacity>
           </View>
           <View style={styles.detailsContainer}>
-            <ImageSlider productId={selectedPostData._id} />
+            <ImageSlider productId={selectedPostData?._id} />
             {blogData.map((blog, index) => (
               <View key={index}>
                 <RenderHTML
@@ -130,7 +131,7 @@ export default function BuzzFeedDetails({route, navigation}) {
               <View key={index} style={styles.ImgndBtn}>
                 <Image
                   source={require('../assets/Logo1.webp')}
-                   // source={{ uri: brand.image }}
+                  // source={{ uri: brand.image }}
                   style={{height: scale(110), width: scale(110)}}
                 />
                 <View style={{alignSelf: 'center'}}>

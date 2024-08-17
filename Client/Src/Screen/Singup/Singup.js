@@ -16,6 +16,7 @@ import {COLORS} from '../../Theme/Colors';
 import {Instance} from '../../api/Instance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { userSingup } from '../../api/api';
 
 export default function Signup({navigation}) {
   const [email, setEmail] = useState('');
@@ -51,20 +52,17 @@ export default function Signup({navigation}) {
     if (valid) {
       setLoading(true);
       try {
-        const response = await Instance.post(
-          'http://192.168.235.164:8000/api/user/register',
-          {
-            email,
-            password,
-          },
-        );
-        console.log('Response:', response.data);
-        if (response.data.success) {
-          const token = response.data.token;
-          console.log('Signup successful', token);
-          console.log('Received Token:', token);
-          Alert.alert('Signup successful!', 'Welcome to LazyApp');
-          navigation.navigate('DrawerTab');
+        const response = await userSingup(email, password);
+        console.log('Response:', response);
+        if (response.success) {
+          const token = response.token;
+          if (token) {
+            await AsyncStorage.setItem('userToken', token);
+            Alert.alert('Signup successful!', 'Welcome to LazyApp');
+            navigation.navigate('DrawerTab'); 
+          } else {
+            Alert.alert('Signup failed', 'No token received');
+          }
         } else {
           Alert.alert('Signup failed', 'Please try again');
         }
@@ -83,6 +81,8 @@ export default function Signup({navigation}) {
       }
     }
   };
+
+  
 
   return (
     <View style={styles.container}>
