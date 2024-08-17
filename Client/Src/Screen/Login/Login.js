@@ -46,7 +46,7 @@ export default function Login({navigation}) {
     }
     if (valid) {
       try {
-        const response = await Instance.post('http://192.168.122.164:8000/api/user/login', {
+        const response = await Instance.post('http://192.168.31.104:8000/api/user/login', {
           email: email,
           password: password,
         });

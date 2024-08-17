@@ -229,8 +229,21 @@ function BottomTab({navigation}) {
 }
 
 export default function NavigationScreen() {
+
+  const linking = {
+    prefixes: ['https://lazydeeplink.netlify.app/app'],
+    config: {
+      screens: {
+        BuzzFeedDetails: {
+          path: 'BuzzFeedDetails/:name',
+
+        },
+      }
+    },
+  };
+
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       <Stack.Navigator>
         <Stack.Screen
           name="Authlogin"
