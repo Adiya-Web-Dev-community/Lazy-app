@@ -51,6 +51,7 @@ export default function Login({navigation}) {
         console.log('Login Response:', response);
         if (response.success) {
           const token = response.token;
+      
           await AsyncStorage.setItem('userToken', token);
           console.log('Token', token);
           Alert.alert('Login successful!', 'Welcome back to LazyApp');

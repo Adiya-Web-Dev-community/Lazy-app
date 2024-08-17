@@ -85,7 +85,7 @@ export default function BuzzFeed({navigation}) {
           <TouchableOpacity onPress={() => handlePostPress(item)}>
             <View style={styles.postContainer}>
               <View style={styles.profileContainer}>
-                <Image source={{uri: item.image}} style={styles.profileImage} />
+                <Image source={{uri : item.image}} style={styles.profileImage} />
                 <Text style={styles.username}>{item.name}</Text>
               </View>
               <Image source={{uri: item.image}} style={styles.postImage} />

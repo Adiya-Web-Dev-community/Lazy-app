@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Image,
   StyleSheet,
@@ -10,18 +10,21 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import RenderHTML from 'react-native-render-html';
-import {COLORS} from '../../Theme/Colors';
-import {scale, verticalScale, moderateScale} from '../../utils/Scaling';
+
+import { COLORS } from '../../Theme/Colors';
+import { scale, verticalScale, moderateScale } from '../../utils/Scaling';
+import ImageSlider from '../../Components/Slider/ImageSlider';
 import Review from './Review/Review';
 import Stars from 'react-native-stars';
 import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from 'axios';
-import {getBlogByCategory} from '../../api/api';
+import Share from 'react-native-share';
+import { getBlogByCategory } from '../../api/api';
 import AllReviewShow from './Review/AllReviewShow';
 import ImageSlider from '../../Components/Slider/ImageSlider';
 
-export default function BuzzFeedDetails({route, navigation}) {
-  const {name} = route.params;
+export default function BuzzFeedDetails({ route, navigation }) {
+  const { name } = route.params;
 
   const [showDetails, setShowDetails] = useState(false);
   const [selectedPostData, setSelectedPostData] = useState(null);
@@ -61,6 +64,7 @@ export default function BuzzFeedDetails({route, navigation}) {
   useEffect(() => {
     console.log('showDetails:', showDetails);
     console.log('selectedPost.....:', selectedPostData?._id);
+   
   }, [showDetails, selectedPostData]);
 
   const fetchReviews = async postId => {
@@ -83,6 +87,22 @@ export default function BuzzFeedDetails({route, navigation}) {
       setReviews([newReview, ...reviews]);
     }
   };
+
+  const onHandleSharePost = () => {
+    const options = {
+      title: 'Share Post',
+      message: `share post - ${name}`,
+      url: `https://lazydeeplink.netlify.app/app/BuzzFeedDetails/${name}`
+    }
+    Share.open(options)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        err && console.log(err);
+      });
+  }
+
   if (showAllReviews) {
     return (
       <AllReviewShow
@@ -102,16 +122,16 @@ export default function BuzzFeedDetails({route, navigation}) {
                 name="arrowleft"
                 size={25}
                 color={COLORS.Black}
-                style={{marginLeft: scale(5)}}
+                style={{ marginLeft: scale(5) }}
               />
             </TouchableOpacity>
             <Text style={styles.USERNAME}>{name}</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={onHandleSharePost} >
               <Icon
                 name="sharealt"
                 size={20}
                 color={COLORS.Black}
-                style={{marginRight: scale(10)}}
+                style={{ marginRight: scale(10) }}
               />
             </TouchableOpacity>
           </View>
@@ -121,7 +141,7 @@ export default function BuzzFeedDetails({route, navigation}) {
               <View key={index}>
                 <RenderHTML
                   contentWidth={scale(300)}
-                  source={{html: blog.content}}
+                  source={{ html: blog.content }}
                 />
               </View>
             ))}
@@ -132,9 +152,9 @@ export default function BuzzFeedDetails({route, navigation}) {
                 <Image
                   source={require('../assets/Logo1.webp')}
                   // source={{ uri: brand.image }}
-                  style={{height: scale(110), width: scale(110)}}
+                  style={{ height: scale(110), width: scale(110) }}
                 />
-                <View style={{alignSelf: 'center'}}>
+                <View style={{ alignSelf: 'center' }}>
                   <TouchableOpacity
                     style={styles.BottomBtn}
                     onPress={() => Linking.openURL(brand.link)}>
@@ -145,7 +165,7 @@ export default function BuzzFeedDetails({route, navigation}) {
             ))}
           </View>
           <View
-            style={{flex: 1, justifyContent: 'flex-end', padding: scale(10)}}>
+            style={{ flex: 1, justifyContent: 'flex-end', padding: scale(10) }}>
             <TouchableOpacity
               style={styles.reviewButton}
               onPress={() => setIsReviewModalVisible(true)}>
@@ -201,7 +221,7 @@ export default function BuzzFeedDetails({route, navigation}) {
             <Text style={styles.REVIEWTXT}>No reviews yet.</Text>
           )}
           <TouchableOpacity
-            style={[styles.reviewButton, {marginHorizontal: 10}]}
+            style={[styles.reviewButton, { marginHorizontal: 10 }]}
             onPress={() => fetchReviews(selectedPostData._id)}>
             <Text style={styles.reviewButtonText}>See all Review</Text>
           </TouchableOpacity>
@@ -291,7 +311,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.White,
     elevation: 5,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
