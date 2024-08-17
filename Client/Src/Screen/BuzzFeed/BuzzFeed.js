@@ -15,7 +15,6 @@ import {moderateScale, scale, verticalScale} from '../../utils/Scaling';
 import SwitchMain from '../../Components/Switch/Switch';
 import {getPost, getBlogByCategory, getReview} from '../../api/api';
 
-
 export default function BuzzFeed({navigation}) {
   const [posts, setPosts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All Category');

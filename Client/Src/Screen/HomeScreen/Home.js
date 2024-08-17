@@ -12,7 +12,7 @@ import {
   BackHandler,
   FlatList,
   Linking,
-  useWindowDimensions 
+  useWindowDimensions,
 } from 'react-native';
 import shoppingApp from './Data';
 import {moderateScale, scale, verticalScale} from '../../utils/Scaling';
@@ -40,8 +40,6 @@ import RecommendedList from '../../Components/Category/RecommendedList ';
 import Switch from '../../Components/Switch/Switch';
 import SwitchMain from '../../Components/Switch/Switch';
 
-
-
 export default function Home({navigation}) {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -68,6 +66,10 @@ export default function Home({navigation}) {
         }
       } catch (error) {
         console.log('Network Error:', error.message);
+        Alert.alert(
+          'Error',
+          'Unable to fetch categories. Please try again later.',
+        );
       }
     };
     fetchCategories();
@@ -85,6 +87,7 @@ export default function Home({navigation}) {
         }
       } catch (error) {
         console.log('Error fetching flash deals:', error.message);
+        Alert.alert('Error', 'Unable to fetch details. Please try again later.');
       }
     };
 
@@ -96,7 +99,7 @@ export default function Home({navigation}) {
       try {
         const data = await getRecommended();
         if (data) {
-          setRecomendedDeals(data); // Ensure this matches your expected structure
+          setRecomendedDeals(data);
           console.log('Fetched Recommended Deals:', data);
         } else {
           console.log('No recommended deals data');
@@ -467,7 +470,7 @@ export default function Home({navigation}) {
               }}>
               {selectedFlashDeal.category}
             </Text>
-            <ImageSlider productId={selectedFlashDeal?._id}/>
+            <ImageSlider productId={selectedFlashDeal?._id} />
             <View style={styles.ICONROW}>{renderFlashDealIcons()}</View>
             <RenderHTML
               contentWidth={styles.container.width}
@@ -541,7 +544,7 @@ export default function Home({navigation}) {
               }}>
               {selectedRecommended.category}
             </Text>
-            <ImageSlider productId={selectedRecommended?._id}/>
+            <ImageSlider productId={selectedRecommended?._id} />
             <View style={styles.ICONROW}>{renderRecommandedIcons()}</View>
             <RenderHTML
               contentWidth={styles.container.width}
