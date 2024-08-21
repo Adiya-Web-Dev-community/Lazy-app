@@ -73,7 +73,7 @@ const Pagination = <T,>({
           </button>
         )}
 
-        {totalPages > 1 && (
+        {totalPages >= 1 && (
           <>
             <button
               className={`mx-1 px-3 py-1 rounded ${
@@ -85,7 +85,7 @@ const Pagination = <T,>({
             >
               {firstPage}
             </button>
-            {totalPages > 2 && (
+            {totalPages >= 2 && (
               <button
                 className={`mx-1 px-3 py-1 rounded ${
                   currentPage === secondPage
@@ -97,7 +97,7 @@ const Pagination = <T,>({
                 {secondPage}
               </button>
             )}
-            {totalPages > 3 && thirdPage <= totalPages && (
+            {totalPages >= 3 && thirdPage <= totalPages && (
               <button
                 className={`mx-1 px-3 py-1 rounded ${
                   currentPage === thirdPage
