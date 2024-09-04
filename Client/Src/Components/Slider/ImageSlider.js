@@ -13,6 +13,7 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import {COLORS} from '../../Theme/Colors';
 import {scale, moderateScale, verticalScale} from '../../utils/Scaling';
 import { UploadImage} from '../../api/api';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const {width} = Dimensions.get('window');
 
@@ -61,6 +62,11 @@ const ImageSlider = ({productId}) => {
     if (item.id === 'button') {
       return (
         <TouchableOpacity style={styles.button} onPress={handleSelectImage}>
+          <View style={styles.plusIcon} >
+          <Icon name="plus" size={30} color={COLORS.blue} />
+
+          </View>
+          
           <Text style={styles.buttonText}>Add More Image</Text>
         </TouchableOpacity>
       );
@@ -75,7 +81,10 @@ const ImageSlider = ({productId}) => {
   });
 
   return (
-    <View style={styles.container}>
+    <View style={{flex:1}}>
+      <View style={styles.container}>
+
+     
       <FlatList
         ref={flatListRef}
         data={data}
@@ -93,7 +102,9 @@ const ImageSlider = ({productId}) => {
           {useNativeDriver: false},
         )}
       />
-      <View style={styles.pagination}>
+    
+    </View>
+    <View style={styles.pagination}>
         {data.map((_, i) => {
           if (i === data.length - 1) return null;
           return (
@@ -110,43 +121,44 @@ const ImageSlider = ({productId}) => {
 
 const styles = StyleSheet.create({
   container: {
-    height: verticalScale(170),
+    height: verticalScale(150),
     marginVertical: verticalScale(20),
   },
   image: {
-    width: width - 32,
+    width: width - 35,
     height: '95%',
     resizeMode: 'cover',
     borderRadius: moderateScale(10),
-    marginHorizontal: scale(15),
+    marginHorizontal: moderateScale(15),
   },
   button: {
-    width: width - 30,
+    width: width - 35,
     height: '95%',
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: scale(5),
+    marginHorizontal: scale(4),
     backgroundColor: COLORS.White,
     borderWidth: moderateScale(1),
-    borderStyle: 'dotted',
+  
     borderRadius: moderateScale(8),
-    borderColor: COLORS.green,
+    borderColor: COLORS.blue,
   },
   buttonText: {
     fontSize: moderateScale(18),
     fontWeight: 'bold',
+    color:COLORS.Black
   },
   pagination: {
     flexDirection: 'row',
-    position: 'absolute',
-    bottom: verticalScale(10),
+    
+   marginVertical:verticalScale(5),
     alignSelf: 'center',
   },
   dot: {
     height: scale(10),
     width: scale(10),
     borderRadius: moderateScale(10),
-    backgroundColor: COLORS.Black,
+    backgroundColor: COLORS.grey,
     marginHorizontal: scale(5),
     bottom: scale(10),
   },
@@ -154,8 +166,19 @@ const styles = StyleSheet.create({
     height: scale(10),
     width: scale(10),
     borderRadius: moderateScale(10),
-    backgroundColor: COLORS.White,
+    backgroundColor: COLORS.blue,
   },
+  plusIcon:{
+    backgroundColor:'#fff',
+    
+    width:scale(30),
+    height:scale(30),
+    alignItems:'center',
+    justifyContent:'center',
+    borderWidth:moderateScale(1),
+    borderRadius:moderateScale(25),
+    borderColor:COLORS.blue
+  }
 });
 
 export default ImageSlider;

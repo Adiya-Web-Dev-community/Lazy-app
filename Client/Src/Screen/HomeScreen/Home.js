@@ -13,6 +13,7 @@ import {
   FlatList,
   Linking,
   useWindowDimensions,
+  ActivityIndicator
 } from 'react-native';
 import shoppingApp from './Data';
 import {moderateScale, scale, verticalScale} from '../../utils/Scaling';
@@ -39,6 +40,7 @@ import FlashDealCategory from '../../Components/Category/FlashDealCategory';
 import RecommendedList from '../../Components/Category/RecommendedList ';
 import Switch from '../../Components/Switch/Switch';
 import SwitchMain from '../../Components/Switch/Switch';
+import TrustedGrid from './TrustedGride';
 
 export default function Home({navigation}) {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -54,7 +56,25 @@ export default function Home({navigation}) {
   const FlashDeals = FlashDealsData.FlashDeals;
   const Recommended = RecommendedData.Recommended;
 
+
+
+  const [loadingRecommended, setLoadingRecommended] = useState(true);
+  const [loadingMobile, setLoadingMobile] = useState(true);
+
   useEffect(() => {
+   
+    setTimeout(() => {
+      setLoadingRecommended(false);
+    }, 10000); 
+    
+   
+    setTimeout(() => {
+      setLoadingMobile(false); 
+    }, 10000); 
+  }, []);
+
+  useEffect(() => {
+    
     const fetchCategories = async () => {
       try {
         const data = await getCategories();
@@ -180,8 +200,11 @@ export default function Home({navigation}) {
   };
 
   const handleCategoryPress = async category => {
-    setSelectedCategory(category);
-    setSelectedItem(null);
+    // setSelectedCategory(category);
+    // setSelectedItem(null);
+    navigation.navigate('CotegoryScreen',{Categories})
+
+    
     try {
       const response = await getProductsByCategory(category.name);
       if (response && Array.isArray(response)) {
@@ -292,7 +315,28 @@ export default function Home({navigation}) {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.content}>
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+
+      {!selectedCategory && !selectedFlashDeal && !selectedRecommended && (
+          <View style={styles.SeachContainer}>
+            <TextInput
+              placeholder="Search products..."
+             
+              vishvaa
+              placeholderTextColor={COLORS.Black}
+              style={styles.SearchInp}
+            />
+            <AntDesign
+              name="search1"
+              color={COLORS.Black}
+              size={24}
+              style={{right: 15}}
+            />
+          </View>
+        )}
+
+
+
         {!selectedCategory && !selectedFlashDeal && !selectedRecommended && (
           <View>
             <View style={styles.TITLEBTNCONTAINER}>
@@ -309,7 +353,7 @@ export default function Home({navigation}) {
                 <Text style={styles.FeedBtnTxt}>The Buzz Feed</Text>
               </TouchableOpacity>
             </View>
-            <View style={styles.TrustedContainer}>
+            {/* <View style={styles.TrustedContainer}>
               <TouchableOpacity style={styles.TrustedBox}>
                 <Text style={styles.TrustedTxt}>
                   Trusted/Best{'\n'}
@@ -338,25 +382,38 @@ export default function Home({navigation}) {
                   </Text>
                 </Text>
               </TouchableOpacity>
-            </View>
-
+            </View> */}
+<TrustedGrid navigation={navigation}/>
             <HomeSlider />
           </View>
         )}
         {!selectedItem && !selectedFlashDeal && !selectedRecommended && (
+
+
+
           <CategoriesList
             categories={Categories}
             handleCategoryPress={handleCategoryPress}
           />
         )}
-        {selectedCategory && !selectedItem && (
+        {/* {selectedCategory && !selectedItem &&(
+          
           <>
+
+         
+
             <FlatList
               data={categoryProducts}
               renderItem={({item}) => (
+
+                
                 <TouchableOpacity
                   style={styles.detailItem}
                   onPress={() => handleItemPress(item)}>
+
+
+
+                    
                   <Image
                     source={
                       item.images && item.images.length > 0
@@ -375,7 +432,7 @@ export default function Home({navigation}) {
               columnWrapperStyle={styles.row}
             />
           </>
-        )}
+        )} */}
         {selectedItem && (
           <ScrollView style={styles.itemDetails}>
             <TouchableOpacity
@@ -429,22 +486,7 @@ export default function Home({navigation}) {
             </View>
           </ScrollView>
         )}
-        {!selectedCategory && !selectedFlashDeal && !selectedRecommended && (
-          <View style={styles.SeachContainer}>
-            <TextInput
-              placeholder="Search products..."
-              vishvaa
-              placeholderTextColor={COLORS.White}
-              style={{paddingVertical: 1}}
-            />
-            <AntDesign
-              name="search1"
-              color={COLORS.White}
-              size={18}
-              style={{right: 15}}
-            />
-          </View>
-        )}
+       
         {!selectedFlashDeal && !selectedCategory && !selectedRecommended && (
           <>
             <SectionHeader title="Flash Deals" />
@@ -459,7 +501,7 @@ export default function Home({navigation}) {
             <TouchableOpacity
               onPress={() => setSelectedFlashDeal(null)}
               style={styles.backButton}>
-              <AntDesign name="arrowleft" size={24} color={COLORS.Black} />
+              <AntDesign name="arrowleft" size={24} color={COLORS.green} />
             </TouchableOpacity>
             <Text
               style={{
@@ -479,7 +521,8 @@ export default function Home({navigation}) {
                 alignItems: 'center',
                 color: COLORS.Black,
                 fontSize: 20,
-                marginVertical: 10,
+                marginVertical: verticalScale(10),
+              
               }}
             />
             <RenderHTML
@@ -522,10 +565,22 @@ export default function Home({navigation}) {
               <Text style={styles.HowItTxt}>How it works?</Text>
             </View>
             <SectionHeader title="Recommended" />
-            <RecommendedList
+
+
+            {loadingRecommended ? (
+        <ActivityIndicator size="large" color={COLORS.blue}  />
+      ) : (
+        <RecommendedList
+        data={recomendedDeals}
+        handlePress={handleRecommendedPress}
+      />
+      )}
+
+
+            {/* <RecommendedList
               data={recomendedDeals}
               handlePress={handleRecommendedPress}
-            />
+            /> */}
           </View>
         )}
         {selectedRecommended && (
@@ -590,20 +645,29 @@ export default function Home({navigation}) {
           <View>
             <View style={styles.SectionHeader}>
               <Text style={styles.FlashDealsTxt}>Mobile</Text>
-              <TouchableOpacity style={styles.ViewAllButton}>
+              <TouchableOpacity style={styles.ViewAllButton} onPress={()=>{navigation.navigate('CotegoryScreen')}}>
                 <Text style={styles.FlashDealsTxts}>View All</Text>
-                <AntDesign
-                  name="right"
-                  size={23}
-                  color={COLORS.green}
-                  style={styles.ViewAllIcon}
-                />
+                
               </TouchableOpacity>
             </View>
+
+
+
+            {loadingMobile ? (
+            <ActivityIndicator size="large" color={COLORS.blue} />
+          ) : (
             <FlashDealCategory
               data={flashDeals}
               handleFlashDealPress={handleFlashDealPress}
             />
+          )}
+
+
+
+            {/* <FlashDealCategory
+              data={flashDeals}
+              handleFlashDealPress={handleFlashDealPress}
+            /> */}
           </View>
         )}
       </ScrollView>
@@ -625,13 +689,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   FeedBtn: {
-    borderWidth: moderateScale(1),
+    backgroundColor:COLORS.blue,
     paddingVertical: verticalScale(10),
     paddingHorizontal: scale(20),
     borderRadius: moderateScale(8),
+    elevation:verticalScale(5)
   },
   FeedBtnTxt: {
-    color: COLORS.red,
+    color:"#fff",
     fontWeight: 'bold',
     fontSize: moderateScale(15),
   },
@@ -680,16 +745,29 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.White,
   },
   BannerImg: {
-    height: verticalScale(170),
+    height: verticalScale(150),
     width: scale(330),
     resizeMode: 'cover',
     alignSelf: 'center',
-    borderRadius: moderateScale(8),
+    borderRadius: moderateScale(10),
+    marginVertical:verticalScale(10)
   },
   ViewAllButton: {
-    flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor:COLORS.blue,
+    borderRadius:moderateScale(10),
+    marginHorizontal:moderateScale(15),
+    justifyContent:'center',
+  
+    
   },
+  SearchInp:{
+    paddingVertical:verticalScale(1),
+    paddingHorizontal:moderateScale(15) ,
+    fontSize:scale(12) 
+    ,color:COLORS.Black
+  },
+  
   ViewAllIcon: {
     right: scale(12),
   },
@@ -763,6 +841,7 @@ const styles = StyleSheet.create({
     top: scale(10),
   },
   flashDealTitle: {
+    flex:1,
     color: COLORS.White,
     fontWeight: 'bold',
     textAlign: 'center',
@@ -811,17 +890,22 @@ const styles = StyleSheet.create({
   },
   HowItTxt: {
     textAlign: 'center',
-    color: COLORS.Black,
+    color: COLORS.White,
     fontSize: moderateScale(15),
     paddingVertical: verticalScale(6),
+    fontWeight:'500'
   },
   HowItContainer: {
-    borderWidth: scale(0.5),
     margin: scale(5),
     height: scale(35),
     top: scale(10),
     marginHorizontal: scale(10),
+    backgroundColor:COLORS.blue,
+  borderRadius:moderateScale(10),
+  elevation:verticalScale(5),
+  justifyContent:'center'
   },
+  
   SectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -843,14 +927,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   FlashDealsTxt: {
-    color: COLORS.green,
+    color: COLORS.Black,
     paddingHorizontal: scale(15),
     fontSize: moderateScale(18),
     fontWeight: 'bold',
     marginVertical: verticalScale(2),
   },
   FlashDealsTxts: {
-    color: COLORS.green,
+    color: COLORS.White,
     paddingHorizontal: scale(15),
     fontSize: moderateScale(17),
     fontWeight: '500',
@@ -859,12 +943,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'center',
-    backgroundColor: COLORS.green,
+    backgroundColor: 'fff',
     justifyContent: 'space-between',
-    width: '75%',
+    width: '95%',
     height: scale(37),
     marginTop: scale(10),
-    borderRadius: moderateScale(5),
+    borderRadius: moderateScale(10),
+    borderWidth:scale(1),
+    borderColor:COLORS.blue,
+   
   },
   ICONROW: {
     flexDirection: 'row',

@@ -21,7 +21,7 @@ import axios from 'axios';
 import Share from 'react-native-share';
 import { getBlogByCategory } from '../../api/api';
 import AllReviewShow from './Review/AllReviewShow';
-import ImageSlider from '../../Components/Slider/ImageSlider';
+// import ImageSlider from '../../Components/Slider/ImageSlider';
 
 export default function BuzzFeedDetails({ route, navigation }) {
   const { name } = route.params;
@@ -111,6 +111,19 @@ export default function BuzzFeedDetails({ route, navigation }) {
       />
     );
   }
+  const tagsStyles = {
+    p: {
+      color: COLORS.Black, 
+
+    },
+    h1: {
+      color: COLORS.Black, 
+    },
+    body: {
+      color: COLORS.Black, 
+    },
+   
+  };
 
   return (
     <View style={styles.container}>
@@ -122,7 +135,7 @@ export default function BuzzFeedDetails({ route, navigation }) {
                 name="arrowleft"
                 size={25}
                 color={COLORS.Black}
-                style={{ marginLeft: scale(5) }}
+                style={{ marginLeft: scale(7) }}
               />
             </TouchableOpacity>
             <Text style={styles.USERNAME}>{name}</Text>
@@ -138,9 +151,10 @@ export default function BuzzFeedDetails({ route, navigation }) {
           <View style={styles.detailsContainer}>
             <ImageSlider productId={selectedPostData?._id} />
             {blogData.map((blog, index) => (
-              <View key={index}>
+              <View key={index} style={{marginHorizontal:moderateScale(10)}}>
                 <RenderHTML
                   contentWidth={scale(300)}
+                  tagsStyles={tagsStyles}
                   source={{ html: blog.content }}
                 />
               </View>
@@ -152,7 +166,7 @@ export default function BuzzFeedDetails({ route, navigation }) {
                 <Image
                   source={require('../assets/Logo1.webp')}
                   // source={{ uri: brand.image }}
-                  style={{ height: scale(110), width: scale(110) }}
+                  style={{ height: scale(110), width: scale(110),borderRadius:moderateScale(10) }}
                 />
                 <View style={{ alignSelf: 'center' }}>
                   <TouchableOpacity
@@ -241,10 +255,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.White,
+    
   },
 
   detailsContainer: {
     marginTop: verticalScale(10),
+    
+    
   },
 
   USERNAME: {
@@ -262,7 +279,7 @@ const styles = StyleSheet.create({
   //   marginBottom: verticalScale(10),
   // },
   reviewButton: {
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.blue,
     padding: scale(10),
     borderRadius: moderateScale(5),
     alignItems: 'center',
@@ -275,6 +292,7 @@ const styles = StyleSheet.create({
   REVIEWTXT: {
     marginHorizontal: scale(15),
     fontStyle: 'italic',
+    color:COLORS.Black
   },
 
   REVIEWBTNTXT: {
@@ -293,9 +311,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     padding: scale(10),
+   
   },
   BottomBtn: {
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.blue,
     width: scale(140),
     height: scale(35),
     borderRadius: moderateScale(5),

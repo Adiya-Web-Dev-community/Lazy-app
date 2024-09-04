@@ -64,12 +64,12 @@ export default function Notification({}) {
 const styles = StyleSheet.create({
   container: {flex: 1},
   NOTIFICATION: {
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.blue,
     paddingVertical: verticalScale(10),
     marginHorizontal: scale(15),
     margin: scale(12),
-    borderWidth: moderateScale(1),
-    borderRadius: moderateScale(8),
+    borderRadius: moderateScale(10),
+    elevation:verticalScale(5)
   },
   NOTIFICATIONTXT: {
     color: COLORS.White,
@@ -97,10 +97,12 @@ const styles = StyleSheet.create({
   },
   TXT2: {
     paddingVertical: verticalScale(15),
+    color: COLORS.Black,
   },
   TXT3: {
     paddingVertical: verticalScale(25),
     marginHorizontal: scale(41),
     fontSize: moderateScale(15),
+    color: COLORS.Black,
   },
 });

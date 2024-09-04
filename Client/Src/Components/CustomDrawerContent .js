@@ -32,17 +32,24 @@ const CustomDrawerContent = props => {
 const styles = StyleSheet.create({
   drawerContainer: {
     flex: 1,
+    marginTop:verticalScale(10)
   },
   drawerItem: {
-    borderBottomWidth: scale(1),
-    borderBottomColor: '#CCD1D1',
-    paddingVertical: verticalScale(17),
-    paddingHorizontal: scale(15),
+    // borderBottomWidth: scale(1),
+    // borderBottomColor: '#CCD1D1',
+    paddingVertical: verticalScale(10),
+    paddingHorizontal: scale(10),
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor:COLORS.White,
+  borderTopRightRadius:moderateScale(20),
+borderBottomRightRadius:moderateScale(20),
+    elevation:verticalScale(2),
+    marginRight:moderateScale(10),
+    marginVertical:verticalScale(5)
   },
   drawerItemFocused: {
-    backgroundColor: COLORS.lightGrey,
+    backgroundColor: COLORS.blue,
   },
   drawerLabel: {
     fontSize: moderateScale(16),

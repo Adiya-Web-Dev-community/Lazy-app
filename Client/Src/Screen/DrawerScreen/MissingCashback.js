@@ -6,10 +6,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { COLORS } from '../../Theme/Colors';
-import { scale,moderateScale,verticalScale } from '../../utils/Scaling';
+import {COLORS} from '../../Theme/Colors';
+import {moderateScale, scale, verticalScale} from '../../utils/Scaling';
 
-export default function MissingCashback({}) {
+export default function Claim({}) {
   return (
     <View style={styles.container}>
       <View style={{top: 85}}>
@@ -29,16 +29,17 @@ export default function MissingCashback({}) {
           placeholderTextColor={COLORS.grey}
           secureTextEntry={true}
         />
-        <Text style={{color: COLORS.Black}}>
+        <Text style={{color: COLORS.Black, alignSelf:'flex-end'}}>
           Forgot your password?{' '}
-          <Text style={{color: 'blue'}}>recover password</Text>
+          <Text style={{color: COLORS.blue}}>recover password</Text>
         </Text>
-        <Text style={styles.txt}>
-          Don't have Account?<Text style={{color: 'blue'}}>Signup</Text>
-        </Text>
+        
         <TouchableOpacity style={styles.BtnContainer}>
           <Text style={styles.BtnTxt}>LOGIN</Text>
         </TouchableOpacity>
+        <Text style={styles.txt}>
+          Don't have Account?<Text style={{color: COLORS.blue}}>Signup</Text>
+        </Text>
       </View>
     </View>
   );
@@ -47,7 +48,7 @@ export default function MissingCashback({}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.blue,
   },
   inputContainer: {
     backgroundColor: COLORS.White,
@@ -62,6 +63,8 @@ const styles = StyleSheet.create({
     borderRadius: moderateScale (5),
     marginBottom:scale (20),
     borderWidth:scale( 0.5),
+    borderColor:COLORS.blue,
+    color:COLORS.Black
   },
   LoginTxt: {
     color: COLORS.White,
@@ -78,9 +81,10 @@ const styles = StyleSheet.create({
   txt: {
     color: COLORS.Black,
     textAlign: 'right', 
+    alignSelf:'center'
   },
   BtnContainer: {
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.blue,
     height: verticalScale(30),
     marginVertical: verticalScale(15),
   },

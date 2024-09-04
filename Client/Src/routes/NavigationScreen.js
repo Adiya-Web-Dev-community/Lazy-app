@@ -33,6 +33,13 @@ import Logout from '../Screen/DrawerScreen/Logout';
 import CustomDrawerContent from '../Components/CustomDrawerContent ';
 import BuzzFeed from '../Screen/BuzzFeed/BuzzFeed';
 import BuzzFeedDetails from '../Screen/BuzzFeed/BuzzFeedDetails';
+import ShowDetails from '../Screen/Redeem/ShowDetails';
+import RedeemCoupon from '../Screen/Redeem/RedeemCoupon';
+import BrandHub from '../Screen/HomeHeaderCards/BrandHub';
+import SuggestUsScreen from '../Screen/SuggestUs/SuggestUs';
+import CotegoryScreen from '../Screen/CotegoryScreen/CotegoryScreen';
+import SelectedBrandScreen from '../Screen/HomeHeaderCards/SelectedBrandScreen';
+
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -136,7 +143,7 @@ function BottomTab({navigation}) {
         tabBarIcon: ({focused, color, size}) => {
           let iconName;
           let iconSize = focused ? 30 : 25;
-          let iconColor = focused ? COLORS.Black : 'grey';
+          let iconColor = focused ? COLORS.blue : 'grey';
           if (route.name === 'Home') {
             iconName = 'home';
             return (
@@ -275,6 +282,7 @@ export default function NavigationScreen() {
           component={Home}
           options={{headerShown: false}}
         />
+        
         <Stack.Screen name="Notification" component={Notification} />
         <Stack.Screen name="BuzzFeed" component={BuzzFeed} />
         <Stack.Screen
@@ -282,6 +290,15 @@ export default function NavigationScreen() {
           component={BuzzFeedDetails}
           options={{headerShown: false}}
         />
+
+        <Stack.Screen name='showDetails' component={ShowDetails} />
+        <Stack.Screen name='RedeemCoupon' component={RedeemCoupon} />
+        <Stack.Screen name="BrandHub" component={BrandHub}options={{headerShown: false}} />
+        <Stack.Screen  name='SuggestUsScreen' component={SuggestUsScreen}/>
+        <Stack.Screen  name='CotegoryScreen' component={CotegoryScreen}/>
+        <Stack.Screen  name='SelectedBrandScreen' component={SelectedBrandScreen} options={{title:'Lazybat'}}/>
+        
+
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -64,12 +64,14 @@ export default function Review({
           <TextInput
             style={styles.input}
             placeholder="Your Name"
+            placeholderTextColor='#888888'
             value={name}
             onChangeText={setName}
           />
           <TextInput
             style={styles.input}
             placeholder="Your Email"
+              placeholderTextColor='#888888'
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
@@ -100,6 +102,7 @@ export default function Review({
           <TextInput
             style={[styles.input, styles.messageInput]}
             placeholder="Your Message"
+              placeholderTextColor='#888888'
             value={message}
             onChangeText={setMessage}
             multiline={true}
@@ -157,10 +160,11 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
     borderWidth: scale(1),
-    borderColor: '#ccc',
+    borderColor: COLORS.blue,
     borderRadius: moderateScale(5),
     padding: scale(10),
     marginBottom: scale(13),
+    color:COLORS.Black
   },
   messageInput: {
     height: scale(95),
@@ -170,10 +174,11 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginBottom: 5,
     fontWeight: 'bold',
+    color:COLORS.Black
   },
   button: {
     width: '100%',
-    backgroundColor: '#4CAF50',
+    backgroundColor: COLORS.blue,
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
@@ -187,7 +192,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   closeButtonText: {
-    color: '#999',
+    color: '#000',
     fontSize: 16,
   },
   myStarStyle: {

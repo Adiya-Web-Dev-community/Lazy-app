@@ -51,8 +51,8 @@ const styles = StyleSheet.create({
   cardContainer: {
     margin: scale(10),
     padding: scale(10),
-    borderRadius: moderateScale(5),
-    backgroundColor: '#EBF5FB',
+    borderRadius: moderateScale(10),
+    backgroundColor: '#fff',
     shadowColor: '#000',
     shadowOpacity: moderateScale(0.25),
     shadowRadius: 3.84,
@@ -66,12 +66,13 @@ const styles = StyleSheet.create({
     height: scale(170),
     width: scale(170),
     justifyContent: 'flex-end',
-    borderRadius: moderateScale(5),
+    borderRadius: moderateScale(10),
     overflow: 'hidden',
   },
   flashDealTextContainer: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     padding: scale(9),
+    
   },
   flashDealTitle: {
     color: COLORS.White,
@@ -80,11 +81,12 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(13),
   },
   FlastBtn: {
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.blue,
     width: scale(175),
     height: scale(28),
     alignItems: 'center',
     alignSelf: 'center',
+    justifyContent:'center',
     margin: scale(5),
     borderRadius: moderateScale(8),
   },
