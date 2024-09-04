@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Image,
   StyleSheet,
@@ -10,13 +10,13 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
-import { COLORS } from '../../Theme/Colors';
-import { moderateScale, scale, verticalScale } from '../../utils/Scaling';
+import {COLORS} from '../../Theme/Colors';
+import {moderateScale, scale, verticalScale} from '../../utils/Scaling';
 import SwitchMain from '../../Components/Switch/Switch';
-import { getPost } from '../../api/api';
+import {getPost} from '../../api/api';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export default function BuzzFeed({ navigation }) {
+export default function BuzzFeed({navigation}) {
   const [posts, setPosts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All Category');
   const [loadingPosts, setLoadingPosts] = useState(true);
@@ -42,7 +42,7 @@ export default function BuzzFeed({ navigation }) {
   ];
 
   const handlePostPress = async post => {
-    navigation.navigate('BuzzFeedDetails', { name: post.name });
+    navigation.navigate('BuzzFeedDetails', {name: post.name});
   };
 
   const handleCategoryPress = category => {
@@ -59,11 +59,16 @@ export default function BuzzFeed({ navigation }) {
         </TouchableOpacity>
       </View>
       <View style={styles.Secondcontainer}>
-      <MaterialCommunityIcons name="account-circle-outline" size={54} color="#000" style={styles.icon} />
-      <View style={styles.textContainer}>
-        <Text style={styles.placeholderText}>Inform and Inspire...</Text>
+        <MaterialCommunityIcons
+          name="account-circle-outline"
+          size={54}
+          color="#000"
+          style={styles.icon}
+        />
+        <View style={styles.textContainer}>
+          <Text style={styles.placeholderText}>Inform and Inspire...</Text>
+        </View>
       </View>
-    </View>
       <View style={styles.SCROLL}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {AllcategoryButton.map((category, index) => (
@@ -86,7 +91,11 @@ export default function BuzzFeed({ navigation }) {
         </ScrollView>
       </View>
       {loadingPosts ? (
-        <ActivityIndicator size="large" color={COLORS.blue} style={styles.activityIndicator} />
+        <ActivityIndicator
+          size="large"
+          color={COLORS.blue}
+          style={styles.activityIndicator}
+        />
       ) : (
         <FlatList
           data={
@@ -95,14 +104,17 @@ export default function BuzzFeed({ navigation }) {
               : posts.filter(post => post.name === selectedCategory)
           }
           showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => (
+          renderItem={({item}) => (
             <TouchableOpacity onPress={() => handlePostPress(item)}>
               <View style={styles.postContainer}>
                 <View style={styles.profileContainer}>
-                  <Image source={{ uri: item.image }} style={styles.profileImage} />
+                  <Image
+                    source={{uri: item.image}}
+                    style={styles.profileImage}
+                  />
                   <Text style={styles.username}>{item.name}</Text>
                 </View>
-                <Image source={{ uri: item.image }} style={styles.postImage} />
+                <Image source={{uri: item.image}} style={styles.postImage} />
               </View>
             </TouchableOpacity>
           )}
@@ -135,28 +147,25 @@ const styles = StyleSheet.create({
     width: scale(135),
   },
 
-  Secondcontainer: {  
-    flexDirection: 'row',  
+  Secondcontainer: {
+    flexDirection: 'row',
     alignItems: 'center',
     padding: moderateScale(10),
     backgroundColor: COLORS.White,
-  
-    
   },
   icon: {
     marginRight: moderateScale(10),
   },
   textContainer: {
     width: scale(270),
-    height:verticalScale(40),
+    height: verticalScale(40),
     borderWidth: 2,
     borderColor: '#000',
     borderRadius: 8,
     paddingVertical: 5,
     paddingHorizontal: 10,
-    alignItems:'center',
-    justifyContent:'center'
-    
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   placeholderText: {
     fontSize: 19,
