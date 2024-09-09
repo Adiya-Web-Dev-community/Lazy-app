@@ -33,7 +33,7 @@
 const BuzzFeedData = {
   BuzzFeeds: [
     {
-      id:1,
+      id: 1,
       Username: 'User1',
       image: require('../assets/Books.jpg'),
       profileImage: require('../assets/Sports.jpg'),
@@ -50,7 +50,7 @@ const BuzzFeedData = {
       ],
     },
     {
-      id:2,
+      id: 2,
       Username: 'User2',
       image: require('../assets/Books.jpg'),
       profileImage: require('../assets/Sports.jpg'),
@@ -67,7 +67,7 @@ const BuzzFeedData = {
       ],
     },
     {
-      id:3,
+      id: 3,
       Username: 'User3',
       image: require('../assets/Books.jpg'),
       profileImage: require('../assets/Sports.jpg'),
@@ -86,5 +86,4 @@ const BuzzFeedData = {
   ],
 };
 
-export default BuzzFeedData
-
+export default BuzzFeedData;

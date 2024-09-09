@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   },
   webview: {
     height: verticalScale(200),
-    width: scale(365),
+    width: scale(350),
     marginTop: scale(10),
     alignSelf: 'center',
   },
@@ -100,20 +100,21 @@ const styles = StyleSheet.create({
     marginTop: scale(10),
     fontSize: moderateScale(16),
     textAlign: 'center',
+    color:COLORS.Black
   },
   Btn: {
-    backgroundColor: COLORS.green,
-    borderWidth: scale(0.8),
+    backgroundColor: COLORS.blue,
     height: verticalScale(40),
     margin: scale(8),
     borderRadius: moderateScale(8),
-    paddingLeft: scale(10),
+    elevation:verticalScale(5)
   },
   Btntxt: {
     paddingVertical: verticalScale(8),
     color: COLORS.White,
     fontWeight: 'bold',
     fontSize: moderateScale(18),
+    paddingLeft:scale(10)
   },
   title: {
     fontSize: moderateScale(23),
@@ -141,17 +142,21 @@ const styles = StyleSheet.create({
     width: scale(300),
     height: verticalScale(165),
     elevation: scale(10),
+    borderRadius: moderateScale(10),
+    padding:moderateScale(10),
+   overflow:'scroll'
   },
   ModalTxt: {
     color: COLORS.Black,
     fontSize: moderateScale(15),
     textAlign: 'center',
     paddingVertical: verticalScale(13),
-    elevation: 10,
+    elevation: moderateScale(5),
+    
   },
   MODALVIEW: {
-    backgroundColor: '#2E86C1',
-    borderRadius: scale(7),
+    backgroundColor: COLORS.blue,
+    borderRadius: moderateScale(10),
     padding: scale(20),
     alignItems: 'center',
     shadowColor: '#000',
@@ -170,3 +175,4 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
 });
+

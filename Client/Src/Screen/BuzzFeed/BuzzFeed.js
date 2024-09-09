@@ -7,25 +7,30 @@ import {
   FlatList,
   TouchableOpacity,
   ScrollView,
-  Linking,
+  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {COLORS} from '../../Theme/Colors';
 import {moderateScale, scale, verticalScale} from '../../utils/Scaling';
 import SwitchMain from '../../Components/Switch/Switch';
-import {getPost, getBlogByCategory, getReview} from '../../api/api';
+import {getPost} from '../../api/api';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function BuzzFeed({navigation}) {
   const [posts, setPosts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All Category');
+  const [loadingPosts, setLoadingPosts] = useState(true);
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
+        setLoadingPosts(true);
         const data = await getPost();
         setPosts(data);
       } catch (error) {
         console.error('Error fetching posts:', error);
+      } finally {
+        setLoadingPosts(false);
       }
     };
     fetchPosts();
@@ -53,6 +58,17 @@ export default function BuzzFeed({navigation}) {
           <Text style={styles.FeedBtnTxt}>The Buzz Feed</Text>
         </TouchableOpacity>
       </View>
+      <View style={styles.Secondcontainer}>
+        <MaterialCommunityIcons
+          name="account-circle-outline"
+          size={54}
+          color="#000"
+          style={styles.icon}
+        />
+        <View style={styles.textContainer}>
+          <Text style={styles.placeholderText}>Inform and Inspire...</Text>
+        </View>
+      </View>
       <View style={styles.SCROLL}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {AllcategoryButton.map((category, index) => (
@@ -74,27 +90,38 @@ export default function BuzzFeed({navigation}) {
           ))}
         </ScrollView>
       </View>
-      <FlatList
-        data={
-          selectedCategory === 'All Category'
-            ? posts
-            : posts.filter(post => post.name === selectedCategory)
-        }
-        showsVerticalScrollIndicator={false}
-        renderItem={({item}) => (
-          <TouchableOpacity onPress={() => handlePostPress(item)}>
-            <View style={styles.postContainer}>
-              <View style={styles.profileContainer}>
-                <Image source={{uri : item.image}} style={styles.profileImage} />
-                <Text style={styles.username}>{item.name}</Text>
+      {loadingPosts ? (
+        <ActivityIndicator
+          size="large"
+          color={COLORS.blue}
+          style={styles.activityIndicator}
+        />
+      ) : (
+        <FlatList
+          data={
+            selectedCategory === 'All Category'
+              ? posts
+              : posts.filter(post => post.name === selectedCategory)
+          }
+          showsVerticalScrollIndicator={false}
+          renderItem={({item}) => (
+            <TouchableOpacity onPress={() => handlePostPress(item)}>
+              <View style={styles.postContainer}>
+                <View style={styles.profileContainer}>
+                  <Image
+                    source={{uri: item.image}}
+                    style={styles.profileImage}
+                  />
+                  <Text style={styles.username}>{item.name}</Text>
+                </View>
+                <Image source={{uri: item.image}} style={styles.postImage} />
               </View>
-              <Image source={{uri: item.image}} style={styles.postImage} />
-            </View>
-          </TouchableOpacity>
-        )}
-        keyExtractor={item => item._id}
-        style={styles.flatList}
-      />
+            </TouchableOpacity>
+          )}
+          keyExtractor={item => item._id}
+          style={styles.flatList}
+        />
+      )}
     </View>
   );
 }
@@ -116,35 +143,56 @@ const styles = StyleSheet.create({
     marginVertical: verticalScale(10),
   },
   logo: {
-    height: 60,
-    width: 159,
+    height: scale(45),
+    width: scale(135),
   },
+
+  Secondcontainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: moderateScale(10),
+    backgroundColor: COLORS.White,
+  },
+  icon: {
+    marginRight: moderateScale(10),
+  },
+  textContainer: {
+    width: scale(270),
+    height: verticalScale(40),
+    borderWidth: 2,
+    borderColor: '#000',
+    borderRadius: 8,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  placeholderText: {
+    fontSize: 19,
+    color: '#000',
+  },
+
   FeedBtn: {
-    borderWidth: moderateScale(1),
+    backgroundColor: COLORS.blue,
     paddingVertical: verticalScale(10),
     paddingHorizontal: scale(20),
-    borderRadius: moderateScale(8),
+    borderRadius: moderateScale(10),
   },
   FeedBtnTxt: {
-    color: COLORS.red,
+    color: COLORS.White,
     fontWeight: 'bold',
     fontSize: moderateScale(15),
   },
-  scrollViewContainer: {
-    flexDirection: 'row',
-    paddingVertical: verticalScale(10),
-    height: scale(70),
-    backgroundColor: 'green',
-  },
   button: {
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.blue,
     paddingVertical: verticalScale(5),
     paddingHorizontal: scale(20),
-    borderRadius: moderateScale(8),
+    borderRadius: moderateScale(10),
     marginHorizontal: scale(5),
     alignItems: 'center',
     height: scale(35),
-    borderWidth: scale(0.8),
+    elevation: verticalScale(5),
+    justifyContent: 'center',
   },
   buttonText: {
     color: COLORS.White,
@@ -155,12 +203,12 @@ const styles = StyleSheet.create({
     paddingVertical: verticalScale(10),
   },
   postContainer: {
-    backgroundColor: '#fdfefe',
-    borderRadius: moderateScale(8),
-    marginBottom: verticalScale(10),
+    backgroundColor: '#fff',
+    borderRadius: moderateScale(10),
+    marginVertical: verticalScale(10),
     padding: scale(10),
-    borderWidth: scale(1),
-    borderColor: COLORS.gray,
+    marginHorizontal: moderateScale(10),
+    elevation: verticalScale(5),
   },
   profileContainer: {
     flexDirection: 'row',
@@ -184,11 +232,15 @@ const styles = StyleSheet.create({
     borderRadius: moderateScale(5),
     marginBottom: verticalScale(10),
   },
-
   selectedButton: {
     backgroundColor: '#24a369',
   },
   selectedButtonText: {
     color: COLORS.White,
+  },
+  activityIndicator: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Image,
   ScrollView,
@@ -6,58 +6,87 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ActivityIndicator
 } from 'react-native';
 import Header from '../../Components/Header/Header';
 import WebView from 'react-native-webview';
-import {moderateScale, scale, verticalScale} from '../../utils/Scaling';
-import {COLORS} from '../../Theme/Colors';
+import { moderateScale, scale, verticalScale } from '../../utils/Scaling';
+import { COLORS } from '../../Theme/Colors';
+import SwitchMain from '../../Components/Switch/Switch';
 
-export default function Redeem({}) {
+export default function Redeem({navigation}) {
+  const [isLoading, setIsLoading] = useState(true);
+  const data = [
+    { id: '1', title: 'Zee5', description: '12 Months Premium 4K Subscription Worth...', image: require('../assets/Logo1.webp'), points: '151 + ₹898' },
+    { id: '2', title: 'OTTplay', description: '40+ OTTs at Rs.99', image: require('../assets/Logo1.webp'), points: '5' },
+    { id: '3', title: 'Times Prime', description: '150 SuperCoins & Rs.450 off on Premium ...', image: require('../assets/Logo1.webp'), points: '1' },
+    { id: '4', title: 'Sony LIV', description: 'Additional 3 Months on 12 Months Subscription', image: require('../assets/Logo1.webp'), points: '25' },
+  ];
+
   const [showDetails, setShowDetails] = useState(false);
 
   const toggleDetails = () => {
     setShowDetails(!showDetails);
   };
 
+  const renderCard = (item) => (
+    <TouchableOpacity key={item.id} style={styles.card} onPress={()=>(navigation.navigate('showDetails'))}>
+      <Image source={item.image } style={styles.cardImage} />
+      <View style={styles.cardTextContainer}>
+        <Text style={styles.cardTitle}>{item.title}</Text>
+        <Text style={styles.cardDescription}>{item.description}</Text>
+        <Text style={styles.cardPoints}>Use {item.points}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
-    <View style={styles.container}>
-      {/* <Header /> */}
-      {!showDetails && (
-        <>
-          <View style={styles.webviewContainer}>
-            <WebView
-              source={{uri: 'https://www.youtube.com/watch?v=PuTrN28TW4k'}}
-              javaScriptEnabled={true}
-              style={styles.webview}
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        <Image source={require('../assets/L1.png')} style={styles.logo} />
+        <SwitchMain />
+        <TouchableOpacity style={styles.FeedBtn}>
+          <Text style={styles.FeedBtnTxt}>The Buzz Feed</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.newcontainer}>
+        <Text style={styles.headerTxt}>Redeem Store</Text>
+        <View style={styles.webviewContainer}>
+
+        {isLoading && (
+            <ActivityIndicator
+              size="large"
+              color={COLORS.blue}
+              style={styles.activityIndicator}
             />
-            <Text style={styles.TITLE}>How it works?</Text>
-          </View>
-          <ScrollView>
-            <View style={styles.imageContainer}>
-              <TouchableOpacity
-                style={styles.imageBackground}
-                onPress={toggleDetails}>
-                <Image
-                  source={require('../assets/homebody.jpg')}
-                  style={styles.Img}
-                />
-                <Text style={styles.PriceTxt}>2999</Text>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
-        </>
-      )}
-      {showDetails && (
-        <>
-          <ScrollView style={styles.detailsScrollView}>
-            <View style={styles.detailsContainer}>
-              <Text style={styles.detailsText}>
-                Home Is Where the Bodies Are {'\n'}
-                Hardcover - Unabridged, April 30 {'\n'}
-                2024
-              </Text>
-            </View>
-            <View>
+          )}
+
+          <WebView
+            source={{ uri: 'https://www.youtube.com/watch?v=PuTrN28TW4k' }}
+            javaScriptEnabled={true}
+            style={styles.webview}
+            onLoadStart={() => setIsLoading(true)}
+            onLoadEnd={() => setIsLoading(false)}
+
+          />
+          <Text style={styles.howItWorks}>How it works?</Text>
+        </View>
+
+        <View style={styles.cardList}>
+          {data.map(renderCard)}
+        </View>
+
+        {/* {showDetails && (
+          <>
+            <View style={styles.detailsScrollView}>
+              <View style={styles.detailsContainer}>
+                <Text style={styles.detailsText}>
+                  Home Is Where the Bodies Are {'\n'}
+                  Hardcover - Unabridged, April 30 {'\n'}
+                  2024
+                </Text>
+              </View>
               <Image
                 source={require('../assets/homebody.jpg')}
                 style={styles.largeImage}
@@ -100,47 +129,84 @@ export default function Redeem({}) {
                   mother took to{'\n'}her grave
                 </Text>
               </View>
+              <Text style={styles.RecommendedTXt}>Recommended</Text>
+              <View style={styles.recommendedContainer}>
+                <TouchableOpacity style={styles.imageBox}>
+                  <Image
+                    source={require('../assets/homebody.jpg')}
+                    style={styles.recommendedImage}
+                  />
+                  <Text style={styles.ImgTxt}>
+                    Home Is Where the {'\n'}Bodies Are Hardcover{'\n'}
+                    Unabridged, April 30
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.imageBox}>
+                  <Image
+                    source={require('../assets/homebody.jpg')}
+                    style={styles.recommendedImage}
+                  />
+                  <Text style={styles.ImgTxt}>Moto Edge 40 Neo</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <Text style={styles.RecommendedTXt}>Recommended</Text>
-            <View style={styles.recommendedContainer}>
-              <TouchableOpacity style={styles.imageBox}>
-                <Image
-                  source={require('../assets/homebody.jpg')}
-                  style={styles.recommendedImage}
-                />
-                <Text style={styles.ImgTxt}>
-                  Home Is Where the {'\n'}Bodies Are Hardcover{'\n'}
-                  Unabridged, April 30
+            <View style={styles.fixedBottomButtons}>
+              <TouchableOpacity>
+                <Text style={{ textAlign: 'center', color: COLORS.Black }}>
+                  Home Is Where the {'\n'} Bodies Are Hardcover{'\n'} - Unabridged
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.imageBox}>
-                <Image
-                  source={require('../assets/homebody.jpg')}
-                  style={styles.recommendedImage}
-                />
-                <Text style={styles.ImgTxt}>Moto Edge 40 Neo</Text>
+              <TouchableOpacity style={styles.TITLEBTN}>
+                <Text style={styles.TITLEBTNTXT}>LOGIN</Text>
               </TouchableOpacity>
             </View>
-          </ScrollView>
-          <View style={styles.fixedBottomButtons}>
-            <TouchableOpacity>
-              <Text style={{textAlign:'center',color:COLORS.Black}}>
-                Home Is Where the {'\n'} Bodies Are Hardcover{'\n'} - Unabridged
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.TITLEBTN}>
-              <Text style={styles.TITLEBTNTXT}>LOGIN</Text>
-            </TouchableOpacity>
-          </View>
-        </>
-      )}
-    </View>
+          </>
+        )} */}
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: COLORS.White,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    marginVertical: verticalScale(5),
+  },
+  logo: {
+    height: scale(45),
+    width: scale(135),
+  },
+  FeedBtn: {
+    backgroundColor: COLORS.blue,
+    paddingVertical: verticalScale(10),
+    paddingHorizontal: scale(20),
+    borderRadius: moderateScale(10),
+  },
+  FeedBtnTxt: {
+    color: COLORS.White,
+    fontWeight: 'bold',
+    fontSize: moderateScale(15),
+  },
+  newcontainer: {
+    padding: moderateScale(15),
+    backgroundColor: COLORS.White,
+  },
+  headerTxt: {
+    fontSize: moderateScale(20),
+    fontWeight: 'bold',
+    color: COLORS.White,
+    marginBottom: verticalScale(10),
+    textAlign:'center',
+    backgroundColor:COLORS.blue,
+    padding:moderateScale(10),
+    borderRadius:moderateScale(10)
+
   },
   webviewContainer: {
     justifyContent: 'center',
@@ -149,136 +215,139 @@ const styles = StyleSheet.create({
     height: verticalScale(225),
   },
   webview: {
-    height: verticalScale(225),
-    width: scale(400),
+    height: verticalScale(220),
+    width: scale(350),
   },
-  imageContainer: {
-    alignItems: 'flex-start',
-    marginTop: scale(20),
-  },
-  imageBackground: {
-    backgroundColor: COLORS.White,
-    padding: scale(20),
-    borderRadius: moderateScale(10),
-    borderWidth: scale(0.3),
-  },
-  TITLE: {
-    textAlign: 'center',
+  howItWorks: {
+    fontSize: moderateScale(18),
+    fontWeight: 'bold',
     color: COLORS.Black,
-    fontSize: moderateScale(20),
+    marginTop: verticalScale(10),
   },
-  PriceTxt: {
-    backgroundColor: COLORS.green,
-    color: COLORS.White,
-    fontSize: moderateScale(16),
-    height: verticalScale(25),
-    marginTop: scale(15),
-    textAlign: 'center',
-    paddingVertical: verticalScale(2),
-    borderRadius: moderateScale(5),
+  cardList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
-  Img: {
-    height: verticalScale(175),
-    width: scale(140),
+  card: {
+    backgroundColor: '#FFF',
+    borderRadius: moderateScale(10),
+    margin: moderateScale(10),
+    padding: moderateScale(10),
+    elevation: scale(2),
+    flexBasis: scale(140), // Adjusting to fit two columns
+  },
+  cardImage: {
+    width: '100%',
+    height: verticalScale(100),
+    borderRadius: moderateScale(8),
+  },
+  cardTextContainer: {
+    flex:1,
+    marginTop: verticalScale(5),
+  },
+  cardTitle: {
+    fontSize: moderateScale(13),
+    fontWeight: 'bold',
+    color: '#555',
+  },
+  cardDescription: {
+    fontSize: moderateScale(13),
+    color: '#000',
+    fontWeight: 'bold',
+  },
+  cardPoints: {
+    flex:1,
+    fontSize: moderateScale(14),
+    fontWeight: 'bold',
+    color: COLORS.red,
+    textAlign:'center'
   },
   detailsScrollView: {
-    flex: 1,
-    marginBottom: verticalScale(50),
+    padding: moderateScale(15),
+    backgroundColor: COLORS.White,
   },
   detailsContainer: {
-    marginTop: scale(5),
-    padding: scale(10),
-    backgroundColor: COLORS.LightGray,
-    borderRadius: moderateScale(10),
-    alignItems: 'center',
+    marginBottom: verticalScale(10),
   },
   detailsText: {
     fontSize: moderateScale(16),
-    color: COLORS.Black,
-    textAlign: 'center',
+    lineHeight: verticalScale(22),
+    color: '#000',
   },
   largeImage: {
-    height: verticalScale(460),
-    width: '90%',
-    alignSelf: 'center',
+    width: '100%',
+    height: verticalScale(200),
+    marginVertical: verticalScale(10),
   },
   largePriceText: {
+    fontSize: moderateScale(18),
+    fontWeight: 'bold',
+    color: COLORS.primary,
     textAlign: 'center',
-    fontSize: moderateScale(28),
-    color: COLORS.Black,
-    margin: scale(10),
   },
   synopsisContainer: {
-    alignItems: 'center',
+    marginVertical: verticalScale(10),
   },
   synopsisText: {
+    fontSize: moderateScale(14),
+    lineHeight: verticalScale(20),
+    color: '#555',
+    marginBottom: verticalScale(10),
+  },
+  RecommendedTXt: {
+    fontSize: moderateScale(18),
+    fontWeight: 'bold',
+    color: '#000',
+    marginVertical: verticalScale(10),
+  },
+  recommendedContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap', // Wrap items in rows
+    justifyContent: 'space-between',
+  },
+  imageBox: {
+    flex: 1,
+    marginHorizontal: moderateScale(5),
+    alignItems: 'center',
+    marginBottom: verticalScale(10),
+  },
+  recommendedImage: {
+    width: scale(100),
+    height: verticalScale(150),
+    borderRadius: moderateScale(8),
+  },
+  ImgTxt: {
     textAlign: 'center',
-    fontSize: moderateScale(16),
-    paddingVertical: verticalScale(5),
-  },
-  LOGINBTN: {
-    backgroundColor: COLORS.green,
-    alignItems: 'center',
-    alignSelf: 'center',
-    width: '45%',
-    height: verticalScale(40),
-    marginHorizontal: scale(5),
-    justifyContent: 'center',
-    elevation: 5,
-  },
-  LOGINBTNTXT: {
-    fontSize: 18,
-    color: COLORS.White,
-  },
-  TITLEBTN: {
-    backgroundColor: COLORS.green,
-    alignItems: 'center',
-    alignSelf: 'center',
-    width: '45%',
-    height: verticalScale(40),
-    marginHorizontal: scale(5),
-    justifyContent: 'center',
-    elevation: 5,
-  },
-  TITLEBTNTXT: {
-    fontSize: 18,
-    color: COLORS.White,
+    marginTop: verticalScale(5),
+    fontSize: moderateScale(12),
+    color: '#000',
   },
   fixedBottomButtons: {
     position: 'absolute',
     bottom: 0,
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-around',
-    padding: scale(10),
+    left: 0,
+    right: 0,
+    padding: moderateScale(10),
     backgroundColor: COLORS.White,
-    elevation: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
+    alignItems: 'center',
   },
-  RecommendedTXt: {
-    fontSize: moderateScale(18),
-    color: COLORS.green,
-    paddingHorizontal: scale(17),
+  TITLEBTN: {
+    backgroundColor: COLORS.primary,
+    paddingVertical: verticalScale(10),
+    paddingHorizontal: scale(20),
+    borderRadius: moderateScale(5),
+    marginTop: verticalScale(10),
   },
-  recommendedContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    margin: scale(20),
+  TITLEBTNTXT: {
+    color: COLORS.White,
+    fontWeight: 'bold',
+    fontSize: moderateScale(15),
   },
-  imageBox: {
-    borderWidth: 1,
-    borderColor: COLORS.Black,
-    padding: scale(10),
-    width: 175,
-  },
-  recommendedImage: {
-    height: verticalScale(100),
-    width: scale(100),
-    resizeMode: 'cover',
-    alignSelf: 'center',
-  },
-  ImgTxt: {
-    fontSize: moderateScale(14),
-    paddingVertical: verticalScale(7),
-    color: COLORS.Black,
-  },
+  activityIndicator:{
+    alignSelf:'center',
+    marginVertical:verticalScale(20)
+  }
 });

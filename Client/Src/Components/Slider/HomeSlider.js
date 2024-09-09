@@ -45,24 +45,26 @@ const HomeSlider = () => {
   });
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        ref={flatListRef}
-        data={data}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        keyExtractor={item => item.id.toString()}
-        renderItem={renderItem}
-        onViewableItemsChanged={onViewableItemsChanged.current}
-        viewabilityConfig={{
-          itemVisiblePercentThreshold: 50,
-        }}
-        onScroll={Animated.event(
-          [{nativeEvent: {contentOffset: {x: scrollX}}}],
-          {useNativeDriver: false},
-        )}
-      />
+    <View>
+      <View style={styles.container}>
+        <FlatList
+          ref={flatListRef}
+          data={data}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={item => item.id.toString()}
+          renderItem={renderItem}
+          onViewableItemsChanged={onViewableItemsChanged.current}
+          viewabilityConfig={{
+            itemVisiblePercentThreshold: 50,
+          }}
+          onScroll={Animated.event(
+            [{nativeEvent: {contentOffset: {x: scrollX}}}],
+            {useNativeDriver: false},
+          )}
+        />
+      </View>
       <View style={styles.pagination}>
         {data.map((_, i) => (
           <View
@@ -74,9 +76,10 @@ const HomeSlider = () => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
-    height: scale(170),
+    height: scale(150),
     marginTop: scale(10),
   },
   image: {
@@ -88,22 +91,18 @@ const styles = StyleSheet.create({
   },
   pagination: {
     flexDirection: 'row',
-    position: 'absolute',
-    bottom: verticalScale(22),
-    alignSelf: 'center',
+    justifyContent: 'center',
+    marginTop: verticalScale(10),
   },
   dot: {
     height: scale(10),
     width: scale(10),
     borderRadius: moderateScale(10),
-    backgroundColor: COLORS.Black,
+    backgroundColor: COLORS.grey,
     marginHorizontal: 5,
   },
   activeDot: {
-    height: scale(10),
-    width: scale(10),
-    borderRadius: moderateScale(10),
-    backgroundColor: COLORS.White,
+    backgroundColor: COLORS.blue,
   },
 });
 

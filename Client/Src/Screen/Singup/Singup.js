@@ -129,10 +129,19 @@ export default function Signup({navigation}) {
             )}
           </LinearGradient>
         </TouchableOpacity>
+        <View style={{alignItems:'center',flexDirection:'row',alignSelf:'center'}}>
+
+        
         <Text style={styles.txt}>
           Already have an account?
-          <Text onPress={() => navigation.navigate('Login')}>Login</Text>
-        </Text>
+          </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')} >
+          <Text style={{color:COLORS.blue,  marginHorizontal:moderateScale(5), fontSize: moderateScale(18),
+    }}>Login</Text>
+          </TouchableOpacity>
+        
+     
+        </View>
       </View>
     </View>
   );
@@ -183,7 +192,7 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(19),
   },
   txt: {
-    color: COLORS.primaryColor,
+    color: COLORS.Black,
     fontSize: moderateScale(18),
     textAlign: 'center',
   },

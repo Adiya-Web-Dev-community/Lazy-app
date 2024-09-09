@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Modal } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { COLORS } from '../../Theme/Colors';
 
 const Logout = ({ navigation }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -74,6 +75,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginBottom: 20,
     textAlign: 'center',
+    color:COLORS.Black
   },
   buttonContainer: {
     flexDirection: 'row',

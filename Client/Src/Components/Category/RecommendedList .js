@@ -10,31 +10,14 @@ import {scale, moderateScale, verticalScale} from '../../utils/Scaling';
 import {COLORS} from '../../Theme/Colors';
 
 const RecommendedList = ({data, handlePress}) => {
-  const placeholderImageURL =
-    'https://www.google.com/url?sa=i&url=https%3A%2F%2Ftwitter.com%2FIndiaToday%2Fstatus%2F1394663687185522702&psig=AOvVaw2DxAZE_alyY-Wi3yj3_42s&ust=1723702248714000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCKjM_LPp84cDFQAAAAAdAAAAABAE'; // Example placeholder URL
-
   return (
     <FlatList
       data={data}
-      style={styles.list}
+      // style={styles.list}
+      horizontal 
       showsHorizontalScrollIndicator={false}
-      numColumns={2}
-      columnWrapperStyle={styles.row}
       renderItem={({item}) => (
         <TouchableOpacity style={styles.item} onPress={() => handlePress(item)}>
-          {/* {item.images && item.images.length > 0 ? (
-            <Image
-              source={{
-                uri: item.images[0] || require('../../Screen/assets/Asus2.jpg'),
-              }}
-              style={styles.image}
-            />
-            
-          ) : (
-            <View style={styles.imagePlaceholder}>
-              <Text style={styles.placeholderText}>No Image</Text>
-            </View>
-          )} */}
           <Image
             source={require('../../Screen/assets/mackbook.jpg')}
             style={styles.image}
@@ -46,32 +29,36 @@ const RecommendedList = ({data, handlePress}) => {
     />
   );
 };
+
 const styles = StyleSheet.create({
   list: {
     backgroundColor: '#D1F2EB',
     marginHorizontal: scale(10),
     borderRadius: moderateScale(5),
-  },
-  row: {
-    justifyContent: 'space-around',
+    paddingVertical: verticalScale(10), 
+  
+  elevation:(5)
   },
   item: {
     alignItems: 'center',
-    borderWidth: moderateScale(1),
+    // borderWidth: moderateScale(1),
     borderColor: '#ccc',
     borderRadius: moderateScale(7),
     padding: scale(5),
     width: scale(158),
-    margin: scale(3),
+    marginRight: scale(10), 
     backgroundColor: COLORS.White,
-    marginVertical: verticalScale(5),
-    paddingVertical: verticalScale(10),
-    elevation: scale(15),
+    elevation: scale(5),
+    marginVertical:verticalScale(10),
+    marginHorizontal:moderateScale(10)
   },
   image: {
     width: scale(138),
     height: scale(138),
-    marginBottom: scale(5),
+    marginVertical: verticalScale(5),
+    borderRadius:moderateScale(10),
+
+
   },
   title: {
     color: COLORS.Black,
