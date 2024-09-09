@@ -16,7 +16,6 @@ mongoose.set("strictQuery", false);
 require("dotenv").config();
 databaseConnect();
 
-
 const usersRoute = require("./routes/userRoute");
 const adminRoute = require("./routes/adminRoute");
 const categoryRoute = require("./routes/categoryRoute");
@@ -26,7 +25,7 @@ const blogRoute = require("./routes/blogRoute");
 const faqRoute = require("./routes/faqRoute");
 const prosconsRoute = require("./routes/prosconsRoute");
 const infoguideRoute = require("./routes/infoguideRoute");
-
+const postRoute = require("./routes/postRoute");
 
 const routes = [
   {
@@ -64,6 +63,10 @@ const routes = [
   {
     path: `${rootEndPoint}/faq/`,
     func: faqRoute,
+  },
+  {
+    path: `${rootEndPoint}/post/`,
+    func: postRoute,
   },
 ];
 routes.forEach(({ path, func }) => {
