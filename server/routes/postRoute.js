@@ -5,6 +5,8 @@ const {
   createPost,
   getAllPosts,
   getSinglePostById,
+  deletePostById,
+  updatePostById,
 } = require("../controller/postController");
 
 //get all post
@@ -17,9 +19,9 @@ router.get("/:id", getSinglePostById);
 router.post("/", createPost);
 
 // update a post
-// router.put("/:id", function (req, res) {});
+router.put("/:id", updatePostById);
 
 // //delete a post
-// router.delete("/:id", function (req, res) {});
+router.delete("/:id", deletePostById);
 
 module.exports = router;
