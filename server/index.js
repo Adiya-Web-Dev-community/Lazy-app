@@ -26,6 +26,7 @@ const faqRoute = require("./routes/faqRoute");
 const prosconsRoute = require("./routes/prosconsRoute");
 const infoguideRoute = require("./routes/infoguideRoute");
 const postRoute = require("./routes/postRoute");
+const postCategoryRoute = require("./routes/postCategoryRoute");
 
 const routes = [
   {
@@ -67,6 +68,10 @@ const routes = [
   {
     path: `${rootEndPoint}/post/`,
     func: postRoute,
+  },
+  {
+    path: `${rootEndPoint}/admin/`,
+    func: postCategoryRoute,
   },
 ];
 routes.forEach(({ path, func }) => {

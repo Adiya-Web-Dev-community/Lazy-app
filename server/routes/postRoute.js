@@ -12,6 +12,7 @@ const {
   sharePost,
   savePost,
 } = require("../controller/postController");
+
 const {
   creatcommentOnPost,
   updateComment,
@@ -36,9 +37,6 @@ router.delete("/:id", deletePostById);
 // Like/Unlike post
 router.put("/:id/like", isUser, likePost);
 
-// Share post
-router.put("/:id/share", isUser, sharePost);
-
 // Comment on post
 
 //creat Comment
@@ -52,5 +50,8 @@ router.delete("/:id/comment/:commentId", deleteComment);
 
 // Save/Unsave post
 router.put("/:id/save", isUser, savePost);
+
+// Share post
+router.put("/:id/share", isUser, sharePost);
 
 module.exports = router;
