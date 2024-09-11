@@ -25,6 +25,7 @@ const blogRoute = require("./routes/blogRoute");
 const faqRoute = require("./routes/faqRoute");
 const prosconsRoute = require("./routes/prosconsRoute");
 const infoguideRoute = require("./routes/infoguideRoute");
+const buzzfeed = require("./routes/buzzfeedRoute");
 const postRoute = require("./routes/postRoute");
 const postCategoryRoute = require("./routes/postCategoryRoute");
 
