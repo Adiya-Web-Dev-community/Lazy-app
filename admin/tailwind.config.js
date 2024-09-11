@@ -23,6 +23,7 @@ export default {
         customFaq: "40px  1fr 1fr 0.8fr  0.8fr",
         customFaqProfile: "40px  1fr 1fr",
         customeProsCons: "40px 1fr 1fr 1fr 0.6fr",
+        customePostCategory: "40px  2fr  0.6fr",
       },
     },
   },
