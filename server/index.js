@@ -25,8 +25,9 @@ const blogRoute = require("./routes/blogRoute");
 const faqRoute = require("./routes/faqRoute");
 const prosconsRoute = require("./routes/prosconsRoute");
 const infoguideRoute = require("./routes/infoguideRoute");
-const buzzfeed=require("./routes/buzzfeedRoute");
+const buzzfeed = require("./routes/buzzfeedRoute");
 const postRoute = require("./routes/postRoute");
+const postCategoryRoute = require("./routes/postCategoryRoute");
 
 const routes = [
   {
@@ -66,14 +67,13 @@ const routes = [
     func: faqRoute,
   },
   {
- 
     path: `${rootEndPoint}/post/`,
     func: postRoute,
   },
   {
-    path: `${rootEndPoint}/buzzfeed/`,
-    func: buzzfeed,
-  }
+    path: `${rootEndPoint}/admin/`,
+    func: postCategoryRoute,
+  },
 ];
 routes.forEach(({ path, func }) => {
   app.use(path, func);
