@@ -12,6 +12,7 @@ import {
   ProsConsSingleResponseData,
   SinglBlogResponseData,
   BlogReviewType,
+  PostCategoryResponseData,
 } from "../types/contentType";
 import { apiGetRequest } from "../api/adminGetApi";
 import { useQuery } from "@tanstack/react-query";
@@ -179,6 +180,18 @@ export const useSingleFaq = (id: string) => {
     queryFn: async () => {
       return await apiGetRequest<FaqSingleGetResponseType>({
         url: `api/faq/${id}`,
+      });
+    },
+  });
+};
+
+//Post category
+export const usePostCategories = () => {
+  return useQuery<ApiGetResponse<PostCategoryResponseData>, ApiError>({
+    queryKey: ["post-category"],
+    queryFn: async () => {
+      return await apiGetRequest<PostCategoryResponseData>({
+        url: "api/admin/post/category",
       });
     },
   });
