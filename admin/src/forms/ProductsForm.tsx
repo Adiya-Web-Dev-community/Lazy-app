@@ -21,8 +21,9 @@ import { IoMdArrowRoundDown } from "react-icons/io";
 import DynamicInputFields from "../components/DynamicInputFiled.js";
 
 import FileUploadForm from "../components/multiple_imag/MultipleImageUploadeForm.js";
-import TextEditor from "../components/textEditor/TextEditor.js";
+
 import { useCategories, useCompanies } from "../api/querys.js";
+import JoditTextEditor from "../components/textEditor/JoditTextEditor.js";
 
 const ProductsForm: React.FC = () => {
   const [isOpen, setOpen] = useState<StateOpenCloseType>({
@@ -49,6 +50,8 @@ const ProductsForm: React.FC = () => {
     available: false,
     status: "",
     productsLink: [],
+    flashSale: false,
+    recommended: false,
   });
 
   const mutation = useMutation<
@@ -175,6 +178,8 @@ const ProductsForm: React.FC = () => {
       productsLink: productArray,
       feature: productData.feature,
       available: productData.available,
+      flashSale: productData.flashSale,
+      recommended: productData.recommended,
     };
 
     console.log(productPostObject, companyNameIcon, productArray);
@@ -204,6 +209,8 @@ const ProductsForm: React.FC = () => {
       available: false,
       status: "",
       productsLink: [],
+      flashSale: false,
+      recommended: false,
     });
 
     navigate("/products");
@@ -401,9 +408,14 @@ const ProductsForm: React.FC = () => {
                 <p className="mb-2 text-sm font-bold text-[#DEE1E2]">
                   Features :
                 </p>
-                <TextEditor
+                {/* <TextEditor
                   height={400}
                   value={productData.feature}
+                  OnChangeEditor={(e) => handlingDrop("feature", e)}
+                /> */}
+                <JoditTextEditor
+                  content={productData?.feature}
+                  // setFaqData={setFaqData}
                   OnChangeEditor={(e) => handlingDrop("feature", e)}
                 />
               </div>
@@ -417,24 +429,55 @@ const ProductsForm: React.FC = () => {
                 <p className="mb-2 text-sm font-bold text-[#DEE1E2]">
                   Description :
                 </p>
-                <TextEditor
+                {/* <TextEditor
                   height={400}
                   value={productData.description}
+                  OnChangeEditor={(e) => handlingDrop("description", e)}
+                /> */}
+                <JoditTextEditor
+                  content={productData?.description}
+                  // setFaqData={setFaqData}
                   OnChangeEditor={(e) => handlingDrop("description", e)}
                 />
               </div>
 
-              <div className="flex items-center pl-1">
-                <input
-                  type="checkbox"
-                  name="available"
-                  checked={productData.available}
-                  onChange={handleChange}
-                  className="w-4 h-4 bg-[#252525] focus:border-[#DEE1E2] border-transparent border cursor-pointer"
-                />
-                <label htmlFor="available" className="pl-4 text-sm ">
-                  Available Product
-                </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 md:col-span-2">
+                <div className="flex items-center pl-1">
+                  <input
+                    type="checkbox"
+                    name="available"
+                    checked={productData.available}
+                    onChange={handleChange}
+                    className="w-4 h-4 bg-[#252525] focus:border-[#DEE1E2] border-transparent border cursor-pointer"
+                  />
+                  <label htmlFor="available" className="pl-4 text-sm ">
+                    Available Product
+                  </label>
+                </div>
+                <div className="flex items-center pl-1">
+                  <input
+                    type="checkbox"
+                    name="flashSale"
+                    checked={productData.flashSale}
+                    onChange={handleChange}
+                    className="w-4 h-4 bg-[#252525] focus:border-[#DEE1E2] border-transparent border cursor-pointer"
+                  />
+                  <label htmlFor="flashSale" className="pl-4 text-sm ">
+                    FleshSale Product
+                  </label>
+                </div>
+                <div className="flex items-center pl-1">
+                  <input
+                    type="checkbox"
+                    name="recommended"
+                    checked={productData.recommended}
+                    onChange={handleChange}
+                    className="w-4 h-4 bg-[#252525] focus:border-[#DEE1E2] border-transparent border cursor-pointer"
+                  />
+                  <label htmlFor="recommended" className="pl-4 text-sm ">
+                    Recommended Product
+                  </label>
+                </div>
               </div>
             </div>
 

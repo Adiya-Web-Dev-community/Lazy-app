@@ -12,9 +12,10 @@ import LinearGradient from 'react-native-linear-gradient';
 import Input from '../../Components/TextInput/Input';
 import {scale, verticalScale, moderateScale} from '../../utils/Scaling';
 import {COLORS} from '../../Theme/Colors';
-import { Instance } from '../../api/Instance';
+import {Instance} from '../../api/Instance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import {userlogin} from '../../api/api';
 
 export default function Login({navigation}) {
   const [email, setEmail] = useState('');
@@ -46,13 +47,11 @@ export default function Login({navigation}) {
     }
     if (valid) {
       try {
-        const response = await Instance.post('http://192.168.23.164:8000/api/user/login', {
-          email: email,
-          password: password,
-        });
-        console.log('Login Response:', response.data);
-        if (response.data.success) {
-          const token = response.data.token;
+        const response = await userlogin(email, password);
+        console.log('Login Response:', response);
+        if (response.success) {
+          const token = response.token;
+
           await AsyncStorage.setItem('userToken', token);
           console.log('Token', token);
           Alert.alert('Login successful!', 'Welcome back to LazyApp');
@@ -70,7 +69,6 @@ export default function Login({navigation}) {
     }
     setLoading(false);
   };
-
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -116,10 +114,25 @@ export default function Login({navigation}) {
             )}
           </LinearGradient>
         </TouchableOpacity>
-        <Text style={styles.Txt}>
-          Don't have an account?{' '}
-          <Text onPress={() => navigation.navigate('Signup')}>Signup</Text>
-        </Text>
+
+        <View
+          style={{
+            alignItems: 'center',
+            flexDirection: 'row',
+            alignSelf: 'center',
+          }}>
+          <Text style={styles.Txt}>Don't have an account? </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+            <Text
+              style={{
+                color: COLORS.blue,
+                marginHorizontal: moderateScale(5),
+                fontSize: moderateScale(18),
+              }}>
+              Signup
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -162,7 +175,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     paddingVertical: verticalScale(5),
-    marginTop: scale(100),
+    marginTop: scale(50),
     marginBottom: scale(16),
   },
   Btntxt: {
@@ -170,8 +183,8 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(19),
   },
   Txt: {
-    color: '#03bafc',
-    fontSize: moderateScale(17),
+    color: COLORS.Black,
+    fontSize: moderateScale(18),
     textAlign: 'center',
   },
   ForgotTxt: {

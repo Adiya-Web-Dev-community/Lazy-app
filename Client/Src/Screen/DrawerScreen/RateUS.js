@@ -7,13 +7,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { scale,verticalScale,moderateScale } from '../../utils/Scaling';
-import { COLORS } from '../../Theme/Colors';
+import {moderateScale, scale, verticalScale} from '../../utils/Scaling';
+import {COLORS} from '../../Theme/Colors';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import EvilIcons from 'react-native-vector-icons/Fontisto';
 import ModalSelector from 'react-native-modal-selector';
 
-export default function RateUS({}) {
+export default function TelegramChannel({}) {
   const [selectedValue, setSelectedValue] = useState('Your Question About..');
 
   const data = [
@@ -42,7 +42,7 @@ export default function RateUS({}) {
           </View>
           <View style={styles.TXTCONTAINER}>
             <Text style={styles.PHONETXT}>P: +91 123456789</Text>
-            <Text>Let's Talk</Text>
+            <Text style={{color:COLORS.grey}}>Let's Talk</Text>
           </View>
         </View>
       </View>
@@ -55,7 +55,7 @@ export default function RateUS({}) {
           </View>
           <View style={styles.TXTCONTAINER}>
             <Text style={styles.PHONETXT}>Telegram</Text>
-            <Text>Connect on Telegram</Text>
+            <Text style={{color:COLORS.grey}}>Connect on Telegram</Text>
           </View>
         </View>
       </View>
@@ -72,18 +72,19 @@ export default function RateUS({}) {
           </View>
           <View style={styles.TXTCONTAINER}>
             <Text style={styles.PHONETXT}>LayApp@gmail.com</Text>
-            <Text>Drop a Line</Text>
+            <Text style={{color:COLORS.grey}}>Drop a Line</Text>
           </View>
         </View>
       </View>
       <View style={{alignItems: 'center', marginVertical: verticalScale(30)}}>
-        <TextInput placeholder="Enter Your Name*" style={styles.TxtInput} />
-        <TextInput placeholder="Enter Your Email*" style={styles.TxtInput} />
-        <TextInput placeholder="Enter Your Phone*" style={styles.TxtInput} />
+        <TextInput placeholder="Enter Your Name*"    placeholderTextColor={COLORS.grey} style={styles.TxtInput} />
+        <TextInput placeholder="Enter Your Email*"    placeholderTextColor={COLORS.grey} style={styles.TxtInput} />
+        <TextInput placeholder="Enter Your Phone*"   placeholderTextColor={COLORS.grey}  style={styles.TxtInput} />
         <ModalSelector
           style={styles.ModalSelector}
           data={data}
           initValue="Your Question About.."
+           
           onChange={option => setSelectedValue(option.label)}>
           <TouchableOpacity style={styles.TxtInput}>
             <Text style={styles.modalText}>{selectedValue}</Text>
@@ -91,6 +92,7 @@ export default function RateUS({}) {
         </ModalSelector>
         <TextInput
           placeholder="Your Message...."
+          placeholderTextColor={COLORS.grey}
           style={[styles.TxtInput, styles.messageInput]}
           multiline={true}
           textAlignVertical="top"
@@ -106,6 +108,7 @@ export default function RateUS({}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginVertical:verticalScale(20)
   },
   textContainer: {
     alignItems: 'center',
@@ -120,24 +123,25 @@ const styles = StyleSheet.create({
   subText: {
     textAlign: 'center',
     fontSize: moderateScale(14),
+    color:COLORS.grey
   },
   iconContainer: {
     alignItems: 'center',
     margin: scale(5),
   },
   iconOuter: {
-    backgroundColor: '#ECF0F1',
-    borderRadius: 100,
-    height: moderateScale(70),
-    width: scale(70),
+    backgroundColor: '#8888',
+    borderRadius:scale(30),
+    height: scale(60),
+    width: scale(60),
     alignItems: 'center',
     justifyContent: 'center',
   },
   iconBackground: {
-    backgroundColor: '#A9CCE3',
-    borderRadius: 30,
-    width: scale(53),
-    height: moderateScale(55),
+    backgroundColor: COLORS.blue,
+    borderRadius:scale(25),
+    width: scale(50),
+    height: scale(50),
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -156,20 +160,22 @@ const styles = StyleSheet.create({
   PHONETXT: {
     color: COLORS.Black,
     fontWeight: 'bold',
-    fontSize: 17,
+    fontSize:moderateScale(17),
   },
   TxtInput: {
     backgroundColor: COLORS.White,
     width: '87%',
-    height: 55,
+    height: verticalScale(55),
     borderRadius: moderateScale(5),
     margin: scale(10),
     justifyContent: 'center',
-    paddingHorizontal: 10,
+    paddingHorizontal: moderateScale(10),
+    color:COLORS.Black
   },
   modalText: {
     paddingTop: verticalScale(2),
     fontSize: moderateScale(15),
+    color:COLORS.grey
   },
   messageInput: {
     height: verticalScale(150),
@@ -177,10 +183,11 @@ const styles = StyleSheet.create({
   },
   BTN: {
     marginHorizontal: scale(25),
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.blue,
     width: scale(190),
     height: verticalScale(32),
     alignItems: 'center',
+    alignSelf:'center'
   },
   BTNTXT: {
     paddingVertical: verticalScale(7),

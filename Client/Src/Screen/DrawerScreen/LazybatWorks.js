@@ -100,13 +100,14 @@ const styles = StyleSheet.create({
     marginTop: scale(10),
     fontSize: moderateScale(16),
     textAlign: 'center',
+    color:'#000'
   },
   Btn: {
-    backgroundColor: COLORS.green,
-    borderWidth: scale(0.8),
+    backgroundColor: COLORS.blue,
     height: verticalScale(40),
     margin: scale(8),
     borderRadius: moderateScale(8),
+    elevation:verticalScale(5)
   },
   Btntxt: {
     paddingVertical: verticalScale(8),
@@ -140,7 +141,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.White,
     width: scale(300),
     height: verticalScale(165),
-    elevation: scale(10),
+    elevation: scale(5),
+    borderRadius:moderateScale(10),
+      overflow:'scroll'
   },
   ModalTxt: {
     color: COLORS.Black,
@@ -150,7 +153,7 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   MODALVIEW: {
-    backgroundColor: '#2E86C1',
+    backgroundColor: COLORS.blue,
     borderRadius: scale(7),
     padding: scale(20),
     alignItems: 'center',

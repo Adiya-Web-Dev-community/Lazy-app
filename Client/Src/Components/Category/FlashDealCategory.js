@@ -7,33 +7,42 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-import {scale, verticalScale, moderateScale} from '../../utils/Scaling';
-import {COLORS} from '../../Theme/Colors';
+import { scale, moderateScale } from '../../utils/Scaling';
+import { COLORS } from '../../Theme/Colors';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-const FlashDealCategory = ({data, handleFlashDealPress}) => {
+const FlashDealCategory = ({ data, handleFlashDealPress }) => {
   return (
     <FlatList
       data={data}
       horizontal
       showsHorizontalScrollIndicator={false}
-      renderItem={({item}) => (
+      renderItem={({ item }) => (
         <View style={styles.cardContainer}>
-          <View style={styles.flashDealItem}>
-            <ImageBackground source={item.Img} style={styles.flashDealImage}>
-              <View style={styles.flashDealTextContainer}>
-                <Text style={styles.flashDealTitle}>{item.title}</Text>
+          <TouchableOpacity
+            style={styles.flashDealItem}
+            onPress={() => handleFlashDealPress(item)}
+          >
+            {item.images && item.images.length > 0 ? (
+              <ImageBackground source={{ uri: item.images[0] }} style={styles.flashDealImage}>
+                <View style={styles.flashDealTextContainer}>
+                  <Text style={styles.flashDealTitle}>{item.name}</Text>
+                </View>
+              </ImageBackground>
+            ) : (
+              <View style={styles.flashDealImage}>
+                <Text>No Image Available</Text>
               </View>
-            </ImageBackground>
-          </View>
+            )}
+          </TouchableOpacity>
           <TouchableOpacity
             style={styles.FlastBtn}
-            onPress={() => handleFlashDealPress(item)}>
-            <Text style={styles.FlastBtnTxt}>{item.title}</Text>
+            onPress={() => handleFlashDealPress(item)}
+          >
+            <Text style={styles.FlastBtnTxt}>{item.name}</Text>
           </TouchableOpacity>
         </View>
       )}
-      keyExtractor={(item, index) => index.toString()}
     />
   );
 };
@@ -42,13 +51,12 @@ const styles = StyleSheet.create({
   cardContainer: {
     margin: scale(10),
     padding: scale(10),
-    borderRadius: moderateScale(5),
-    backgroundColor: '#EBF5FB',
+    borderRadius: moderateScale(10),
+    backgroundColor: '#fff',
     shadowColor: '#000',
     shadowOpacity: moderateScale(0.25),
     shadowRadius: 3.84,
     elevation: scale(5),
-    bottom: scale(10),
   },
   flashDealItem: {
     alignItems: 'center',
@@ -58,27 +66,27 @@ const styles = StyleSheet.create({
     height: scale(170),
     width: scale(170),
     justifyContent: 'flex-end',
-    borderRadius: moderateScale(5),
+    borderRadius: moderateScale(10),
     overflow: 'hidden',
   },
   flashDealTextContainer: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     padding: scale(9),
-    top: scale(10),
+    
   },
   flashDealTitle: {
     color: COLORS.White,
     fontWeight: 'bold',
     textAlign: 'center',
-    bottom: scale(5),
     fontSize: moderateScale(13),
   },
   FlastBtn: {
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.blue,
     width: scale(175),
     height: scale(28),
     alignItems: 'center',
     alignSelf: 'center',
+    justifyContent:'center',
     margin: scale(5),
     borderRadius: moderateScale(8),
   },

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Image,
   StyleSheet,
@@ -7,166 +7,120 @@ import {
   FlatList,
   TouchableOpacity,
   ScrollView,
-  TextInput,
+  ActivityIndicator,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/AntDesign';
 import {COLORS} from '../../Theme/Colors';
 import {moderateScale, scale, verticalScale} from '../../utils/Scaling';
 import SwitchMain from '../../Components/Switch/Switch';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import BuzzFeedData from './BuzzFeedData';
+import {getPost} from '../../api/api';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export default function BuzzFeed() {
-  const [selectedCommentId, setSelectedCommentId] = useState(null);
-  const [commentText, setCommentText] = useState('');
-  const [showDetails, setShowDetails] = useState(false);
-  const [selectedPostId, setSelectedPostId] = useState(null);
-  const [selectedPostData, setSelectedPostData] = useState(null);
-  const [likes, setLikes] = useState(
-    BuzzFeedData.BuzzFeeds.map(item => ({id: item.id, count: 0, liked: false})),
-  );
+export default function BuzzFeed({navigation}) {
+  const [posts, setPosts] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('All Category');
+  const [loadingPosts, setLoadingPosts] = useState(true);
 
-  const handleCommentPress = id => {
-    setSelectedCommentId(selectedCommentId === id ? null : id);
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        setLoadingPosts(true);
+        const data = await getPost();
+        setPosts(data);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      } finally {
+        setLoadingPosts(false);
+      }
+    };
+    fetchPosts();
+  }, []);
+
+  const AllcategoryButton = [
+    'All Category',
+    ...new Set(posts.map(post => post.name)),
+  ];
+
+  const handlePostPress = async post => {
+    navigation.navigate('BuzzFeedDetails', {name: post.name});
   };
 
-  const handleCommentSubmit = () => {
-    console.log('Comment submitted:', commentText);
-    setCommentText('');
-    setSelectedCommentId(null);
-  };
-
-  const handleLikePress = id => {
-    setLikes(prevLikes =>
-      prevLikes.map(like =>
-        like.id === id
-          ? {
-              ...like,
-              count: like.liked ? like.count - 1 : like.count + 1,
-              liked: !like.liked,
-            }
-          : like,
-      ),
-    );
-  };
-
-  const handlePostPress = post => {
-    setSelectedPostData(post);
-    setShowDetails(true);
+  const handleCategoryPress = category => {
+    setSelectedCategory(category);
   };
 
   return (
     <View style={styles.container}>
-      {!showDetails && (
-        <>
-          <View style={styles.header}>
-            <Image source={require('../assets/L1.png')} style={styles.logo} />
-            <View>
-              <SwitchMain />
-            </View>
-            <TouchableOpacity style={styles.FeedBtn}>
-              <Text style={styles.FeedBtnTxt}>The Buzz Feed</Text>
+      <View style={styles.header}>
+        <Image source={require('../assets/L1.png')} style={styles.logo} />
+        <SwitchMain />
+        <TouchableOpacity style={styles.FeedBtn}>
+          <Text style={styles.FeedBtnTxt}>The Buzz Feed</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.Secondcontainer}>
+        <MaterialCommunityIcons
+          name="account-circle-outline"
+          size={54}
+          color="#000"
+          style={styles.icon}
+        />
+        <View style={styles.textContainer}>
+          <Text style={styles.placeholderText}>Inform and Inspire...</Text>
+        </View>
+      </View>
+      <View style={styles.SCROLL}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {AllcategoryButton.map((category, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.button,
+                selectedCategory === category && styles.selectedButton,
+              ]}
+              onPress={() => handleCategoryPress(category)}>
+              <Text
+                style={[
+                  styles.buttonText,
+                  selectedCategory === category && styles.selectedButtonText,
+                ]}>
+                {category}
+              </Text>
             </TouchableOpacity>
-          </View>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.scrollViewContainer}
-            style={styles.scrollView}>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>All Category</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Category 1</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Category 2</Text>
-            </TouchableOpacity>
-          </ScrollView>
-          <FlatList
-            data={BuzzFeedData.BuzzFeeds}
-            showsVerticalScrollIndicator={false}
-            renderItem={({item}) => {
-              const likeData = likes.find(like => like.id === item.id);
-              return (
-                <>
-                  <TouchableOpacity onPress={() => handlePostPress(item)}>
-                    <View style={styles.postContainer}>
-                      <View style={styles.profileContainer}>
-                        <Image
-                          source={item.profileImage}
-                          style={styles.profileImage}
-                        />
-                        <Text style={styles.username}>{item.Username}</Text>
-                      </View>
-                      <Image source={item.image} style={styles.postImage} />
-                      <Text style={styles.description}>{item.description}</Text>
-                      <View style={styles.iconContainer}>
-                        <TouchableOpacity
-                          style={styles.iconButton}
-                          onPress={() => handleLikePress(item.id)}>
-                          <Icon
-                            name="thumb-up"
-                            size={24}
-                            color={likeData.liked ? COLORS.green : COLORS.Black}
-                          />
-                          <Text style={styles.iconText}>
-                            {likeData.count} Like
-                            {likeData.count !== 1 ? 's' : ''}
-                          </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          style={styles.iconButton}
-                          onPress={() => handleCommentPress(item.id)}>
-                          <Icon name="comment" size={24} color={COLORS.Black} />
-                          <Text style={styles.iconText}>Comment</Text>
-                        </TouchableOpacity>
-                      </View>
-                      {selectedCommentId === item.id && (
-                        <View style={styles.commentContainer}>
-                          <TextInput
-                            style={styles.commentInput}
-                            value={commentText}
-                            onChangeText={setCommentText}
-                            placeholder="Write a comment..."
-                          />
-                          <TouchableOpacity
-                            style={styles.submitButton}
-                            onPress={handleCommentSubmit}>
-                            <Text style={styles.submitButtonText}>Submit</Text>
-                          </TouchableOpacity>
-                        </View>
-                      )}
-                    </View>
-                  </TouchableOpacity>
-                </>
-              );
-            }}
-            keyExtractor={item => item.id}
-            style={styles.flatList}
-          />
-        </>
-      )}
-      {showDetails && selectedPostData && (
-        <ScrollView>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => setShowDetails(false)}>
-            <Text style={{color: 'green'}}>Back</Text>
-          </TouchableOpacity>
-          <View style={styles.detailsContainer}>
-            <Text style={styles.USERNAME}>{selectedPostData.Username}</Text>
-            <Image
-              source={selectedPostData.image}
-              style={styles.detailsImage}
-            />
-            {selectedPostData.details.map((detail, index) => (
-              <View key={index}>
-                <Text style={styles.detailsText}>{detail.Description}</Text>
-                <Text style={styles.details2}>{detail.Description2}</Text>
-              </View>
-            ))}
-          </View>
+          ))}
         </ScrollView>
+      </View>
+      {loadingPosts ? (
+        <ActivityIndicator
+          size="large"
+          color={COLORS.blue}
+          style={styles.activityIndicator}
+        />
+      ) : (
+        <FlatList
+          data={
+            selectedCategory === 'All Category'
+              ? posts
+              : posts.filter(post => post.name === selectedCategory)
+          }
+          showsVerticalScrollIndicator={false}
+          renderItem={({item}) => (
+            <TouchableOpacity onPress={() => handlePostPress(item)}>
+              <View style={styles.postContainer}>
+                <View style={styles.profileContainer}>
+                  <Image
+                    source={{uri: item.image}}
+                    style={styles.profileImage}
+                  />
+                  <Text style={styles.username}>{item.name}</Text>
+                </View>
+                <Image source={{uri: item.image}} style={styles.postImage} />
+              </View>
+            </TouchableOpacity>
+          )}
+          keyExtractor={item => item._id}
+          style={styles.flatList}
+        />
       )}
     </View>
   );
@@ -177,44 +131,68 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.White,
   },
+
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
+    marginVertical: verticalScale(5),
+  },
+  SCROLL: {
+    flexDirection: 'row',
     marginVertical: verticalScale(10),
   },
   logo: {
-    height: 60,
-    width: 159,
+    height: scale(45),
+    width: scale(135),
   },
+
+  Secondcontainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: moderateScale(10),
+    backgroundColor: COLORS.White,
+  },
+  icon: {
+    marginRight: moderateScale(10),
+  },
+  textContainer: {
+    width: scale(270),
+    height: verticalScale(40),
+    borderWidth: 2,
+    borderColor: '#000',
+    borderRadius: 8,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  placeholderText: {
+    fontSize: 19,
+    color: '#000',
+  },
+
   FeedBtn: {
-    borderWidth: moderateScale(1),
+    backgroundColor: COLORS.blue,
     paddingVertical: verticalScale(10),
     paddingHorizontal: scale(20),
-    borderRadius: moderateScale(8),
+    borderRadius: moderateScale(10),
   },
   FeedBtnTxt: {
-    color: COLORS.red,
+    color: COLORS.White,
     fontWeight: 'bold',
     fontSize: moderateScale(15),
   },
-  scrollView: {
-    marginTop: verticalScale(10),
-  },
-  scrollViewContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: verticalScale(10),
-  },
   button: {
-    backgroundColor: COLORS.green,
-    paddingVertical: verticalScale(3.5),
+    backgroundColor: COLORS.blue,
+    paddingVertical: verticalScale(5),
     paddingHorizontal: scale(20),
-    borderRadius: moderateScale(8),
+    borderRadius: moderateScale(10),
     marginHorizontal: scale(5),
     alignItems: 'center',
-    height: scale(30),
-    borderWidth: scale(0.8),
+    height: scale(35),
+    elevation: verticalScale(5),
+    justifyContent: 'center',
   },
   buttonText: {
     color: COLORS.White,
@@ -225,12 +203,12 @@ const styles = StyleSheet.create({
     paddingVertical: verticalScale(10),
   },
   postContainer: {
-    backgroundColor: '#fdfefe',
-    borderRadius: moderateScale(8),
-    marginBottom: verticalScale(10),
+    backgroundColor: '#fff',
+    borderRadius: moderateScale(10),
+    marginVertical: verticalScale(10),
     padding: scale(10),
-    borderWidth: scale(1),
-    borderColor: COLORS.gray,
+    marginHorizontal: moderateScale(10),
+    elevation: verticalScale(5),
   },
   profileContainer: {
     flexDirection: 'row',
@@ -245,7 +223,7 @@ const styles = StyleSheet.create({
   },
   username: {
     fontWeight: 'bold',
-    fontSize: moderateScale(16),
+    fontSize: moderateScale(15),
     color: COLORS.Black,
   },
   postImage: {
@@ -254,72 +232,15 @@ const styles = StyleSheet.create({
     borderRadius: moderateScale(5),
     marginBottom: verticalScale(10),
   },
-  description: {
-    fontSize: moderateScale(14),
+  selectedButton: {
+    backgroundColor: '#24a369',
   },
-  iconContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: verticalScale(10),
-  },
-  iconButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  iconText: {
-    marginLeft: scale(5),
-    color: COLORS.gray,
-    fontSize: moderateScale(14),
-  },
-  commentContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: verticalScale(10),
-  },
-  commentInput: {
-    flex: 1,
-    borderWidth: scale(1),
-    borderColor: COLORS.gray,
-    borderRadius: moderateScale(5),
-    padding: scale(10),
-  },
-  submitButton: {
-    marginLeft: scale(10),
-    backgroundColor: COLORS.green,
-    paddingVertical: verticalScale(10),
-    paddingHorizontal: scale(20),
-    borderRadius: moderateScale(5),
-  },
-  submitButtonText: {
+  selectedButtonText: {
     color: COLORS.White,
-    fontWeight: 'bold',
   },
-  detailsContainer: {
-    marginTop: verticalScale(10),
-  },
-  details2: {
-    paddingHorizontal: 20,
-    fontSize: 15,
-    color: COLORS.Black,
-  },
-  detailsText: {
-    paddingHorizontal: 20,
-    fontSize: 15,
-    color: COLORS.Black,
-    marginVertical: 10,
-  },
-  detailsImage: {
-    height: 220,
-    width: '100%',
-    resizeMode: 'contain',
-    marginVertical: 20,
-    borderRadius: 8,
-  },
-  USERNAME: {
-    textAlign: 'center',
-    color: COLORS.Black,
-    fontWeight: 'bold',
-    fontSize: 20,
+  activityIndicator: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

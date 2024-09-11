@@ -13,17 +13,19 @@ const RecommendedList = ({data, handlePress}) => {
   return (
     <FlatList
       data={data}
-      style={styles.list}
+      // style={styles.list}
+      horizontal 
       showsHorizontalScrollIndicator={false}
-      numColumns={2}
-      columnWrapperStyle={styles.row}
       renderItem={({item}) => (
         <TouchableOpacity style={styles.item} onPress={() => handlePress(item)}>
-          <Image source={item.Img} style={styles.image} />
-          <Text style={styles.title}>{item.title}</Text>
+          <Image
+            source={require('../../Screen/assets/mackbook.jpg')}
+            style={styles.image}
+          />
+          <Text style={styles.title}>{item.name}</Text>
         </TouchableOpacity>
       )}
-      keyExtractor={(item, index) => index.toString()}
+      keyExtractor={item => item._id}
     />
   );
 };
@@ -33,27 +35,30 @@ const styles = StyleSheet.create({
     backgroundColor: '#D1F2EB',
     marginHorizontal: scale(10),
     borderRadius: moderateScale(5),
-  },
-  row: {
-    justifyContent: 'space-around',
+    paddingVertical: verticalScale(10), 
+  
+  elevation:(5)
   },
   item: {
     alignItems: 'center',
-    borderWidth: moderateScale(1),
+    // borderWidth: moderateScale(1),
     borderColor: '#ccc',
     borderRadius: moderateScale(7),
     padding: scale(5),
-    width: scale(150),
-    margin: scale(3),
+    width: scale(158),
+    marginRight: scale(10), 
     backgroundColor: COLORS.White,
-    marginVertical: verticalScale(5),
-    paddingVertical: verticalScale(5),
-    elevation: scale(15),
+    elevation: scale(5),
+    marginVertical:verticalScale(10),
+    marginHorizontal:moderateScale(10)
   },
   image: {
-    width: scale(129),
-    height: scale(110),
-    marginBottom: scale(5),
+    width: scale(138),
+    height: scale(138),
+    marginVertical: verticalScale(5),
+    borderRadius:moderateScale(10),
+
+
   },
   title: {
     color: COLORS.Black,

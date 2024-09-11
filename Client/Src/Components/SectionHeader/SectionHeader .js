@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    color: COLORS.green,
+    color: COLORS.Black,
     paddingHorizontal: scale(15),
     fontSize: moderateScale(18),
     fontWeight: 'bold',

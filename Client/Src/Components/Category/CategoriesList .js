@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Image,
   TouchableOpacity,
@@ -9,9 +9,14 @@ import {
 } from 'react-native';
 import {moderateScale, scale, verticalScale} from '../../utils/Scaling';
 import {COLORS} from '../../Theme/Colors';
+import { useRoute } from '@react-navigation/native';
 
 const CategoriesList = ({categories, handleCategoryPress}) => {
+  
+  
+  
   return (
+  
     <FlatList
       data={categories}
       horizontal

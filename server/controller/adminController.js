@@ -1,11 +1,11 @@
 const bcrypt = require("bcrypt");
 require("dotenv").config();
 const User = require("../model/userModel");
-const jwt = require("jsonwebtoken")
-const Alert=require("../email-templates/alert")
-const SendOTP=require("../email-templates/sendOtpMail")
-const LogInFailAlert=require("../email-templates/login-failed-alert");
-const ChangePasswordFail_Alert=require("../email-templates/password-change-alert");
+const jwt = require("jsonwebtoken");
+const Alert = require("../email-templates/alert");
+const SendOTP = require("../email-templates/sendOtpMail");
+const LogInFailAlert = require("../email-templates/login-failed-alert");
+const ChangePasswordFail_Alert = require("../email-templates/password-change-alert");
 const Register = async (req, res) => {
   const { name, email, mobile, password, role } = req.body;
   try {
@@ -94,7 +94,7 @@ const VeriFyOTP = async (req, res) => {
       message: error.message,
     });
   }
-}
+};
 const fogotVerifyOTP = async (req, res) => {
   const { email, newPassword, otp } = req.body;
 
@@ -104,9 +104,9 @@ const fogotVerifyOTP = async (req, res) => {
       // ChangePasswordFail_Alert(email);
       return res.status(401).json({ success: false, message: "Invalid OTP" });
     }
-    // const hashPassword = await bcrypt.hash(newPassword, 10);
-    // user.password = hashPassword;
-    // await user.save();
+    const hashPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashPassword;
+    await user.save();
 
     return res.status(201).json({
       success: true,
@@ -222,5 +222,12 @@ const UpdateProfile = async (req, res) => {
   }
 };
 
-
-module.exports={Register,Login,GetData,UpdateProfile,ForGetPassword,VeriFyOTP,fogotVerifyOTP}
+module.exports = {
+  Register,
+  Login,
+  GetData,
+  UpdateProfile,
+  ForGetPassword,
+  VeriFyOTP,
+  fogotVerifyOTP,
+};
