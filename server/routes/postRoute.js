@@ -8,6 +8,7 @@ const {
   getSinglePostById,
   deletePostById,
   updatePostById,
+  getPostsByCategory,
   likePost,
   sharePost,
   savePost,
@@ -24,6 +25,9 @@ router.get("/", getAllPosts);
 
 //get specific post by post id
 router.get("/:id", getSinglePostById);
+
+//get specific post by post id
+router.get("/bycategory/:category", getPostsByCategory);
 
 //creat a new post
 router.post("/", createPost);
