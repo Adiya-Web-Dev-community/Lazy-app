@@ -26,7 +26,7 @@ const blogRoute = require("./routes/blogRoute");
 const faqRoute = require("./routes/faqRoute");
 const prosconsRoute = require("./routes/prosconsRoute");
 const infoguideRoute = require("./routes/infoguideRoute");
-
+const buzzfeed=require("./routes/buzzfeedRoute");
 
 const routes = [
   {
@@ -64,6 +64,10 @@ const routes = [
   {
     path: `${rootEndPoint}/faq/`,
     func: faqRoute,
+  },
+  {
+    path: `${rootEndPoint}/faq/`,
+    func: buzzfeed,
   },
 ];
 routes.forEach(({ path, func }) => {
