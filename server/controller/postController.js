@@ -127,10 +127,10 @@ const sharePost = async (req, res) => {
 
 const savePost = async (req, res) => {
   try {
-    const userId = req.userId; // Get userId from middleware
-    const postId = req.params.id; // Get postId from the request parameters
+    const userId = req.userId; 
+    const postId = req.params.id;
 
-    // Try to either Save or unSave the post in a single query
+  
     const post = await Post.findOneAndUpdate(
       { _id: postId, savedBy: { $elemMatch: { $eq: userId } } },
       { $pull: { savedBy: userId } }, // If the user already save, unSave (pull)
@@ -153,6 +153,18 @@ const savePost = async (req, res) => {
     res.status(400).json({ success: false, error: error.message });
   }
 };
+
+const getpostBycategory=async(req,res)=>{
+  const cat = req.params.category;
+try{
+  if(cat==="all"){
+    const response=await Post.find()
+  }
+
+}catch(err){
+  res.status(500).json({success:false, message:"Internal Server Error"});
+}
+}
 
 module.exports = {
   createPost,

@@ -12,7 +12,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
-mongoose.set("strictQuery", false);
+mongoose.set("strictQuery", false); 
 require("dotenv").config();
 databaseConnect();
 
