@@ -16,6 +16,7 @@ import {Instance} from '../../api/Instance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {userlogin} from '../../api/api';
+import CustomStatusBar from '../../Components/CustomStatusBar/CustomStatusBar';
 
 export default function Login({navigation}) {
   const [email, setEmail] = useState('');
@@ -51,11 +52,17 @@ export default function Login({navigation}) {
         console.log('Login Response:', response);
         if (response.success) {
           const token = response.token;
-
           await AsyncStorage.setItem('userToken', token);
-          console.log('Token', token);
-          Alert.alert('Login successful!', 'Welcome back to LazyApp');
-          navigation.navigate('DrawerTab');
+          await AsyncStorage.setItem('username', email); // Save username
+          const savedToken = await AsyncStorage.getItem('userToken');
+          console.log('Saved Token:', savedToken);
+
+          if (savedToken) {
+            Alert.alert('Login successful!', 'Welcome back to LazyApp');
+            navigation.navigate('DrawerTab');
+          } else {
+            Alert.alert('Error', 'Failed to save token');
+          }
         } else {
           Alert.alert('Error', 'Login failed');
         }
@@ -69,8 +76,10 @@ export default function Login({navigation}) {
     }
     setLoading(false);
   };
+
   return (
     <View style={styles.container}>
+      <CustomStatusBar />
       <LinearGradient
         colors={['#42a1f5', '#03bafc', '#42c5f5']}
         start={{x: 0, y: 0}}

@@ -39,7 +39,9 @@ import BrandHub from '../Screen/HomeHeaderCards/BrandHub';
 import SuggestUsScreen from '../Screen/SuggestUs/SuggestUs';
 import CotegoryScreen from '../Screen/CotegoryScreen/CotegoryScreen';
 import SelectedBrandScreen from '../Screen/HomeHeaderCards/SelectedBrandScreen';
-
+import CategoryDetails from '../Screen/CotegoryScreen/CategoryDetails';
+import AllDetails from '../Screen/CotegoryScreen/AllDetails';
+import UserPostScreen from '../Screen/InfromAndInspire/UserPostScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -72,7 +74,7 @@ function DrawerTab({route, navigation}) {
             shadowOpacity: 0.25,
             shadowRadius: moderateScale(4),
             shadowOffset: {width: 0, height: 2},
-            backgroundColor: '#f1f2f4',
+            backgroundColor: COLORS.White,
           },
           headerTitleStyle: {
             color: COLORS.green,
@@ -236,16 +238,14 @@ function BottomTab({navigation}) {
 }
 
 export default function NavigationScreen() {
-
   const linking = {
     prefixes: ['https://lazydeeplink.netlify.app/app'],
     config: {
       screens: {
         BuzzFeedDetails: {
           path: 'BuzzFeedDetails/:name',
-
         },
-      }
+      },
     },
   };
 
@@ -282,7 +282,7 @@ export default function NavigationScreen() {
           component={Home}
           options={{headerShown: false}}
         />
-        
+
         <Stack.Screen name="Notification" component={Notification} />
         <Stack.Screen name="BuzzFeed" component={BuzzFeed} />
         <Stack.Screen
@@ -291,14 +291,27 @@ export default function NavigationScreen() {
           options={{headerShown: false}}
         />
 
-        <Stack.Screen name='showDetails' component={ShowDetails} />
-        <Stack.Screen name='RedeemCoupon' component={RedeemCoupon} />
-        <Stack.Screen name="BrandHub" component={BrandHub}options={{headerShown: false}} />
-        <Stack.Screen  name='SuggestUsScreen' component={SuggestUsScreen}/>
-        <Stack.Screen  name='CotegoryScreen' component={CotegoryScreen}/>
-        <Stack.Screen  name='SelectedBrandScreen' component={SelectedBrandScreen} options={{title:'Lazybat'}}/>
-        
-
+        <Stack.Screen name="showDetails" component={ShowDetails} />
+        <Stack.Screen name="RedeemCoupon" component={RedeemCoupon} />
+        <Stack.Screen
+          name="BrandHub"
+          component={BrandHub}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen name="SuggestUsScreen" component={SuggestUsScreen} />
+        <Stack.Screen name="CotegoryScreen" component={CotegoryScreen} />
+        <Stack.Screen
+          name="SelectedBrandScreen"
+          component={SelectedBrandScreen}
+          options={{title: 'Lazybat'}}
+        />
+        <Stack.Screen name="CategoryDetails" component={CategoryDetails} />
+        <Stack.Screen name="AllDetails" component={AllDetails} />
+        <Stack.Screen
+          name="UserPostScreen"
+          component={UserPostScreen}
+          options={{headerShown: false}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -86,4 +86,57 @@ const BuzzFeedData = {
   ],
 };
 
-export default BuzzFeedData;
+const DummyPostData = [
+  {
+    id: '1',
+    username: 'John Doe',
+    profileImage: require('../assets/Books.jpg'),
+    postImage: require('../assets/Books.jpg'),
+    likeCount: 0,
+  },
+  {
+    id: '2',
+    username: 'John Doe',
+    profileImage: require('../assets/Books.jpg'),
+    postImage: require('../assets/Books.jpg'),
+    likeCount: 0,
+  },
+  {
+    id: '3',
+    username: 'John Doe',
+    profileImage: require('../assets/Books.jpg'),
+    postImage: require('../assets/Books.jpg'),
+    likeCount: 0,
+  },
+  {
+    id: '4',
+    username: 'John Doe',
+    profileImage: require('../assets/Books.jpg'),
+    postImage: require('../assets/Books.jpg'),
+    likeCount: 0,
+  },
+];
+const Category = [
+  {
+    id:1,
+    title:'All'
+  },
+  {
+    id:2,
+    title:'Fashion'
+  },
+  {
+    id:3,
+    title:'Books'
+  },
+  {
+    id:4,
+    title:'Digital'
+  },
+  {
+    id:5,
+    title:'Fashion'
+  },
+]
+
+export {BuzzFeedData, DummyPostData,Category};

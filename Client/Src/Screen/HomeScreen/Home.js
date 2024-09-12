@@ -13,7 +13,8 @@ import {
   FlatList,
   Linking,
   useWindowDimensions,
-  ActivityIndicator
+  ActivityIndicator,
+  StatusBar,
 } from 'react-native';
 import shoppingApp from './Data';
 import {moderateScale, scale, verticalScale} from '../../utils/Scaling';
@@ -22,7 +23,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import FlashDealsData from './FlashDealsData';
 import {WebView} from 'react-native-webview';
 import RecommendedData from './RecommendedData';
-import Table from '../../Components/Table/Table';
+import {useIsFocused} from '@react-navigation/native';
 import ImageSlider from '../../Components/Slider/ImageSlider';
 import FlatLisItem from '../../Components/FlatList/FlatLisItem';
 import {
@@ -56,31 +57,26 @@ export default function Home({navigation}) {
   const FlashDeals = FlashDealsData.FlashDeals;
   const Recommended = RecommendedData.Recommended;
 
-
-
   const [loadingRecommended, setLoadingRecommended] = useState(true);
   const [loadingMobile, setLoadingMobile] = useState(true);
-
+  const isFocused = useIsFocused();
   useEffect(() => {
-   
     setTimeout(() => {
       setLoadingRecommended(false);
-    }, 10000); 
-    
-   
+    }, 10000);
+
     setTimeout(() => {
-      setLoadingMobile(false); 
-    }, 10000); 
+      setLoadingMobile(false);
+    }, 10000);
   }, []);
 
   useEffect(() => {
-    
     const fetchCategories = async () => {
       try {
         const data = await getCategories();
         if (data.success) {
           setCategories(data.data);
-          console.log('Fetched Categories:', data.data);
+          // console.log('Fetched Categories:', data.data);
         } else {
           console.log('Failed to fetch categories');
         }
@@ -101,13 +97,16 @@ export default function Home({navigation}) {
         const data = await getFlashDeals();
         if (data) {
           setFlashDeals(data);
-          console.log('Fetched Flash Deals:', data);
+          // console.log('Fetched Flash Deals:', data);
         } else {
           console.log('No flash deals data');
         }
       } catch (error) {
         console.log('Error fetching flash deals:', error.message);
-        Alert.alert('Error', 'Unable to fetch details. Please try again later.');
+        Alert.alert(
+          'Error',
+          'Unable to fetch details. Please try again later.',
+        );
       }
     };
 
@@ -120,7 +119,7 @@ export default function Home({navigation}) {
         const data = await getRecommended();
         if (data) {
           setRecomendedDeals(data);
-          console.log('Fetched Recommended Deals:', data);
+          // console.log('Fetched Recommended Deals:', data);
         } else {
           console.log('No recommended deals data');
         }
@@ -131,52 +130,6 @@ export default function Home({navigation}) {
 
     fetchRecommended();
   }, []);
-
-  useEffect(() => {
-    const backAction = () => {
-      if (selectedCategory || selectedFlashDeal || selectedRecommended) {
-        setSelectedCategory(null);
-        setSelectedFlashDeal(null);
-        setSelectedRecommended(null);
-        setSelectedItem(null);
-        return true;
-      } else {
-        Alert.alert('Exit', 'Are you sure v you want to exit?', [
-          {
-            text: 'Cancel',
-            onPress: () => null,
-            style: 'cancel',
-          },
-          {text: 'YES', onPress: () => BackHandler.exitApp()},
-        ]);
-        return true;
-      }
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction,
-    );
-
-    return () => backHandler.remove();
-  }, [selectedCategory, selectedFlashDeal, selectedRecommended]);
-
-  const handleItemPress = async item => {
-    try {
-      const productDetails = await getProductById(item.id);
-      if (productDetails) {
-        productDetails.feature = productDetails.feature || [];
-        productDetails.description = productDetails.description || [];
-        productDetails.productsLink = productDetails.productsLink || [];
-        // console.log('Table', productDetails.feature);
-        // console.log('description', productDetails.description);
-        setSelectedItem(productDetails);
-        // console.log('Product details', productDetails);
-      }
-    } catch (error) {
-      console.log('Error fetching product details:', error.message);
-    }
-  };
 
   const renderHTMLContent = () => {
     if (Array.isArray(selectedItem.feature)) {
@@ -198,13 +151,47 @@ export default function Home({navigation}) {
   const handleBackPress = () => {
     setSelectedItem(null);
   };
+  useEffect(() => {
+    const handleBackPress = () => {
+      if (selectedItem || selectedFlashDeal || selectedRecommended) {
+        // Handle back press within Home screen
+        if (selectedItem) {
+          setSelectedItem(null);
+          return true; // Prevent default back behavior
+        }
+        if (selectedFlashDeal) {
+          setSelectedFlashDeal(null);
+          return true;
+        }
+        if (selectedRecommended) {
+          setSelectedRecommended(null);
+          return true;
+        }
+      } else if (isFocused) {
+        Alert.alert(
+          'Exit App',
+          'Are you sure you want to exit?',
+          [
+            {text: 'Cancel', onPress: () => null, style: 'cancel'},
+            {text: 'OK', onPress: () => BackHandler.exitApp()},
+          ],
+          {cancelable: false},
+        );
+        return true;
+      }
+      return false;
+    };
+
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+    };
+  }, [selectedItem, selectedFlashDeal, selectedRecommended, isFocused]);
 
   const handleCategoryPress = async category => {
-    // setSelectedCategory(category);
-    // setSelectedItem(null);
-    navigation.navigate('CotegoryScreen',{Categories})
+    navigation.navigate('CotegoryScreen', {category});
 
-    
     try {
       const response = await getProductsByCategory(category.name);
       if (response && Array.isArray(response)) {
@@ -217,10 +204,10 @@ export default function Home({navigation}) {
           updatedAt: product.updatedAt,
         }));
         setCategoryProducts(products);
-        console.log(
-          `Fetched products for category ${category.name}:`,
-          products,
-        );
+        // console.log(
+        //   `Fetched products for category ${category.name}:`,
+        //   products,
+        // );
       } else {
         console.log(
           'Invalid response format from getProductsByCategory:',
@@ -315,13 +302,12 @@ export default function Home({navigation}) {
 
   return (
     <View style={styles.container}>
+      <StatusBar backgroundColor={COLORS.green}/>
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-
-      {!selectedCategory && !selectedFlashDeal && !selectedRecommended && (
+        {!selectedCategory && !selectedFlashDeal && !selectedRecommended && (
           <View style={styles.SeachContainer}>
             <TextInput
               placeholder="Search products..."
-             
               vishvaa
               placeholderTextColor={COLORS.Black}
               style={styles.SearchInp}
@@ -334,8 +320,6 @@ export default function Home({navigation}) {
             />
           </View>
         )}
-
-
 
         {!selectedCategory && !selectedFlashDeal && !selectedRecommended && (
           <View>
@@ -353,86 +337,18 @@ export default function Home({navigation}) {
                 <Text style={styles.FeedBtnTxt}>The Buzz Feed</Text>
               </TouchableOpacity>
             </View>
-            {/* <View style={styles.TrustedContainer}>
-              <TouchableOpacity style={styles.TrustedBox}>
-                <Text style={styles.TrustedTxt}>
-                  Trusted/Best{'\n'}
-                  Product{'\n'}
-                  <Text style={{color: COLORS.yellow}}>
-                    Verified By{'\n'}
-                    Lazybat Team
-                  </Text>
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.TrustedBox}>
-                <Text style={[styles.TrustedTxt, {paddingTop: 2}]}>
-                  Brand Hub{'\n'}
-                  <Text style={{color: COLORS.yellow}}>
-                    Non-Verified{'\n'}
-                    Product
-                  </Text>
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.TrustedBox}>
-                <Text style={styles.TrustedTxt}>
-                  Suggest Us{'\n'}
-                  <Text style={{color: COLORS.yellow}}>
-                    Help Us Discover{'\n'}
-                    Hidden Gems.
-                  </Text>
-                </Text>
-              </TouchableOpacity>
-            </View> */}
-<TrustedGrid navigation={navigation}/>
+
+            <TrustedGrid navigation={navigation} />
             <HomeSlider />
           </View>
         )}
         {!selectedItem && !selectedFlashDeal && !selectedRecommended && (
-
-
-
           <CategoriesList
             categories={Categories}
             handleCategoryPress={handleCategoryPress}
           />
         )}
-        {/* {selectedCategory && !selectedItem &&(
-          
-          <>
 
-         
-
-            <FlatList
-              data={categoryProducts}
-              renderItem={({item}) => (
-
-                
-                <TouchableOpacity
-                  style={styles.detailItem}
-                  onPress={() => handleItemPress(item)}>
-
-
-
-                    
-                  <Image
-                    source={
-                      item.images && item.images.length > 0
-                        ? {uri: item.images[0]}
-                        : require('../assets/banner.jpg')
-                    }
-                    style={styles.detailImage}
-                  />
-                  <Text style={{color: COLORS.Black, fontWeight: '500'}}>
-                    {item.name}
-                  </Text>
-                </TouchableOpacity>
-              )}
-              keyExtractor={(item, index) => index.toString()}
-              numColumns={2}
-              columnWrapperStyle={styles.row}
-            />
-          </>
-        )} */}
         {selectedItem && (
           <ScrollView style={styles.itemDetails}>
             <TouchableOpacity
@@ -486,7 +402,7 @@ export default function Home({navigation}) {
             </View>
           </ScrollView>
         )}
-       
+
         {!selectedFlashDeal && !selectedCategory && !selectedRecommended && (
           <>
             <SectionHeader title="Flash Deals" />
@@ -514,22 +430,18 @@ export default function Home({navigation}) {
             </Text>
             <ImageSlider productId={selectedFlashDeal?._id} />
             <View style={styles.ICONROW}>{renderFlashDealIcons()}</View>
+
             <RenderHTML
-              contentWidth={styles.container.width}
+              contentWidth={scale(360)}
               source={{html: selectedFlashDeal.description}}
-              baseStyle={{
-                alignItems: 'center',
-                color: COLORS.Black,
-                fontSize: 20,
-                marginVertical: verticalScale(10),
-              
-              }}
+              baseStyle={styles.htmlContents}
             />
             <RenderHTML
-              contentWidth={styles.container.width}
+              contentWidth={scale(360)}
+              baseStyle={styles.htmlContent}
               source={{html: selectedFlashDeal.feature}}
-              baseStyle={{marginHorizontal: 45, color: COLORS.Black}}
             />
+
             <View style={styles.BottomBtnContainer}>
               {selectedFlashDeal.company.map((link, index) => (
                 <View style={styles.ImgndBtn} key={index}>
@@ -566,21 +478,14 @@ export default function Home({navigation}) {
             </View>
             <SectionHeader title="Recommended" />
 
-
             {loadingRecommended ? (
-        <ActivityIndicator size="large" color={COLORS.blue}  />
-      ) : (
-        <RecommendedList
-        data={recomendedDeals}
-        handlePress={handleRecommendedPress}
-      />
-      )}
-
-
-            {/* <RecommendedList
-              data={recomendedDeals}
-              handlePress={handleRecommendedPress}
-            /> */}
+              <ActivityIndicator size="large" color={COLORS.blue} />
+            ) : (
+              <RecommendedList
+                data={recomendedDeals}
+                handlePress={handleRecommendedPress}
+              />
+            )}
           </View>
         )}
         {selectedRecommended && (
@@ -601,21 +506,21 @@ export default function Home({navigation}) {
             </Text>
             <ImageSlider productId={selectedRecommended?._id} />
             <View style={styles.ICONROW}>{renderRecommandedIcons()}</View>
-            <RenderHTML
-              contentWidth={styles.container.width}
-              source={{html: selectedRecommended.description}}
-              baseStyle={{
-                alignItems: 'center',
-                color: COLORS.Black,
-                fontSize: 20,
-                marginVertical: 10,
-              }}
-            />
-            <RenderHTML
-              contentWidth={styles.container.width}
-              source={{html: selectedRecommended.feature}}
-              baseStyle={{marginHorizontal: 45, color: COLORS.Black}}
-            />
+            <View style={{marginHorizontal: scale(15)}}>
+              <RenderHTML
+                source={{html: selectedRecommended.description}}
+                contentWidth={scale(360)}
+                baseStyle={styles.htmlContent}
+              />
+            </View>
+            <View style={{marginHorizontal: scale(15)}}>
+              <RenderHTML
+                source={{html: selectedRecommended.feature}}
+                contentWidth={scale(360)}
+                baseStyle={styles.htmlContent}
+              />
+            </View>
+
             <View style={styles.BottomBtnContainer}>
               {selectedRecommended.company.map((link, index) => (
                 <View style={styles.ImgndBtn} key={index}>
@@ -645,29 +550,23 @@ export default function Home({navigation}) {
           <View>
             <View style={styles.SectionHeader}>
               <Text style={styles.FlashDealsTxt}>Mobile</Text>
-              <TouchableOpacity style={styles.ViewAllButton} onPress={()=>{navigation.navigate('CotegoryScreen')}}>
+              <TouchableOpacity
+                style={styles.ViewAllButton}
+                onPress={() => {
+                  navigation.navigate('CotegoryScreen');
+                }}>
                 <Text style={styles.FlashDealsTxts}>View All</Text>
-                
               </TouchableOpacity>
             </View>
 
-
-
             {loadingMobile ? (
-            <ActivityIndicator size="large" color={COLORS.blue} />
-          ) : (
-            <FlashDealCategory
-              data={flashDeals}
-              handleFlashDealPress={handleFlashDealPress}
-            />
-          )}
-
-
-
-            {/* <FlashDealCategory
-              data={flashDeals}
-              handleFlashDealPress={handleFlashDealPress}
-            /> */}
+              <ActivityIndicator size="large" color={COLORS.blue} />
+            ) : (
+              <FlashDealCategory
+                data={flashDeals}
+                handleFlashDealPress={handleFlashDealPress}
+              />
+            )}
           </View>
         )}
       </ScrollView>
@@ -689,14 +588,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   FeedBtn: {
-    backgroundColor:COLORS.blue,
+    backgroundColor: COLORS.blue,
     paddingVertical: verticalScale(10),
     paddingHorizontal: scale(20),
     borderRadius: moderateScale(8),
-    elevation:verticalScale(5)
+    elevation: verticalScale(5),
   },
   FeedBtnTxt: {
-    color:"#fff",
+    color: '#fff',
     fontWeight: 'bold',
     fontSize: moderateScale(15),
   },
@@ -750,24 +649,22 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     alignSelf: 'center',
     borderRadius: moderateScale(10),
-    marginVertical:verticalScale(10)
+    marginVertical: verticalScale(10),
   },
   ViewAllButton: {
     alignItems: 'center',
-    backgroundColor:COLORS.blue,
-    borderRadius:moderateScale(10),
-    marginHorizontal:moderateScale(15),
-    justifyContent:'center',
-  
-    
+    backgroundColor: COLORS.blue,
+    borderRadius: moderateScale(10),
+    marginHorizontal: moderateScale(15),
+    justifyContent: 'center',
   },
-  SearchInp:{
-    paddingVertical:verticalScale(1),
-    paddingHorizontal:moderateScale(15) ,
-    fontSize:scale(12) 
-    ,color:COLORS.Black
+  SearchInp: {
+    paddingVertical: verticalScale(1),
+    paddingHorizontal: moderateScale(15),
+    fontSize: scale(12),
+    color: COLORS.Black,
   },
-  
+
   ViewAllIcon: {
     right: scale(12),
   },
@@ -786,9 +683,7 @@ const styles = StyleSheet.create({
   DescriptionTxt: {
     fontWeight: 'bold',
     color: COLORS.Black,
-    fontSize: moderateScale(20),
-    margin: scale(15),
-    paddingHorizontal: scale(30),
+    fontSize: moderateScale(15),
     textAlign: 'center',
   },
   Description2Txt: {
@@ -841,7 +736,7 @@ const styles = StyleSheet.create({
     top: scale(10),
   },
   flashDealTitle: {
-    flex:1,
+    flex: 1,
     color: COLORS.White,
     fontWeight: 'bold',
     textAlign: 'center',
@@ -893,19 +788,19 @@ const styles = StyleSheet.create({
     color: COLORS.White,
     fontSize: moderateScale(15),
     paddingVertical: verticalScale(6),
-    fontWeight:'500'
+    fontWeight: '500',
   },
   HowItContainer: {
     margin: scale(5),
     height: scale(35),
     top: scale(10),
     marginHorizontal: scale(10),
-    backgroundColor:COLORS.blue,
-  borderRadius:moderateScale(10),
-  elevation:verticalScale(5),
-  justifyContent:'center'
+    backgroundColor: COLORS.blue,
+    borderRadius: moderateScale(10),
+    elevation: verticalScale(5),
+    justifyContent: 'center',
   },
-  
+
   SectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -949,9 +844,8 @@ const styles = StyleSheet.create({
     height: scale(37),
     marginTop: scale(10),
     borderRadius: moderateScale(10),
-    borderWidth:scale(1),
-    borderColor:COLORS.blue,
-   
+    borderWidth: scale(1),
+    borderColor: COLORS.blue,
   },
   ICONROW: {
     flexDirection: 'row',
@@ -1018,5 +912,18 @@ const styles = StyleSheet.create({
     height: scale(300),
     width: scale(250),
     alignSelf: 'center',
+  },
+  htmlContent: {
+    fontSize: scale(14),
+    color: COLORS.Black,
+    marginBottom: scale(10),
+  },
+  htmlContents: {
+    fontSize: scale(14),
+    color: COLORS.Black,
+    padding: scale(10),
+    marginHorizontal: scale(10),
+    marginBottom: scale(10),
+    lineHeight: scale(24),
   },
 });

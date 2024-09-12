@@ -12,13 +12,16 @@ const CustomDrawerContent = props => {
           const focused = props.state.index === index;
           const {title, drawerLabel, drawerIcon} =
             props.descriptors[route.key].options;
+          const textColor = focused ? COLORS.White : COLORS.Black;
+          const backgroundColor = focused ? COLORS.blue : COLORS.White;
+
           return (
             <TouchableOpacity
               key={route.key}
               onPress={() => props.navigation.navigate(route.name)}
-              style={[styles.drawerItem, focused && styles.drawerItemFocused]}>
+              style={[styles.drawerItem, {backgroundColor}]}>
               {drawerIcon && drawerIcon({focused, size: 20})}
-              <Text style={styles.drawerLabel}>
+              <Text style={[styles.drawerLabel, {color: textColor}]}>
                 {drawerLabel ? drawerLabel : title ? title : route.name}
               </Text>
             </TouchableOpacity>
@@ -32,28 +35,21 @@ const CustomDrawerContent = props => {
 const styles = StyleSheet.create({
   drawerContainer: {
     flex: 1,
-    marginTop:verticalScale(10)
+    marginTop: verticalScale(10),
   },
   drawerItem: {
-    // borderBottomWidth: scale(1),
-    // borderBottomColor: '#CCD1D1',
     paddingVertical: verticalScale(10),
     paddingHorizontal: scale(10),
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor:COLORS.White,
-  borderTopRightRadius:moderateScale(20),
-borderBottomRightRadius:moderateScale(20),
-    elevation:verticalScale(2),
-    marginRight:moderateScale(10),
-    marginVertical:verticalScale(5)
-  },
-  drawerItemFocused: {
-    backgroundColor: COLORS.blue,
+    borderTopRightRadius: moderateScale(20),
+    borderBottomRightRadius: moderateScale(20),
+    elevation: verticalScale(2),
+    marginRight: moderateScale(10),
+    marginVertical: verticalScale(5),
   },
   drawerLabel: {
     fontSize: moderateScale(16),
-    color: COLORS.Black,
     marginLeft: scale(2),
   },
 });

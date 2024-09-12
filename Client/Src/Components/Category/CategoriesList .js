@@ -13,8 +13,6 @@ import { useRoute } from '@react-navigation/native';
 
 const CategoriesList = ({categories, handleCategoryPress}) => {
   
-  
-  
   return (
   
     <FlatList
