@@ -46,23 +46,7 @@ const getAllPosts = async (req, res) => {
   }
 };
 
-const getPostsByCategory = async (req, res) => {
-  const { category } = req.params;
 
-  console.log(category, "from category controller");
-  try {
-    const post = await Post.find({ category: category });
-
-    if (!post) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Post not found" });
-    }
-    res.status(200).json({ success: true, data: post });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
 
 const deletePostById = async (req, res) => {
   try {
@@ -177,17 +161,19 @@ const savePost = async (req, res) => {
   }
 };
 
-const getpostBycategory=async(req,res)=>{
+const getPostsByCategory = async (req, res) => {
   const cat = req.params.category;
-try{
-  if(cat==="all"){
-    const response=await Post.find()
+  try {
+    if (cat === "all") {
+      const response = await Post.find();
+      return res.status(200).json(response);
+    }
+    const response = await Post.find({ category: cat });
+    res.status(200).json(response);
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
-
-}catch(err){
-  res.status(500).json({success:false, message:"Internal Server Error"});
-}
-}
+};
 
 module.exports = {
   createPost,
