@@ -8,10 +8,12 @@ const {
   getSinglePostById,
   deletePostById,
   updatePostById,
+  getPostsByCategory,
   likePost,
   sharePost,
   savePost,
 } = require("../controller/postController");
+
 const {
   creatcommentOnPost,
   updateComment,
@@ -24,6 +26,9 @@ router.get("/", getAllPosts);
 //get specific post by post id
 router.get("/:id", getSinglePostById);
 
+//get specific post by post id
+router.get("/bycategory/:category", getPostsByCategory);
+
 //creat a new post
 router.post("/", createPost);
 
@@ -35,9 +40,6 @@ router.delete("/:id", deletePostById);
 
 // Like/Unlike post
 router.put("/:id/like", isUser, likePost);
-
-// Share post
-router.put("/:id/share", isUser, sharePost);
 
 // Comment on post
 
@@ -52,5 +54,8 @@ router.delete("/:id/comment/:commentId", deleteComment);
 
 // Save/Unsave post
 router.put("/:id/save", isUser, savePost);
+
+// Share post
+router.put("/:id/share", isUser, sharePost);
 
 module.exports = router;

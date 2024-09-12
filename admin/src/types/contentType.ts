@@ -719,3 +719,40 @@ export interface MutationObjectProsConsType {
   condition: "creat" | "update";
   data: ProsConsPostType;
 }
+
+//Post Category Types
+export interface PostCategoryStateType {
+  creat: boolean;
+  updateId: string;
+  updateData: string;
+}
+export interface PostCategoryPostData {
+  name: string;
+}
+
+export interface CreatPostCategoryProps {
+  setPostCategoryForm: Dispatch<SetStateAction<PostCategoryStateType>>;
+  isPostCategoryForm: PostCategoryStateType;
+  refetch: () => void;
+  clear: () => void;
+}
+
+export interface GetPostCatgeoryData extends PostCategoryPostData {
+  _id: string;
+}
+
+export interface PostCategoryResponseData {
+  data: GetPostCatgeoryData[];
+}
+
+export interface PostCategoryPostResponseType {
+  success?: boolean;
+  message?: string;
+  data?: GetPostCatgeoryData;
+}
+
+export interface MutationObjectPostCategoryType {
+  path: string;
+  condition: "creat" | "update";
+  data: PostCategoryPostData;
+}

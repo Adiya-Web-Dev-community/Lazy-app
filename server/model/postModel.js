@@ -16,6 +16,7 @@ const PostModel = new Schema(
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Stores user IDs who liked the post
     comments: [CommentsSchema],
     shares: { type: Number, default: 0 }, // Share count
+    category: { type: String },
     savedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Stores user IDs who saved the post
   },
   {

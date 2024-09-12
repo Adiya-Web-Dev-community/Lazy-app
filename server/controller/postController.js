@@ -1,11 +1,15 @@
 const Post = require("../model/postModel");
 
 const createPost = async (req, res) => {
-  const { user_id, content, image_url } = req.body;
+  const { user_id, content, image_url, category } = req.body;
 
-  console.log(user_id, content, image_url, "post");
   try {
-    const newPost = await Post.create({ content, image_url, user_id });
+    const newPost = await Post.create({
+      content,
+      image_url,
+      user_id,
+      category,
+    });
     res.status(201).json(newPost);
   } catch (error) {
     res.status(500).json({ message: "Error creating post" });
@@ -30,11 +34,30 @@ const getAllPosts = async (req, res) => {
   try {
     const post = await Post.find();
 
-    // if (!post) {
-    //   return res
-    //     .status(404)
-    //     .json({ success: false, message: "Post not found" });
-    // }
+    if (!post?.length > 0) {
+      return res.status(403).json({
+        success: false,
+        message: "product not Found",
+      });
+    }
+    res.status(200).json({ success: true, data: post });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const getPostsByCategory = async (req, res) => {
+  const { category } = req.params;
+
+  console.log(category, "from category controller");
+  try {
+    const post = await Post.find({ category: category });
+
+    if (!post) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Post not found" });
+    }
     res.status(200).json({ success: true, data: post });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -175,4 +198,5 @@ module.exports = {
   likePost,
   sharePost,
   savePost,
+  getPostsByCategory,
 };
