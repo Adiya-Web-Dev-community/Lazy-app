@@ -27,7 +27,7 @@ router.get("/", getAllPosts);
 router.get("/:id", getSinglePostById);
 
 //get specific post by post id
-router.get("/bycategory/:category", getPostsByCategory);
+
 
 //creat a new post
 router.post("/", createPost);
@@ -41,7 +41,7 @@ router.delete("/:id", deletePostById);
 // Like/Unlike post
 router.put("/:id/like", isUser, likePost);
 
-// Comment on post
+router.get("/bycategory/:category", getPostsByCategory);
 
 //creat Comment
 router.post("/:id/comment", isUser, creatcommentOnPost);

@@ -58,9 +58,9 @@ const getAllPosts = async (req, res) => {
 const getPostsByCategory = async (req, res) => {
   const { category } = req.params;
 
-  console.log(category, "from category controller");
   try {
     const post = await Post.find({ category: category })
+      // Populate user data for Likes
       .populate({
         path: "likes", // Path to the user_id inside like
         select: "name email image mobile", // data of user which we wanted to populate
@@ -81,6 +81,20 @@ const getPostsByCategory = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+// const getPostsByCategory = async (req, res) => {
+//   const cat = req.params.category;
+//   try {
+//     if (cat === "all") {
+//       const response = await Post.find();
+//       return res.status(200).json(response);
+//     }
+//     const response = await Post.find({ category: cat });
+//     res.status(200).json(response);
+//   } catch (err) {
+//     res.status(500).json({ success: false, message: "Internal Server Error" });
+//   }
+// };
 
 const deletePostById = async (req, res) => {
   try {
@@ -168,10 +182,9 @@ const sharePost = async (req, res) => {
 
 const savePost = async (req, res) => {
   try {
-    const userId = req.userId; // Get userId from middleware
-    const postId = req.params.id; // Get postId from the request parameters
+    const userId = req.userId;
+    const postId = req.params.id;
 
-    // Try to either Save or unSave the post in a single query
     const post = await Post.findOneAndUpdate(
       { _id: postId, savedBy: { $elemMatch: { $eq: userId } } },
       { $pull: { savedBy: userId } }, // If the user already save, unSave (pull)
