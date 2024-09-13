@@ -1,4 +1,5 @@
 const Post = require("../model/postModel");
+
 const creatcommentOnPost = async (req, res) => {
   const userId = req.userId; // Get userId from middleware
   const postId = req.params.id; // Get postId from the request parameters
@@ -8,6 +9,10 @@ const creatcommentOnPost = async (req, res) => {
       user_id: userId,
       comment: commentText,
     };
+
+    if (!commentText) {
+      return res.status(400).json({ message: "Comment is required." });
+    }
 
     const response = await Post.findByIdAndUpdate(
       postId,
