@@ -32,7 +32,16 @@ const getSinglePostById = async (req, res) => {
 };
 const getAllPosts = async (req, res) => {
   try {
-    const post = await Post.find();
+    const post = await Post.find()
+      .populate({
+        path: "likes", // Path to the user_id inside like
+        select: "name email image mobile", // data of user which we wanted to populate
+      })
+      // Populate user data for comments
+      .populate({
+        path: "comments.user_id", // Path to the user_id inside comments
+        select: "name email image mobile", // data of user which we wanted to populate
+      });
 
     if (!post?.length > 0) {
       return res.status(403).json({
@@ -51,7 +60,16 @@ const getPostsByCategory = async (req, res) => {
 
   console.log(category, "from category controller");
   try {
-    const post = await Post.find({ category: category });
+    const post = await Post.find({ category: category })
+      .populate({
+        path: "likes", // Path to the user_id inside like
+        select: "name email image mobile", // data of user which we wanted to populate
+      })
+      // Populate user data for comments
+      .populate({
+        path: "comments.user_id", // Path to the user_id inside comments
+        select: "name email image mobile", // data of user which we wanted to populate
+      });
 
     if (!post) {
       return res
