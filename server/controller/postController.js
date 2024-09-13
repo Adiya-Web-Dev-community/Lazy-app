@@ -32,7 +32,16 @@ const getSinglePostById = async (req, res) => {
 };
 const getAllPosts = async (req, res) => {
   try {
-    const post = await Post.find();
+    const post = await Post.find()
+      .populate({
+        path: "likes", // Path to the user_id inside like
+        select: "name email image mobile", // data of user which we wanted to populate
+      })
+      // Populate user data for comments
+      .populate({
+        path: "comments.user_id", // Path to the user_id inside comments
+        select: "name email image mobile", // data of user which we wanted to populate
+      });
 
     if (!post?.length > 0) {
       return res.status(403).json({
@@ -46,7 +55,46 @@ const getAllPosts = async (req, res) => {
   }
 };
 
+const getPostsByCategory = async (req, res) => {
+  const { category } = req.params;
 
+  try {
+    const post = await Post.find({ category: category })
+      // Populate user data for Likes
+      .populate({
+        path: "likes", // Path to the user_id inside like
+        select: "name email image mobile", // data of user which we wanted to populate
+      })
+      // Populate user data for comments
+      .populate({
+        path: "comments.user_id", // Path to the user_id inside comments
+        select: "name email image mobile", // data of user which we wanted to populate
+      });
+
+    if (!post) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Post not found" });
+    }
+    res.status(200).json({ success: true, data: post });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// const getPostsByCategory = async (req, res) => {
+//   const cat = req.params.category;
+//   try {
+//     if (cat === "all") {
+//       const response = await Post.find();
+//       return res.status(200).json(response);
+//     }
+//     const response = await Post.find({ category: cat });
+//     res.status(200).json(response);
+//   } catch (err) {
+//     res.status(500).json({ success: false, message: "Internal Server Error" });
+//   }
+// };
 
 const deletePostById = async (req, res) => {
   try {
@@ -134,10 +182,9 @@ const sharePost = async (req, res) => {
 
 const savePost = async (req, res) => {
   try {
-    const userId = req.userId; 
+    const userId = req.userId;
     const postId = req.params.id;
 
-  
     const post = await Post.findOneAndUpdate(
       { _id: postId, savedBy: { $elemMatch: { $eq: userId } } },
       { $pull: { savedBy: userId } }, // If the user already save, unSave (pull)
@@ -158,20 +205,6 @@ const savePost = async (req, res) => {
     res.status(200).json({ success: true, data: post });
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
-  }
-};
-
-const getPostsByCategory = async (req, res) => {
-  const cat = req.params.category;
-  try {
-    if (cat === "all") {
-      const response = await Post.find();
-      return res.status(200).json(response);
-    }
-    const response = await Post.find({ category: cat });
-    res.status(200).json(response);
-  } catch (err) {
-    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 
