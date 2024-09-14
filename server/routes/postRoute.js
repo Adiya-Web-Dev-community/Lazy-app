@@ -12,6 +12,7 @@ const {
   likePost,
   sharePost,
   savePost,
+  getSavedPostsByUser,
 } = require("../controller/postController");
 
 const {
@@ -23,11 +24,14 @@ const {
 //get all post
 router.get("/", getAllPosts);
 
+//get post by user base on save
+router.get("/saved", isUser, getSavedPostsByUser);
+
 //get specific post by post id
 router.get("/:id", getSinglePostById);
 
 //get specific post by post id
-
+router.get("/bycategory/:category", getPostsByCategory);
 
 //creat a new post
 router.post("/", createPost);
@@ -40,8 +44,6 @@ router.delete("/:id", deletePostById);
 
 // Like/Unlike post
 router.put("/:id/like", isUser, likePost);
-
-router.get("/bycategory/:category", getPostsByCategory);
 
 //creat Comment
 router.post("/:id/comment", isUser, creatcommentOnPost);

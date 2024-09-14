@@ -32,16 +32,7 @@ const getSinglePostById = async (req, res) => {
 };
 const getAllPosts = async (req, res) => {
   try {
-    const post = await Post.find()
-      .populate({
-        path: "likes", // Path to the user_id inside like
-        select: "name email image mobile", // data of user which we wanted to populate
-      })
-      // Populate user data for comments
-      .populate({
-        path: "comments.user_id", // Path to the user_id inside comments
-        select: "name email image mobile", // data of user which we wanted to populate
-      });
+    const post = await Post.find();
 
     if (!post?.length > 0) {
       return res.status(403).json({
@@ -59,17 +50,7 @@ const getPostsByCategory = async (req, res) => {
   const { category } = req.params;
 
   try {
-    const post = await Post.find({ category: category })
-      // Populate user data for Likes
-      .populate({
-        path: "likes", // Path to the user_id inside like
-        select: "name email image mobile", // data of user which we wanted to populate
-      })
-      // Populate user data for comments
-      .populate({
-        path: "comments.user_id", // Path to the user_id inside comments
-        select: "name email image mobile", // data of user which we wanted to populate
-      });
+    const post = await Post.find({ category: category });
 
     if (!post) {
       return res
@@ -81,20 +62,6 @@ const getPostsByCategory = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
-
-// const getPostsByCategory = async (req, res) => {
-//   const cat = req.params.category;
-//   try {
-//     if (cat === "all") {
-//       const response = await Post.find();
-//       return res.status(200).json(response);
-//     }
-//     const response = await Post.find({ category: cat });
-//     res.status(200).json(response);
-//   } catch (err) {
-//     res.status(500).json({ success: false, message: "Internal Server Error" });
-//   }
-// };
 
 const deletePostById = async (req, res) => {
   try {
@@ -191,18 +158,47 @@ const savePost = async (req, res) => {
       { new: true }
     );
 
+    console.log(userId, postId, post, "from save post");
+
     // If the user hasn't Saved the post, use $addToSet to Save it
     if (!post) {
       const updatedPost = await Post.findByIdAndUpdate(
         postId,
-        { $addToSet: { saveBy: userId } }, // Add userId to saveBy array if not present
+        { $addToSet: { savedBy: userId } }, // Add userId to saveBy array if not present
         { new: true }
       );
+
+      console.log(userId, postId, updatedPost, "from save post");
       return res.status(200).json({ success: true, data: updatedPost });
     }
 
     // If the user had already Saved and we unsaved from save, respond with the post
     res.status(200).json({ success: true, data: post });
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+};
+
+const getSavedPostsByUser = async (req, res) => {
+  try {
+    const userId = req.userId; // Get userId from the middleware
+
+    // Find posts where the `savedBy` array contains the userId
+    const savedPosts = await Post.find({ savedBy: userId });
+
+    console.log(req, req.userId, userId, savedPosts);
+
+    if (savedPosts.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No saved posts found for this user",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: savedPosts,
+    });
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
   }
@@ -218,4 +214,5 @@ module.exports = {
   sharePost,
   savePost,
   getPostsByCategory,
+  getSavedPostsByUser,
 };
