@@ -50,6 +50,11 @@ const getPostsByCategory = async (req, res) => {
   const { category } = req.params;
 
   try {
+    if (category === "all") {
+      const response = await Post.find();
+      return res.status(200).json(response);
+    }
+
     const post = await Post.find({ category: category });
 
     if (!post) {
