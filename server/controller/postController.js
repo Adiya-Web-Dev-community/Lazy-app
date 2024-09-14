@@ -46,7 +46,22 @@ const getAllPosts = async (req, res) => {
   }
 };
 
+const getPostsByCategory = async (req, res) => {
+  const { category } = req.params;
 
+  try {
+    const post = await Post.find({ category: category });
+
+    if (!post) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Post not found" });
+    }
+    res.status(200).json({ success: true, data: post });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
 
 const deletePostById = async (req, res) => {
   try {
@@ -134,23 +149,26 @@ const sharePost = async (req, res) => {
 
 const savePost = async (req, res) => {
   try {
-    const userId = req.userId; 
+    const userId = req.userId;
     const postId = req.params.id;
 
-  
     const post = await Post.findOneAndUpdate(
       { _id: postId, savedBy: { $elemMatch: { $eq: userId } } },
       { $pull: { savedBy: userId } }, // If the user already save, unSave (pull)
       { new: true }
     );
 
+    console.log(userId, postId, post, "from save post");
+
     // If the user hasn't Saved the post, use $addToSet to Save it
     if (!post) {
       const updatedPost = await Post.findByIdAndUpdate(
         postId,
-        { $addToSet: { saveBy: userId } }, // Add userId to saveBy array if not present
+        { $addToSet: { savedBy: userId } }, // Add userId to saveBy array if not present
         { new: true }
       );
+
+      console.log(userId, postId, updatedPost, "from save post");
       return res.status(200).json({ success: true, data: updatedPost });
     }
 
@@ -161,17 +179,28 @@ const savePost = async (req, res) => {
   }
 };
 
-const getPostsByCategory = async (req, res) => {
-  const cat = req.params.category;
+const getSavedPostsByUser = async (req, res) => {
   try {
-    if (cat === "all") {
-      const response = await Post.find();
-      return res.status(200).json(response);
+    const userId = req.userId; // Get userId from the middleware
+
+    // Find posts where the `savedBy` array contains the userId
+    const savedPosts = await Post.find({ savedBy: userId });
+
+    console.log(req, req.userId, userId, savedPosts);
+
+    if (savedPosts.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No saved posts found for this user",
+      });
     }
-    const response = await Post.find({ category: cat });
-    res.status(200).json(response);
-  } catch (err) {
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+
+    res.status(200).json({
+      success: true,
+      data: savedPosts,
+    });
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message });
   }
 };
 
@@ -185,4 +214,5 @@ module.exports = {
   sharePost,
   savePost,
   getPostsByCategory,
+  getSavedPostsByUser,
 };
