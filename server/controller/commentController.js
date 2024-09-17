@@ -36,8 +36,6 @@ const updateComment = async (req, res) => {
   const commentId = req.params.commentId; // Comment ID from URL parameters
   const updatedCommentText = req.body.comment; // New comment text from request body
 
-  console.log(postId, commentId, updatedCommentText);
-
   try {
     const post = await Post.findOneAndUpdate(
       { _id: postId, "comments._id": commentId }, // Find the post and the comment by its ID
