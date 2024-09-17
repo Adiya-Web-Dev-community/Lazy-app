@@ -163,8 +163,6 @@ const savePost = async (req, res) => {
       { new: true }
     );
 
-    console.log(userId, postId, post, "from save post");
-
     // If the user hasn't Saved the post, use $addToSet to Save it
     if (!post) {
       const updatedPost = await Post.findByIdAndUpdate(
@@ -173,7 +171,6 @@ const savePost = async (req, res) => {
         { new: true }
       );
 
-      console.log(userId, postId, updatedPost, "from save post");
       return res.status(200).json({ success: true, data: updatedPost });
     }
 
@@ -190,8 +187,6 @@ const getSavedPostsByUser = async (req, res) => {
 
     // Find posts where the `savedBy` array contains the userId
     const savedPosts = await Post.find({ savedBy: userId });
-
-    console.log(req, req.userId, userId, savedPosts);
 
     if (savedPosts.length === 0) {
       return res.status(404).json({
