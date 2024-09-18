@@ -52,6 +52,10 @@ import MyEarningsScreen from '../Screen/ProfileScreen/MyEarningsScreen';
 import ReferAndEarnScreen from '../Screen/ProfileScreen/ReferAndEarnScreen';
 import ReportScreen from '../Screen/ProfileScreen/ReportScreen';
 import EditProfile from '../Screen/ProfileScreen/EditProfile';
+import Earnings from '../Screen/ProfileScreen/Earnings';
+import OrderDetails from '../Screen/ProfileScreen/Order/AllOrderDetails';
+import OrderDescription from '../Screen/ProfileScreen/Order/OrderDescription';
+import AllOrderDetails from '../Screen/ProfileScreen/Order/AllOrderDetails';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -367,6 +371,21 @@ export default function NavigationScreen() {
           name="EditProfile"
           component={EditProfile}
           options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Earnings"
+          component={Earnings}
+          options={{headerShown: true, title: 'My Earning'}}
+        />
+        <Stack.Screen
+          name="AllOrderDetails"
+          component={AllOrderDetails}
+          options={{headerShown: true, title: 'Order Details'}}
+        />
+        <Stack.Screen
+          name="OrderDescription"
+          component={OrderDescription}
+          options={{headerShown: true, title: 'Order Details'}}
         />
       </Stack.Navigator>
     </NavigationContainer>
