@@ -222,12 +222,50 @@ const GetUserData = async (req, res) => {
     });
   }
 };
+
+const UserUpdatePassword = async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    const userId = req.userId; // Get userId from the middleware
+
+    // Find user by email
+    const user = await User.findById(userId);
+    console.log(userId, user);
+    // If user is not found
+    if (!user) {
+      res.status(404).json({ success: false, message: "User Not Found" });
+    }
+
+    // Check if the old password matches
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+
+    // If the old password does not match
+    if (!isMatch) {
+      res
+        .status(401)
+        .json({ success: false, message: "Old Password is Incorrect " });
+    }
+
+    // Hash the new password and update
+    const hashPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashPassword;
+    await user.save();
+
+    // Success response
+    return res
+      .status(200)
+      .json({ success: true, message: "Password Updated Successfully" });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
 module.exports = {
   UserRegister,
   UserLogin,
   GetUserData,
-  UserForgotPassword,
 
+  UserForgotPassword,
   UserfogotVerifyOTP,
   UpdateUserProfile,
+  UserUpdatePassword,
 };

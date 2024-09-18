@@ -5,11 +5,10 @@ const {
   UserRegister,
   UserLogin,
   GetUserData,
-
   UserForgotPassword,
-
   UserfogotVerifyOTP,
   UpdateUserProfile,
+  UserUpdatePassword,
 } = require("../controller/userController");
 const { GetCategory } = require("../controller/categoryController");
 
@@ -24,5 +23,7 @@ router.put("/update-profile", isUser, UpdateUserProfile);
 router.post("/forgetpassword", UserForgotPassword);
 //forgate password 2 stage passing email, new password
 router.post("/forgot/verifyotp", UserfogotVerifyOTP);
+//update or reset password while login
+router.post("/reset-password", isUser, UserUpdatePassword);
 
 module.exports = router;
