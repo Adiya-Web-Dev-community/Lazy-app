@@ -9,7 +9,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Login from '../Screen/Login/Login';
 import Signup from '../Screen/Singup/Singup';
 import Home from '../Screen/HomeScreen/Home';
-import Profile from '../Screen/ProfileScreen/Profile';
+import Profile from '../Screen/CotegoryScreen/Profile';
 import {COLORS} from '../Theme/Colors';
 import {moderateScale, scale, verticalScale} from '../utils/Scaling';
 import Redeem from '../Screen/Redeem/Redeem';
@@ -39,7 +39,19 @@ import BrandHub from '../Screen/HomeHeaderCards/BrandHub';
 import SuggestUsScreen from '../Screen/SuggestUs/SuggestUs';
 import CotegoryScreen from '../Screen/CotegoryScreen/CotegoryScreen';
 import SelectedBrandScreen from '../Screen/HomeHeaderCards/SelectedBrandScreen';
-
+import CategoryDetails from '../Screen/CotegoryScreen/CategoryDetails';
+import AllDetails from '../Screen/CotegoryScreen/AllDetails';
+import UserPostScreen from '../Screen/InfromAndInspire/UserPostScreen';
+import ProfileScreen from '../Screen/ProfileScreen/UserProfileScreen';
+import UserProfileScreen from '../Screen/ProfileScreen/UserProfileScreen';
+import SavePost from '../Screen/BuzzFeed/SavePost';
+import ForgotPassword from '../Screen/ProfileScreen/ForgotPassword';
+import OTPScreen from '../Screen/ProfileScreen/OTPScreen';
+import EmailVerification from '../Screen/ProfileScreen/EmailVerification';
+import MyEarningsScreen from '../Screen/ProfileScreen/MyEarningsScreen';
+import ReferAndEarnScreen from '../Screen/ProfileScreen/ReferAndEarnScreen';
+import ReportScreen from '../Screen/ProfileScreen/ReportScreen';
+import EditProfile from '../Screen/ProfileScreen/EditProfile';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -72,7 +84,7 @@ function DrawerTab({route, navigation}) {
             shadowOpacity: 0.25,
             shadowRadius: moderateScale(4),
             shadowOffset: {width: 0, height: 2},
-            backgroundColor: '#f1f2f4',
+            backgroundColor: COLORS.White,
           },
           headerTitleStyle: {
             color: COLORS.green,
@@ -236,16 +248,14 @@ function BottomTab({navigation}) {
 }
 
 export default function NavigationScreen() {
-
   const linking = {
     prefixes: ['https://lazydeeplink.netlify.app/app'],
     config: {
       screens: {
         BuzzFeedDetails: {
           path: 'BuzzFeedDetails/:name',
-
         },
-      }
+      },
     },
   };
 
@@ -282,7 +292,6 @@ export default function NavigationScreen() {
           component={Home}
           options={{headerShown: false}}
         />
-        
         <Stack.Screen name="Notification" component={Notification} />
         <Stack.Screen name="BuzzFeed" component={BuzzFeed} />
         <Stack.Screen
@@ -290,15 +299,75 @@ export default function NavigationScreen() {
           component={BuzzFeedDetails}
           options={{headerShown: false}}
         />
-
-        <Stack.Screen name='showDetails' component={ShowDetails} />
-        <Stack.Screen name='RedeemCoupon' component={RedeemCoupon} />
-        <Stack.Screen name="BrandHub" component={BrandHub}options={{headerShown: false}} />
-        <Stack.Screen  name='SuggestUsScreen' component={SuggestUsScreen}/>
-        <Stack.Screen  name='CotegoryScreen' component={CotegoryScreen}/>
-        <Stack.Screen  name='SelectedBrandScreen' component={SelectedBrandScreen} options={{title:'Lazybat'}}/>
-        
-
+        <Stack.Screen name="showDetails" component={ShowDetails} />
+        <Stack.Screen name="RedeemCoupon" component={RedeemCoupon} />
+        <Stack.Screen
+          name="BrandHub"
+          component={BrandHub}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen name="SuggestUsScreen" component={SuggestUsScreen} />
+        <Stack.Screen name="CotegoryScreen" component={CotegoryScreen} />
+        <Stack.Screen
+          name="SelectedBrandScreen"
+          component={SelectedBrandScreen}
+          options={{title: 'Lazybat'}}
+        />
+        <Stack.Screen name="CategoryDetails" component={CategoryDetails} />
+        <Stack.Screen name="AllDetails" component={AllDetails} />
+        <Stack.Screen
+          name="UserPostScreen"
+          component={UserPostScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="UserProfileScreen"
+          component={UserProfileScreen}
+          options={{
+            headerShown: true,
+            title: 'Profile',
+          }}
+        />
+        <Stack.Screen
+          name="SavePost"
+          component={SavePost}
+          options={{headerShown: true}}
+        />
+        <Stack.Screen
+          name="OTPScreen"
+          component={OTPScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="EmailVerification"
+          component={EmailVerification}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ForgotPassword"
+          component={ForgotPassword}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="MyEarningsScreen"
+          component={MyEarningsScreen}
+          options={{headerShown: true, title: 'My Earning'}}
+        />
+        <Stack.Screen
+          name="ReferAndEarn"
+          component={ReferAndEarnScreen}
+          options={{headerShown: true, title: 'Refer and Earn'}}
+        />
+        <Stack.Screen
+          name="ReportScreen"
+          component={ReportScreen}
+          options={{headerShown: true, title: 'Reports'}}
+        />
+        <Stack.Screen
+          name="EditProfile"
+          component={EditProfile}
+          options={{headerShown: false}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

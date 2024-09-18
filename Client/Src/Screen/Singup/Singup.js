@@ -3,24 +3,24 @@ import {
   Dimensions,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
   Alert,
   ActivityIndicator,
+  StatusBar,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Input from '../../Components/TextInput/Input';
 import {scale, verticalScale, moderateScale} from '../../utils/Scaling';
 import {COLORS} from '../../Theme/Colors';
-import {Instance} from '../../api/Instance';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
-import { userSingup } from '../../api/api';
+import {userSingup} from '../../api/api';
+import CustomStatusBar from '../../Components/CustomStatusBar/CustomStatusBar';
 
 export default function Signup({navigation}) {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [nameError, setNameError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -36,6 +36,12 @@ export default function Signup({navigation}) {
 
   const handleSignup = async () => {
     let valid = true;
+    if (!name.trim()) {
+      setNameError('Name is required');
+      valid = false;
+    } else {
+      setNameError('');
+    }
     if (!validateEmail(email)) {
       setEmailError('Invalid email format');
       valid = false;
@@ -52,40 +58,25 @@ export default function Signup({navigation}) {
     if (valid) {
       setLoading(true);
       try {
-        const response = await userSingup(email, password);
+        const response = await userSingup(name, email, password);
         console.log('Response:', response);
         if (response.success) {
-          const token = response.token;
-          if (token) {
-            await AsyncStorage.setItem('userToken', token);
-            Alert.alert('Signup successful!', 'Welcome to LazyApp');
-            navigation.navigate('DrawerTab'); 
-          } else {
-            Alert.alert('Signup failed', 'No token received');
-          }
+          navigation.navigate('DrawerTab');
         } else {
-          Alert.alert('Signup failed', 'Please try again');
+          Alert.alert('Signup failed', response.message || 'Please try again');
         }
-      } catch (error) {
-        if (error.response && error.response.status === 409) {
-          Alert.alert(
-            'Signup failed',
-            'Email is already in use. Please use a different email or log in.',
-          );
-        } else {
-          console.error(error);
-          Alert.alert('Signup failed', 'An error occurred. Please try again');
-        }
+      } catch (error) { 
+        console.error(error);
+        Alert.alert('Signup failed', 'An error occurred. Please try again');
       } finally {
         setLoading(false);
       }
     }
   };
 
-  
-
   return (
     <View style={styles.container}>
+      <CustomStatusBar />
       <LinearGradient
         colors={['#42a1f5', '#03bafc', '#42c5f5']}
         start={{x: 0, y: 0}}
@@ -95,6 +86,13 @@ export default function Signup({navigation}) {
       </LinearGradient>
       <View style={styles.SignupContainer}>
         <Text style={styles.SignupTxt}>Signup</Text>
+        <Input
+          title="UserName"
+          placeholder="Enter UserName"
+          value={name}
+          onChangeText={text => setName(text)}
+          errorMessage={nameError}
+        />
         <Input
           title="Email"
           placeholder="Enter Email"
@@ -129,18 +127,23 @@ export default function Signup({navigation}) {
             )}
           </LinearGradient>
         </TouchableOpacity>
-        <View style={{alignItems:'center',flexDirection:'row',alignSelf:'center'}}>
-
-        
-        <Text style={styles.txt}>
-          Already have an account?
-          </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Login')} >
-          <Text style={{color:COLORS.blue,  marginHorizontal:moderateScale(5), fontSize: moderateScale(18),
-    }}>Login</Text>
+        <View
+          style={{
+            alignItems: 'center',
+            flexDirection: 'row',
+            alignSelf: 'center',
+          }}>
+          <Text style={styles.txt}>Already have an account?</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <Text
+              style={{
+                color: COLORS.blue,
+                marginHorizontal: moderateScale(5),
+                fontSize: moderateScale(18),
+              }}>
+              Login
+            </Text>
           </TouchableOpacity>
-        
-     
         </View>
       </View>
     </View>
