@@ -53,7 +53,7 @@ export default function Login({navigation}) {
         if (response.success) {
           const token = response.token;
           await AsyncStorage.setItem('userToken', token);
-          await AsyncStorage.setItem('username', email); // Save username
+          await AsyncStorage.setItem('username', email); 
           const savedToken = await AsyncStorage.getItem('userToken');
           console.log('Saved Token:', savedToken);
 

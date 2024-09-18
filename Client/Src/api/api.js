@@ -1,4 +1,5 @@
 import {Instance} from './Instance';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const userlogin = async (email, password) => {
   try {
@@ -125,12 +126,13 @@ export const getRecommended = async () => {
 
 export const CreateUserPost = async (content, image_url, user_id, category) => {
   try {
-    const response = await Instance.post('api/post', {
+    const response = await Instance.post('/api/post', {
       content,
       image_url,
       user_id,
       category,
     });
+
     return response.data;
   } catch (error) {
     console.error('Error creating post:', {
@@ -145,7 +147,7 @@ export const CreateUserPost = async (content, image_url, user_id, category) => {
 export const getUserPost = async () => {
   try {
     const response = await Instance.get('/api/post/bycategory/all');
-    console.log("Get All Post Data",response.data); 
+    console.log('Get All Post Data', response.data);
     return response.data;
   } catch (error) {
     console.error('Failed to fetch posts', error);
@@ -187,6 +189,66 @@ export const DeletePost = async postId => {
     const response = await Instance.delete(`/api/post/${postId}`);
     return response.data;
   } catch (error) {
+    throw error;
+  }
+};
+export const PostComment = async (postId, commentText) => {
+  try {
+    const response = await Instance.post(`/api/post/${postId}/comment`, {
+      comment: commentText,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+export const savePost = async postId => {
+  try {
+    const response = await Instance.put(`/api/post/${postId}/save`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+export const getSavedPosts = async () => {
+  try {
+    const response = await Instance.get('/api/post/saved');
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const sendEmailVerification = async email => {
+  try {
+    const response = await Instance.post('/api/user/forgetpassword', {email});
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const verifyOtpAndResetPassword = async (email, otp, newPassword) => {
+  try {
+    const response = await Instance.post('/api/user/forgot/verifyotp', {
+      email,
+      otp,
+      newPassword,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API call failed:', error.response || error.message || error);
+    throw error;
+  }
+};
+export const updateProfile = async username => {
+  try {
+    const response = await Instance.put('/api/user/update-profile', {
+      name: username,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API call failed:', error.response || error.message || error);
     throw error;
   }
 };

@@ -42,6 +42,7 @@ import RecommendedList from '../../Components/Category/RecommendedList ';
 import Switch from '../../Components/Switch/Switch';
 import SwitchMain from '../../Components/Switch/Switch';
 import TrustedGrid from './TrustedGride';
+import {getRequest} from '../../api/APIManager';
 
 export default function Home({navigation}) {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -71,6 +72,7 @@ export default function Home({navigation}) {
   }, []);
 
   useEffect(() => {
+    getRequest('/api/user/category');
     const fetchCategories = async () => {
       try {
         const data = await getCategories();
@@ -302,7 +304,7 @@ export default function Home({navigation}) {
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor={COLORS.green}/>
+      <StatusBar backgroundColor={COLORS.green} />
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {!selectedCategory && !selectedFlashDeal && !selectedRecommended && (
           <View style={styles.SeachContainer}>

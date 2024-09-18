@@ -10,6 +10,8 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   StatusBar,
+  Dimensions,
+  Alert,
 } from 'react-native';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -23,15 +25,17 @@ import {
   getRegisterdetails,
   AllPostCategory,
 } from '../../api/api';
+import Video from 'react-native-video';
 
 export default function UserPostScreen({navigation}) {
-  const [imageUris, setImageUris] = useState([]);
+  const [mediaUris, setMediaUris] = useState([]);
   const [text, setText] = useState('');
   const [showTextInput, setShowTextInput] = useState(false);
   const [userId, setUserId] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [mediaType, setMediaType] = useState('');
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -63,24 +67,34 @@ export default function UserPostScreen({navigation}) {
     fetchCategories();
   }, []);
 
-  const pickImage = () => {
-    launchImageLibrary({mediaType: 'photo', selectionLimit: 0}, response => {
+  const pickMedia = () => {
+    launchImageLibrary({mediaType: 'mixed', selectionLimit: 0}, response => {
       if (response.assets) {
-        setImageUris(prevUris => [
+        setMediaUris(prevUris => [
           ...prevUris,
-          ...response.assets.map(asset => asset.uri),
+          ...response.assets.map(asset => ({uri: asset.uri, type: asset.type})),
         ]);
+        if (response.assets.length > 0) {
+          setMediaType(
+            response.assets[0].type.includes('video') ? 'video' : 'image',
+          );
+        }
       }
     });
   };
 
   const openCamera = () => {
-    launchCamera({mediaType: 'photo'}, response => {
+    launchCamera({mediaType: 'mixed'}, response => {
       if (response.assets) {
-        setImageUris(prevUris => [
+        setMediaUris(prevUris => [
           ...prevUris,
-          ...response.assets.map(asset => asset.uri),
+          ...response.assets.map(asset => ({uri: asset.uri, type: asset.type})),
         ]);
+        if (response.assets.length > 0) {
+          setMediaType(
+            response.assets[0].type.includes('video') ? 'video' : 'image',
+          );
+        }
       }
     });
   };
@@ -96,15 +110,14 @@ export default function UserPostScreen({navigation}) {
       '';
 
     try {
-      const imageUrl = imageUris.length > 0 ? imageUris[0] : '';
+      const mediaUrl = mediaUris.length > 0 ? mediaUris[0].uri : '';
       const result = await CreateUserPost(
         text,
-        imageUrl,
+        mediaUrl,
         userId,
         selectedCategoryName,
       );
       console.log('Post submitted successfully:', result);
-      // Pass the selected category to BuzzFeed screen
       navigation.navigate('BuzzFeed', {
         refresh: true,
         selectedCategory: selectedCategory,
@@ -119,19 +132,40 @@ export default function UserPostScreen({navigation}) {
     console.log('Selected Category:', itemValue);
   };
 
-  const renderImageIcon = () => {
-    if (imageUris.length > 0) {
+  const renderMedia = () => {
+    if (mediaUris.length > 0) {
+      return mediaUris.map((media, index) => (
+        <View key={index} style={styles.mediaContainer}>
+          {media.type.includes('video') ? (
+            <Video
+              source={{uri: media.uri}}
+              style={styles.media}
+              controls={true}
+              resizeMode="contain"
+            />
+          ) : (
+            <Image source={{uri: media.uri}} style={styles.image} />
+          )}
+        </View>
+      ));
+    } else {
+      return null;
+    }
+  };
+
+  const renderMediaIcon = () => {
+    if (mediaUris.length > 0) {
       return (
-        <TouchableOpacity onPress={pickImage} style={styles.iconButton}>
+        <TouchableOpacity onPress={pickMedia} style={styles.iconButton}>
           <MaterialIcons name="add-a-photo" size={24} color={COLORS.Black} />
           <Text style={styles.iconLabel}>Add More</Text>
         </TouchableOpacity>
       );
     } else {
       return (
-        <TouchableOpacity onPress={pickImage} style={styles.iconButton}>
+        <TouchableOpacity onPress={pickMedia} style={styles.iconButton}>
           <FontAwesome name="photo" size={24} color={COLORS.Black} />
-          <Text style={styles.iconLabel}>Add Photo</Text>
+          <Text style={styles.iconLabel}>Add Media</Text>
         </TouchableOpacity>
       );
     }
@@ -167,13 +201,11 @@ export default function UserPostScreen({navigation}) {
             ))}
           </Picker>
         </View>
-        {imageUris.map((uri, index) => (
-          <Image key={index} source={{uri}} style={styles.image} />
-        ))}
+        {renderMedia()}
         {showTextInput && (
           <TextInput
             style={styles.textInput}
-            placeholder="Say something about this photo..."
+            placeholder="Say something about this media..."
             value={text}
             onChangeText={setText}
             multiline
@@ -182,7 +214,7 @@ export default function UserPostScreen({navigation}) {
       </ScrollView>
 
       <View style={styles.bottomBar}>
-        {renderImageIcon()}
+        {renderMediaIcon()}
         <TouchableOpacity
           onPress={() => setShowTextInput(!showTextInput)}
           style={styles.iconButton}>
@@ -197,6 +229,7 @@ export default function UserPostScreen({navigation}) {
     </KeyboardAvoidingView>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -221,10 +254,9 @@ const styles = StyleSheet.create({
     padding: scale(15),
     flexGrow: 1,
   },
-  image: {
+  mediaContainer: {
     width: '100%',
     height: 300,
-    resizeMode: 'cover',
     borderRadius: moderateScale(10),
     marginBottom: scale(10),
     borderColor: '#ddd',
@@ -233,6 +265,15 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     shadowRadius: 4,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  media: {
+    width: '100%',
+    height: '100%',
   },
   textInput: {
     borderColor: '#ddd',

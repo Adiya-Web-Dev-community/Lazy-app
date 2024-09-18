@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     paddingVertical: verticalScale(8),
     paddingHorizontal: scale(10),
     fontSize: moderateScale(16),
-    color:COLORS.Black
+    color: COLORS.Black,
   },
   icon: {
     padding: scale(10),

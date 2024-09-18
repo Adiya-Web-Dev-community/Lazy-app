@@ -20,11 +20,15 @@ import {
   likePost,
   AllPostCategory,
   DeletePost,
+  PostComment,
+  savePost,
 } from '../../api/api';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFocusEffect} from '@react-navigation/native';
+import CommentModal from '../../Components/Comment/CommentModal';
+import Shimmer from 'react-native-shimmer';
 
 export default function BuzzFeed({navigation}) {
   const [posts, setPosts] = useState([]);
@@ -32,12 +36,10 @@ export default function BuzzFeed({navigation}) {
   const [likedPosts, setLikedPosts] = useState({});
   const [username, setUsername] = useState('');
   const [categories, setCategories] = useState([]);
-  const [currentPostId, setCurrentPostId] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalPosition, setModalPosition] = useState({top: 0, left: 0});
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [commentInputVisible, setCommentInputVisible] = useState(null);
   const [commentText, setCommentText] = useState('');
+  const [isCommentModalVisible, setIsCommentModalVisible] = useState(false);
+  const [currentCommentPostId, setCurrentCommentPostId] = useState(null);
   const [postComments, setPostComments] = useState({});
 
   const fetchPosts = async category => {
@@ -52,23 +54,45 @@ export default function BuzzFeed({navigation}) {
       }
 
       const postsResponse = await getUserPost();
-      console.log('Posts:', postsResponse);
       const postsWithLikes = postsResponse.map(post => ({
         ...post,
         likeCount: post.likeCount || 0,
+        comments: post.comments || [],
       }));
 
-      if (category) {
-        setPosts(postsWithLikes.filter(post => post.category === category));
-      } else {
-        setPosts(postsWithLikes);
-      }
+      const bookmarkedPostsString = await AsyncStorage.getItem(
+        'bookmarkedPosts',
+      );
+      const bookmarkedPostsState = bookmarkedPostsString
+        ? JSON.parse(bookmarkedPostsString)
+        : {};
+      setBookmarkedPosts(bookmarkedPostsState);
 
       const likedPostsString = await AsyncStorage.getItem('likedPosts');
       const likedPostsState = likedPostsString
         ? JSON.parse(likedPostsString)
         : {};
       setLikedPosts(likedPostsState);
+
+      const postsString = await AsyncStorage.getItem('posts');
+      const savedPosts = postsString ? JSON.parse(postsString) : [];
+
+      const postCommentsString = await AsyncStorage.getItem('postComments');
+      const postCommentsState = postCommentsString
+        ? JSON.parse(postCommentsString)
+        : {};
+      setPostComments(postCommentsState);
+
+      if (category) {
+        setPosts(postsWithLikes.filter(post => post.category === category));
+      } else {
+        setPosts(
+          postsWithLikes.map(post => {
+            const savedPost = savedPosts.find(p => p._id === post._id);
+            return savedPost ? savedPost : post;
+          }),
+        );
+      }
     } catch (error) {
       console.error('Failed to fetch data', error);
     }
@@ -103,59 +127,131 @@ export default function BuzzFeed({navigation}) {
   const toggleLike = async id => {
     try {
       const isLiked = likedPosts[id];
-      const updatedPost = await likePost(id);
+      await likePost(id);
 
       setPosts(prevPosts =>
         prevPosts.map(post => {
           if (post._id === id) {
             return {
               ...post,
-              likeCount: post.likeCount + (isLiked ? -1 : 1),
+              likeCount: post.likeCount + (isLiked ? -0 : 1),
             };
           }
           return post;
         }),
       );
+
       const newLikedPosts = {
         ...likedPosts,
         [id]: !isLiked,
       };
       setLikedPosts(newLikedPosts);
+
       await AsyncStorage.setItem('likedPosts', JSON.stringify(newLikedPosts));
+
+      const updatedPosts = posts.map(post =>
+        post._id === id
+          ? {...post, likeCount: post.likeCount + (isLiked ? -0 : 1)}
+          : post,
+      );
+      await AsyncStorage.setItem('posts', JSON.stringify(updatedPosts));
     } catch (error) {
       console.error('Failed to like/unlike the post', error);
     }
   };
 
-  const handleMoreIconPress = (id, event) => {
-    setCurrentPostId(id);
-    const {pageX, pageY} = event.nativeEvent;
-    setModalPosition({top: pageY + 10, left: pageX - 120});
-    setModalVisible(true);
+  const toggleBookmark = async id => {
+    try {
+      const isBookmarked = bookmarkedPosts[id];
+      if (!isBookmarked) {
+        await savePost(id);
+        console.log(`Post ${id} saved.`);
+      } else {
+        console.log(`Post ${id} unsaved.`);
+      }
+
+      // Update local state
+      const newBookmarkedPosts = {
+        ...bookmarkedPosts,
+        [id]: !isBookmarked,
+      };
+      setBookmarkedPosts(newBookmarkedPosts);
+
+      // Update AsyncStorage
+      await AsyncStorage.setItem(
+        'bookmarkedPosts',
+        JSON.stringify(newBookmarkedPosts),
+      );
+
+      const updatedPosts = posts.map(post =>
+        post._id === id
+          ? {...post, savedBy: !isBookmarked ? [username] : []}
+          : post,
+      );
+      await AsyncStorage.setItem('posts', JSON.stringify(updatedPosts));
+    } catch (error) {
+      console.error('Failed to bookmark/unbookmark the post', error);
+    }
   };
 
-  const handleDeletePost = async () => {
-    if (currentPostId) {
+  const handleDeletePost = async id => {
+    if (id) {
       try {
-        await DeletePost(currentPostId);
-        setPosts(prevPosts =>
-          prevPosts.filter(post => post._id !== currentPostId),
-        );
+        await DeletePost(id);
+        setPosts(prevPosts => prevPosts.filter(post => post._id !== id));
       } catch (error) {
         console.error('Failed to delete the post', error);
       }
-      setModalVisible(false);
-      setCurrentPostId(null);
     }
   };
-  const handleCommentSubmit = postId => {
-    if (commentText.trim()) {
-      setPostComments(prevComments => ({
-        ...prevComments,
-        [postId]: [...(prevComments[postId] || []), commentText.trim()],
-      }));
-      setCommentText('');
-      setCommentInputVisible(null);
+
+  const handleCloseCommentModal = () => {
+    setIsCommentModalVisible(false);
+  };
+
+  const handleCommentSubmit = async comment => {
+    if (comment?.text?.trim()) {
+      try {
+        console.log('Submitting comment:', comment);
+
+        const response = await PostComment(
+          currentCommentPostId,
+          comment.text.trim(),
+        );
+
+        console.log('API response:', response);
+
+        if (response.success) {
+          const existingComments =
+            JSON.parse(await AsyncStorage.getItem('postComments')) || {};
+
+          const updatedComments = {
+            ...existingComments,
+            [currentCommentPostId]: [
+              ...(existingComments[currentCommentPostId] || []),
+              {
+                user: username,
+                text: comment.text.trim(),
+                username: username,
+              },
+            ],
+          };
+
+          await AsyncStorage.setItem(
+            'postComments',
+            JSON.stringify(updatedComments),
+          );
+
+          setPostComments(updatedComments);
+          setCommentText('');
+        } else {
+          console.error('Failed to post comment:', response.message);
+        }
+      } catch (error) {
+        console.error('Failed to post comment:', error);
+      }
+    } else {
+      console.log('Comment text is empty');
     }
   };
 
@@ -164,11 +260,16 @@ export default function BuzzFeed({navigation}) {
       <TouchableOpacity
         style={[
           styles.button,
-          item.name === selectedCategory && styles.buttonSelected,
+          selectedCategory === item.name && styles.buttonSelected,
         ]}
         onPress={() => {
-          setSelectedCategory(item.name);
-          fetchPosts(item.name);
+          if (item.name === 'All') {
+            setSelectedCategory(null);
+            fetchPosts(null);
+          } else {
+            setSelectedCategory(item.name);
+            fetchPosts(item.name);
+          }
         }}>
         <Text style={styles.buttonText}>{item.name}</Text>
       </TouchableOpacity>
@@ -176,83 +277,65 @@ export default function BuzzFeed({navigation}) {
   );
 
   const renderItem = ({item}) => (
-    <View style={styles.postContainer}>
-      <View style={styles.profileContainer}>
-        <View style={styles.profileInfoContainer}>
-          <Image source={{uri: item.image_url}} style={styles.profileImage} />
-          <Text style={styles.username}>{username ? `${username}` : ''}</Text>
-        </View>
-        <TouchableOpacity
-          style={styles.moreIconContainer}
-          onPress={event => handleMoreIconPress(item._id, event)}>
-          <MaterialCommunityIcons
-            name="dots-vertical"
-            color={COLORS.Black}
-            size={25}
-          />
-        </TouchableOpacity>
-      </View>
-      <Image
-        source={{uri: item.image_url}}
-        style={styles.postImage}
-        resizeMode="cover"
-      />
-      <View style={styles.buttonContainer}>
-        <View style={styles.leftIconsContainer}>
-          <TouchableOpacity
-            onPress={() => toggleLike(item._id)}
-            style={styles.iconButton}>
-            <AntDesign
-              name={likedPosts[item._id] ? 'like1' : 'like2'}
-              color={COLORS.Black}
-              size={25}
-              style={styles.iconMargin}
-            />
-            <Text style={styles.iconButtonText}>{item.likeCount}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setCommentInputVisible(item._id)}
-            style={styles.iconButton}>
-            <FontAwesome
-              name="comment-o"
-              color={COLORS.Black}
-              size={25}
-              style={styles.iconMargin}
-            />
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity
-          onPress={() => toggleBookmark(item._id)}
-          style={{marginRight: scale(8)}}>
-          <FontAwesome
-            name={bookmarkedPosts[item._id] ? 'bookmark' : 'bookmark-o'}
-            color={COLORS.Black}
-            size={30}
-          />
-        </TouchableOpacity>
-      </View>
-      {commentInputVisible === item._id && (
-        <View style={styles.commentSection}>
-          <TextInput
-            value={commentText}
-            onChangeText={setCommentText}
-            placeholder="Write a comment..."
-            style={styles.commentInput}
-          />
-          <TouchableOpacity
-            onPress={() => handleCommentSubmit(item._id)}
-            style={styles.button}>
-            <Text style={styles.buttonText}>Submit</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-      {postComments[item._id] &&
-        postComments[item._id].map((comment, index) => (
-          <View key={index} style={styles.commentItem}>
-            <Text>{comment}</Text>
+      <View style={styles.postContainer}>
+        <View style={styles.profileContainer}>
+          <View style={styles.profileInfoContainer}>
+            <Image source={{uri: item.image_url}} style={styles.profileImage} />
+            <Text style={styles.username}>{username ? `${username}` : ''}</Text>
           </View>
-        ))}
-    </View>
+          <TouchableOpacity
+            style={styles.moreIconContainer}
+            onPress={() => handleDeletePost(item._id)}>
+            <MaterialCommunityIcons
+              name="delete-outline"
+              color={COLORS.Black}
+              size={25}
+            />
+          </TouchableOpacity>
+        </View>
+        <Image
+          source={{uri: item.image_url}}
+          style={styles.postImage}
+          resizeMode="cover"
+        />
+        <View style={styles.buttonContainer}>
+          <View style={styles.leftIconsContainer}>
+            <TouchableOpacity
+              onPress={() => toggleLike(item._id)}
+              style={styles.iconButton}>
+              <AntDesign
+                name={likedPosts[item._id] ? 'like1' : 'like2'}
+                color={COLORS.Black}
+                size={25}
+                style={styles.iconMargin}
+              />
+              <Text style={styles.iconButtonText}>{item.likeCount}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setCurrentCommentPostId(item._id);
+                setIsCommentModalVisible(true);
+              }}
+              style={styles.iconButton}>
+              <FontAwesome
+                name="comment-o"
+                color={COLORS.Black}
+                size={25}
+                style={styles.iconMargin}
+              />
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity
+            onPress={() => toggleBookmark(item._id)}
+            style={{marginRight: scale(8)}}>
+            <FontAwesome
+              name={bookmarkedPosts[item._id] ? 'bookmark' : 'bookmark-o'}
+              color={COLORS.Black}
+              size={30}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
   );
 
   return (
@@ -265,16 +348,23 @@ export default function BuzzFeed({navigation}) {
         </TouchableOpacity>
       </View>
       <View style={styles.Secondcontainer}>
-        <MaterialCommunityIcons
-          name="account-circle-outline"
-          size={54}
-          color="#000"
-          style={styles.icon}
-        />
+        <TouchableOpacity
+          onPress={() => navigation.navigate('UserProfileScreen')}>
+          <MaterialCommunityIcons
+            name="account-circle-outline"
+            size={45}
+            color="#000"
+            style={styles.icon}
+          />
+        </TouchableOpacity>
         <TouchableOpacity
           style={styles.textContainer}
           onPress={() => navigation.navigate('UserPostScreen')}>
           <Text style={styles.placeholderText}>Inform and Inspire...</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('SavePost', {username})}>
+          <FontAwesome name="bookmark-o" size={40} color={COLORS.Black} />
         </TouchableOpacity>
       </View>
       <View>
@@ -284,54 +374,23 @@ export default function BuzzFeed({navigation}) {
           keyExtractor={item => item.id?.toString()}
           horizontal
           showsHorizontalScrollIndicator={false}
-          ListHeaderComponent={
-            <TouchableOpacity
-              style={[
-                styles.button,
-                selectedCategory === 'all' && styles.buttonSelected,
-              ]}
-              onPress={() => {
-                setSelectedCategory(null);
-                fetchPosts(null);
-              }}>
-              <Text style={styles.buttonText}>All</Text>
-            </TouchableOpacity>
-          }
-          style={{marginVertical: verticalScale(10), marginLeft: scale(5)}}
+          contentContainerStyle={styles.categoryContainer}
         />
       </View>
       <FlatList
         data={posts}
         renderItem={renderItem}
-        keyExtractor={item => item._id.toString()}
-        contentContainerStyle={styles.flatList}
+        keyExtractor={item => item._id}
+        contentContainerStyle={styles.postListContainer}
       />
-      <Modal
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}>
-        <Pressable
-          style={styles.modalOverlay}
-          onPress={() => setModalVisible(false)}>
-          <View
-            style={[
-              styles.modalContent,
-              {top: modalPosition.top, left: modalPosition.left},
-            ]}>
-            <TouchableOpacity
-              style={styles.modalOption}
-              onPress={handleDeletePost}>
-              <MaterialCommunityIcons
-                name="delete-outline"
-                color="red"
-                size={25}
-                style={styles.modalIcon}
-              />
-              <Text style={styles.modalOptionText}>Delete</Text>
-            </TouchableOpacity>
-          </View>
-        </Pressable>
-      </Modal>
+      <CommentModal
+        visible={isCommentModalVisible}
+        onClose={handleCloseCommentModal}
+        onSubmit={handleCommentSubmit}
+        comments={postComments[currentCommentPostId] || []}
+        currentUser={username}
+        postId={currentCommentPostId}
+      />
     </View>
   );
 }
@@ -354,16 +413,18 @@ const styles = StyleSheet.create({
   Secondcontainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: moderateScale(5),
     backgroundColor: COLORS.White,
     borderBottomWidth: 0.5,
+    justifyContent: 'space-between',
+    paddingVertical: verticalScale(7),
+    marginHorizontal: scale(10),
   },
   icon: {
     marginRight: moderateScale(10),
   },
   textContainer: {
-    width: scale(270),
-    height: verticalScale(40),
+    width: scale(200),
+    height: verticalScale(35),
     borderWidth: 2,
     borderColor: '#000',
     borderRadius: 8,
@@ -465,6 +526,7 @@ const styles = StyleSheet.create({
     height: scale(35),
     elevation: verticalScale(5),
     justifyContent: 'center',
+    marginVertical: verticalScale(10),
   },
   buttonText: {
     color: COLORS.White,
@@ -503,12 +565,12 @@ const styles = StyleSheet.create({
     marginTop: verticalScale(2),
     flexDirection: 'row',
     justifyContent: 'space-between',
+    borderColor: COLORS.Gray,
+    borderWidth: 0.5,
+    borderRadius: scale(8),
   },
   commentInput: {
-    borderColor: COLORS.Gray,
-    borderWidth: 1,
-    borderRadius: scale(8),
-    paddingVertical: verticalScale(5),
+    paddingVertical: verticalScale(2),
     fontSize: moderateScale(16),
     color: COLORS.Black,
   },
