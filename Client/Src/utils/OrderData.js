@@ -25,7 +25,7 @@ const OrderDetails = {
       ],
     },
     {
-      title: 'Order Details',
+      title: 'Request Payment',
       secoondtxt: 'Get Paid',
       details: [
         {
@@ -37,7 +37,7 @@ const OrderDetails = {
       ],
     },
     {
-      title: 'Order Details',
+      title: 'Get Help',
       secoondtxt: 'Learn More',
       details: [
         {

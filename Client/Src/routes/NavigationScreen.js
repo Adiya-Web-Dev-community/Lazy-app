@@ -56,6 +56,9 @@ import Earnings from '../Screen/ProfileScreen/Earnings';
 import OrderDetails from '../Screen/ProfileScreen/Order/AllOrderDetails';
 import OrderDescription from '../Screen/ProfileScreen/Order/OrderDescription';
 import AllOrderDetails from '../Screen/ProfileScreen/Order/AllOrderDetails';
+import Reports from '../Screen/ProfileScreen/Order/Reports';
+import RequestPayment from '../Screen/ProfileScreen/Order/RequestPayment';
+import GetHelp from '../Screen/ProfileScreen/Order/GetHelp';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -328,7 +331,7 @@ export default function NavigationScreen() {
           name="UserProfileScreen"
           component={UserProfileScreen}
           options={{
-            headerShown: true,
+            headerShown: false,
             title: 'Profile',
           }}
         />
@@ -387,6 +390,13 @@ export default function NavigationScreen() {
           component={OrderDescription}
           options={{headerShown: true, title: 'Order Details'}}
         />
+        <Stack.Screen
+          name="Reports"
+          component={Reports}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen name="RequestPayment" component={RequestPayment} />
+        <Stack.Screen name="GetHelp" component={GetHelp} />
       </Stack.Navigator>
     </NavigationContainer>
   );

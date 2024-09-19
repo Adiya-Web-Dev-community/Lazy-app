@@ -91,9 +91,17 @@ export default function MyEarningsScreen({navigation}) {
               style={styles.listItem}>
               <TouchableOpacity
                 style={styles.listItemContent}
-                onPress={() =>
-                  navigation.navigate('AllOrderDetails', {order: item})
-                }>
+                onPress={() => {
+                  if (item.title === 'Order Details') {
+                    navigation.navigate('AllOrderDetails');
+                  } else if (item.title === 'Reports') {
+                    navigation.navigate('Reports');
+                  } else if (item.title === 'Request Payment') {
+                    navigation.navigate('RequestPayment');
+                  } else if (item.title === 'Get Help') {
+                    navigation.navigate('GetHelp');
+                  }
+                }}>
                 <View style={styles.itemTextContainer}>
                   <Text style={styles.itemTitle}>{item.title}</Text>
                   <View style={styles.separator} />
@@ -107,9 +115,9 @@ export default function MyEarningsScreen({navigation}) {
                     />
                   </View>
                 </View>
-                <TouchableOpacity style={styles.walletButton}>
+                <View style={styles.walletButton}>
                   <FontAwesome5 name="wallet" size={22} color={COLORS.green} />
-                </TouchableOpacity>
+                </View>
               </TouchableOpacity>
             </LinearGradient>
           )}
