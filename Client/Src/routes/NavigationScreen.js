@@ -52,6 +52,13 @@ import MyEarningsScreen from '../Screen/ProfileScreen/MyEarningsScreen';
 import ReferAndEarnScreen from '../Screen/ProfileScreen/ReferAndEarnScreen';
 import ReportScreen from '../Screen/ProfileScreen/ReportScreen';
 import EditProfile from '../Screen/ProfileScreen/EditProfile';
+import Earnings from '../Screen/ProfileScreen/Earnings';
+import OrderDetails from '../Screen/ProfileScreen/Order/AllOrderDetails';
+import OrderDescription from '../Screen/ProfileScreen/Order/OrderDescription';
+import AllOrderDetails from '../Screen/ProfileScreen/Order/AllOrderDetails';
+import Reports from '../Screen/ProfileScreen/Order/Reports';
+import RequestPayment from '../Screen/ProfileScreen/Order/RequestPayment';
+import GetHelp from '../Screen/ProfileScreen/Order/GetHelp';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -324,7 +331,7 @@ export default function NavigationScreen() {
           name="UserProfileScreen"
           component={UserProfileScreen}
           options={{
-            headerShown: true,
+            headerShown: false,
             title: 'Profile',
           }}
         />
@@ -368,6 +375,28 @@ export default function NavigationScreen() {
           component={EditProfile}
           options={{headerShown: false}}
         />
+        <Stack.Screen
+          name="Earnings"
+          component={Earnings}
+          options={{headerShown: true, title: 'My Earning'}}
+        />
+        <Stack.Screen
+          name="AllOrderDetails"
+          component={AllOrderDetails}
+          options={{headerShown: true, title: 'Order Details'}}
+        />
+        <Stack.Screen
+          name="OrderDescription"
+          component={OrderDescription}
+          options={{headerShown: true, title: 'Order Details'}}
+        />
+        <Stack.Screen
+          name="Reports"
+          component={Reports}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen name="RequestPayment" component={RequestPayment} />
+        <Stack.Screen name="GetHelp" component={GetHelp} />
       </Stack.Navigator>
     </NavigationContainer>
   );

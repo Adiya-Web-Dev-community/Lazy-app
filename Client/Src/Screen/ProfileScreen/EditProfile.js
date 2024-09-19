@@ -64,7 +64,6 @@ export default function EditProfile({navigation}) {
           onPress={() => navigation.navigate('EmailVerification')}>
           <Text style={styles.FORGOTPSS}>Forgot Password</Text>
         </TouchableOpacity>
-
         <TouchableOpacity onPress={handleNextStep} disabled={loading}>
           <LinearGradient
             colors={['#42a1f5', '#03bafc', '#42c5f5']}

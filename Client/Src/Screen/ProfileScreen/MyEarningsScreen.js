@@ -1,236 +1,276 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   StyleSheet,
   Text,
-  View,
-  ScrollView,
   TouchableOpacity,
-  Alert,
-  Image,
+  View,
+  StatusBar,
+  FlatList,
 } from 'react-native';
-import { scale, moderateScale } from '../../utils/Scaling';
-import { COLORS } from '../../Theme/Colors';
+import {COLORS} from '../../Theme/Colors';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {moderateScale, scale} from '../../utils/Scaling';
+import LinearGradient from 'react-native-linear-gradient';
+import {OrderDetails} from '../../utils/OrderData';
 
-const MyEarningsScreen = ({ navigation }) => {
-  const [earnings, setEarnings] = useState({
-    pending: 1500,
-    confirmed: 5000,
-    transactions: [
-      { id: '1', amount: 500, type: 'Pending' },
-      { id: '2', amount: 1000, type: 'Confirmed' },
-      { id: '3', amount: 1500, type: 'Pending' },
-    ],
-  });
-
-  const handleViewTransactionDetails = (transaction) => {
-    Alert.alert(
-      'Transaction Details',
-      `ID: ${transaction.id}\nAmount: $${transaction.amount}\nType: ${transaction.type}`
-    );
-  };
+export default function MyEarningsScreen({navigation}) {
+  const AllOrder = OrderDetails.Orders;
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.earningsContainer}>
-        <Image
-          source={{
-            uri: 'https://www.loomsolar.com/cdn/shop/articles/21.jpg?v=1614706929',
-          }}
-          style={styles.bannerImage}
+    <View style={styles.container}>
+      <LinearGradient style={styles.gradient} colors={['#42c5f5', '#42a1f5']}>
+        <StatusBar barStyle="light-content" backgroundColor="#42c5f5" />
+      </LinearGradient>
+      <LinearGradient
+        style={{
+          alignItems: 'center',
+          position: 'absolute',
+          width: '100%',
+          height: scale(100),
+        }}
+        colors={['#42c5f5', '#42a1f5']}>
+        <View>
+          <View style={styles.card}>
+            <View style={styles.MainContainer}>
+              <View style={styles.earningsContainer}>
+                <View style={styles.earningsTextContainer}>
+                  <Text style={styles.totalEarningsText}>Total Earnings</Text>
+                  <TouchableOpacity style={styles.questionIconContainer}>
+                    <AntDesign
+                      name="questioncircle"
+                      size={18}
+                      color={COLORS.Black}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <Text style={styles.earningsAmount}>$200</Text>
+              </View>
+              <TouchableOpacity style={styles.walletButton}>
+                <FontAwesome5
+                  name="wallet"
+                  size={22}
+                  color={COLORS.green}
+                  style={styles.walletIcon}
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.descriptionContainer}>
+              <Text style={styles.descriptionText}>
+                Profit will appear here within 72 hours of order{'\n'}
+                placed
+              </Text>
+              <TouchableOpacity
+                style={styles.exploreButton}
+                onPress={() => navigation.navigate('Earnings')}>
+                <View style={styles.exploreContent}>
+                  <Text style={styles.exploreText}>Explore</Text>
+                  <View style={styles.iconContainer}>
+                    <FontAwesome5
+                      name="angle-right"
+                      size={20}
+                      color={COLORS.green}
+                      style={styles.exploreIcon}
+                    />
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </LinearGradient>
+      <View style={styles.listContainer}>
+        <FlatList
+          data={AllOrder}
+          renderItem={({item}) => (
+            <LinearGradient
+              colors={['#42a1f5', '#42c5f5']}
+              start={{x: 0, y: 0}}
+              end={{x: 1, y: 0}}
+              style={styles.listItem}>
+              <TouchableOpacity
+                style={styles.listItemContent}
+                onPress={() => {
+                  if (item.title === 'Order Details') {
+                    navigation.navigate('AllOrderDetails');
+                  } else if (item.title === 'Reports') {
+                    navigation.navigate('Reports');
+                  } else if (item.title === 'Request Payment') {
+                    navigation.navigate('RequestPayment');
+                  } else if (item.title === 'Get Help') {
+                    navigation.navigate('GetHelp');
+                  }
+                }}>
+                <View style={styles.itemTextContainer}>
+                  <Text style={styles.itemTitle}>{item.title}</Text>
+                  <View style={styles.separator} />
+                  <View style={styles.viewMoreContainer}>
+                    <Text style={styles.viewMoreText}>{item.secoondtxt}</Text>
+                    <FontAwesome
+                      name="angle-right"
+                      size={20}
+                      color={COLORS.White}
+                      style={[styles.viewMoreIcon, {marginLeft: scale(5)}]}
+                    />
+                  </View>
+                </View>
+                <View style={styles.walletButton}>
+                  <FontAwesome5 name="wallet" size={22} color={COLORS.green} />
+                </View>
+              </TouchableOpacity>
+            </LinearGradient>
+          )}
+          keyExtractor={(item, index) => index.toString()}
         />
-        <View style={styles.earningsBreakdown}>
-          <View style={styles.earningsItem}>
-            <Text style={styles.earningsAmount}>${earnings.pending}</Text>
-            <Text style={styles.earningsType}>Pending</Text>
-          </View>
-          <View style={styles.earningsItem}>
-            <Text style={styles.earningsAmount}>${earnings.confirmed}</Text>
-            <Text style={styles.earningsType}>Confirmed</Text>
-          </View>
-        </View>
-
-        <View style={styles.statsContainer}>
-          <Text style={styles.sectionTitle}>Statistics</Text>
-          <View style={styles.statsBox}>
-            <Text style={styles.statsLabel}>Total Earnings:</Text>
-            <Text style={styles.statsValue}>${earnings.pending + earnings.confirmed}</Text>
-          </View>
-          <View style={styles.statsBox}>
-            <Text style={styles.statsLabel}>Number of Transactions:</Text>
-            <Text style={styles.statsValue}>{earnings.transactions.length}</Text>
-          </View>
-        </View>
-
-        <Text style={styles.sectionTitle}>Transaction History</Text>
-        {earnings.transactions.map(transaction => (
-          <TouchableOpacity
-            key={transaction.id}
-            style={styles.transactionItem}
-            onPress={() => handleViewTransactionDetails(transaction)}>
-            <Text style={styles.transactionAmount}>${transaction.amount}</Text>
-            <Text style={styles.transactionType}>{transaction.type}</Text>
-          </TouchableOpacity>
-        ))}
-
-        <View style={styles.footer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('ReferAndEarn')}>
-            <MaterialIcons name="share" size={20} color={COLORS.White} />
-            <Text style={styles.buttonText}>Refer and Earn</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('Reports')}>
-            <AntDesign name="filetext1" size={20} color={COLORS.White} />
-            <Text style={styles.buttonText}>View Reports</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.additionalContent}>
-          <Text style={styles.additionalTitle}>More Information</Text>
-          <Image
-            source={{
-              uri: 'https://www.shutterstock.com/image-vector/people-characters-standing-near-gold-260nw-1532703638.jpg',
-            }}
-            style={styles.additionalImage}
-          />
-          <Text style={styles.additionalText}>
-            Here you can find more details about your earnings and transactions.
-          </Text>
-        </View>
       </View>
-    </ScrollView>
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
+    flex: 1,
     backgroundColor: COLORS.White,
+    paddingTop: scale(100),
+  },
+  card: {
+    width: '90%',
+    backgroundColor: COLORS.White,
+    borderRadius: 10,
+    elevation: 5,
+    shadowColor: COLORS.Black,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    padding: scale(20),
+    top: scale(25),
+  },
+  MainContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderStyle: 'dotted',
+    borderColor: COLORS.Black,
+    paddingBottom: scale(10),
   },
   earningsContainer: {
-    backgroundColor: COLORS.LightGrey,
-    padding: scale(15),
-    borderRadius: moderateScale(10),
-    marginBottom: scale(15),
+    flexDirection: 'column',
+    marginRight: scale(10),
   },
-  bannerImage: {
-    width: '100%',
-    height: moderateScale(150),
-    borderRadius: moderateScale(8),
-    marginBottom: scale(15),
-  },
-  earningsBreakdown: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  earningsItem: {
-    backgroundColor: COLORS.White,
-    padding: scale(10),
-    borderRadius: moderateScale(8),
-    elevation: 3,
-    width: '48%',
-  },
-  earningsAmount: {
-    fontSize: moderateScale(18),
-    fontWeight: 'bold',
-    color: COLORS.Black,
-  },
-  earningsType: {
-    fontSize: moderateScale(16),
-    color: COLORS.grey,
-  },
-  sectionTitle: {
-    fontSize: moderateScale(20),
-    fontWeight: 'bold',
-    color: COLORS.Black,
-    marginVertical: scale(10),
-  },
-  statsContainer: {
-    backgroundColor: COLORS.White,
-    padding: scale(10),
-    borderRadius: moderateScale(8),
-    elevation: 3,
-    marginVertical: scale(10),
-  },
-  statsBox: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: scale(10),
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.LightGrey,
-  },
-  statsLabel: {
-    fontSize: moderateScale(16),
-    color: COLORS.Black,
-  },
-  statsValue: {
-    fontSize: moderateScale(16),
-    fontWeight: 'bold',
-    color: COLORS.Black,
-  },
-  transactionItem: {
-    backgroundColor: COLORS.White,
-    padding: scale(10),
-    borderRadius: moderateScale(8),
-    elevation: 3,
-    marginBottom: scale(10),
-  },
-  transactionAmount: {
-    fontSize: moderateScale(18),
-    fontWeight: 'bold',
-    color: COLORS.Black,
-  },
-  transactionType: {
-    fontSize: moderateScale(16),
-    color: COLORS.grey,
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: scale(20),
-  },
-  button: {
-    backgroundColor: COLORS.blue,
-    padding: scale(10),
-    borderRadius: moderateScale(8),
+  earningsTextContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    width: '48%',
   },
-  buttonText: {
-    color: COLORS.White,
-    fontSize: moderateScale(16),
+  totalEarningsText: {
+    color: COLORS.Black,
+    fontSize: moderateScale(17),
+  },
+  questionIconContainer: {
     marginLeft: scale(5),
   },
-  additionalContent: {
-    marginTop: scale(20),
-    padding: scale(10),
-    backgroundColor: COLORS.LightGrey,
-    borderRadius: moderateScale(8),
+  earningsAmount: {
+    color: COLORS.Black,
+    fontSize: moderateScale(20),
+    fontWeight: 'bold',
+  },
+  walletIcon: {
+    marginLeft: 'auto',
+  },
+  descriptionContainer: {
+    marginTop: scale(10),
+    borderRadius: 5,
+  },
+  descriptionText: {
+    color: COLORS.grey,
+  },
+  exploreButton: {
+    marginTop: scale(5),
+    borderRadius: 5,
+    flexDirection: 'row',
     alignItems: 'center',
   },
-  additionalTitle: {
-    fontSize: moderateScale(18),
+  exploreContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: scale(5),
+  },
+  exploreText: {
+    color: COLORS.green,
+    marginRight: scale(5),
+    fontSize: moderateScale(15),
+  },
+  exploreIcon: {
+    marginTop: scale(2),
+  },
+  walletButton: {
+    backgroundColor: COLORS.White,
+    borderRadius: moderateScale(100),
+    padding: scale(10),
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 'auto',
+    elevation: 5,
+  },
+  iconContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  listContainer: {
+    marginTop: scale(120),
+    paddingHorizontal: scale(10),
+  },
+  listItem: {
+    padding: scale(10),
+    borderRadius: 5,
+    marginVertical: scale(5),
+    elevation: 5,
+    shadowColor: COLORS.Black,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    marginHorizontal: scale(8),
+  },
+  listItemContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  itemTextContainer: {
+    flex: 1,
+  },
+  itemTitle: {
+    fontSize: moderateScale(17),
+    color: COLORS.White,
     fontWeight: 'bold',
-    color: COLORS.Black,
-    marginBottom: scale(10),
   },
-  additionalImage: {
-    width: '100%',
-    height: moderateScale(150),
-    borderRadius: moderateScale(8),
-    marginBottom: scale(10),
+  separator: {
+    height: 1,
+    width: '50%',
+    backgroundColor: COLORS.grey,
+    marginVertical: scale(5),
   },
-  additionalText: {
-    fontSize: moderateScale(16),
-    color: COLORS.grey,
-    textAlign: 'center',
+  viewMoreText: {
+    color: COLORS.White, // Set your desired color for "View More"
+  },
+  viewMoreContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  viewMoreIcon: {
+    marginRight: scale(5), // Space between the icon and text
+  },
+  walletButton: {
+    backgroundColor: COLORS.White,
+    borderRadius: moderateScale(100),
+    padding: scale(10),
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 'auto',
+    elevation: 5,
+    shadowColor: COLORS.Black,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
 });
-
-export default MyEarningsScreen;
