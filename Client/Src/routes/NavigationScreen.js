@@ -59,6 +59,9 @@ import AllOrderDetails from '../Screen/ProfileScreen/Order/AllOrderDetails';
 import Reports from '../Screen/ProfileScreen/Order/Reports';
 import RequestPayment from '../Screen/ProfileScreen/Order/RequestPayment';
 import GetHelp from '../Screen/ProfileScreen/Order/GetHelp';
+import FilterScreen from '../Screen/ProfileScreen/Order/FilterScreen';
+import PaymentHistory from '../Screen/ProfileScreen/PaymentHistory/PaymentHistory';
+import MakeLinkNow from '../Screen/ProfileScreen/PaymentHistory/MakeLinkNow';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -360,11 +363,7 @@ export default function NavigationScreen() {
           component={MyEarningsScreen}
           options={{headerShown: true, title: 'My Earning'}}
         />
-        <Stack.Screen
-          name="ReferAndEarn"
-          component={ReferAndEarnScreen}
-          options={{headerShown: true, title: 'Refer and Earn'}}
-        />
+
         <Stack.Screen
           name="ReportScreen"
           component={ReportScreen}
@@ -397,6 +396,26 @@ export default function NavigationScreen() {
         />
         <Stack.Screen name="RequestPayment" component={RequestPayment} />
         <Stack.Screen name="GetHelp" component={GetHelp} />
+        <Stack.Screen
+          name="FilterScreen"
+          component={FilterScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="PaymentHistory"
+          component={PaymentHistory}
+          options={{headerShown: true, title: 'Payment History'}}
+        />
+        <Stack.Screen
+          name="ReferAndEarnScreen"
+          component={ReferAndEarnScreen}
+          options={{headerShown: true, title: 'Refer & Earn'}}
+        />
+          <Stack.Screen
+          name="MakeLinkNow"
+          component={MakeLinkNow}
+          options={{headerShown: true, title: "Make Links"}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
