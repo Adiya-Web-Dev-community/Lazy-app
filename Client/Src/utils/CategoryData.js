@@ -55,4 +55,23 @@ const CategoriesData = {
   ],
 };
 
-export {CategoriesData};
+const MakeLinkData = {
+  Categories: [
+    {
+      Img: require('../Screen/assets/flipkart.jpg'),
+    },
+    {
+      Img: require('../Screen/assets/Boat.jpg'),
+    },
+    {
+      Img: require('../Screen/assets/Shopify.jpg'),
+    },
+    {
+      Img: require('../Screen/assets/Maytra.jpg'),
+    },
+    {
+      Img: require('../Screen/assets/Ajio.jpg'),
+    },
+  ],
+};
+export {CategoriesData, MakeLinkData};

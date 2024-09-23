@@ -49,10 +49,9 @@ export default function EditProfile({navigation}) {
         start={{x: 0, y: 0}}
         end={{x: 1, y: 0}}
         style={styles.GradientStling}>
-        <Text style={styles.Title}>Verify Your Username</Text>
+        <Text style={styles.Title}>Updated Your Username</Text>
       </LinearGradient>
       <View style={styles.LoginContainer}>
-        <Text style={styles.LoginText}>Enter Username</Text>
         <Input
           title="Enter Username"
           placeholder="Enter Username"
@@ -98,9 +97,9 @@ const styles = StyleSheet.create({
   },
   Title: {
     color: COLORS.White,
-    fontSize: scale(25),
+    fontSize: scale(22),
     fontWeight: 'bold',
-    marginTop: scale(20),
+    marginTop: scale(22),
   },
   LoginContainer: {
     elevation: scale(10),

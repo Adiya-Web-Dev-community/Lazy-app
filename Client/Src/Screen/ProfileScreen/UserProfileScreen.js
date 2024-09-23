@@ -7,11 +7,13 @@ import {
   ScrollView,
   Modal,
   Image,
+  StatusBar,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 import Foundation from 'react-native-vector-icons/Foundation';
 import {COLORS} from '../../Theme/Colors';
 import LinearGradient from 'react-native-linear-gradient';
@@ -22,6 +24,17 @@ export default function UserProfileScreen({navigation}) {
 
   return (
     <ScrollView style={styles.container}>
+      <LinearGradient
+        colors={['#42a1f5', '#42c5f5']}
+        start={{x: 0, y: 0}}
+        end={{x: 1, y: 0}}
+        style={styles.gradientStyling}>
+        <StatusBar
+          barStyle="light-content"
+          backgroundColor="transparent"
+          translucent={true}
+        />
+      </LinearGradient>
       <LinearGradient
         colors={['#42a1f5', '#42c5f5']}
         start={{x: 0, y: 0}}
@@ -48,6 +61,19 @@ export default function UserProfileScreen({navigation}) {
           </View>
         </View>
       </LinearGradient>
+      <View style={[styles.actionsContainer, {}]}>
+        <Text style={styles.moneyHeader}>Profile</Text>
+
+        <TouchableOpacity
+          style={[styles.actionBox, {borderBottomWidth: 0}]}
+          onPress={() => navigation.navigate('EditProfile')}>
+          <View style={styles.iconContainer}>
+            <AntDesign name="user" size={20} color={COLORS.blue} />
+          </View>
+          <Text style={styles.actionText}>Edit Profile</Text>
+          <AntDesign name="right" size={20} style={styles.rightIcon} />
+        </TouchableOpacity>
+      </View>
 
       <View style={styles.actionsContainer}>
         <Text style={styles.moneyHeader}>Money</Text>
@@ -72,7 +98,9 @@ export default function UserProfileScreen({navigation}) {
           <AntDesign name="right" size={20} style={styles.rightIcon} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.actionBox, {borderBottomWidth: 0}]}>
+        <TouchableOpacity
+          style={[styles.actionBox, {borderBottomWidth: 0}]}
+          onPress={() => navigation.navigate('PaymentHistory')}>
           <View style={styles.iconContainer}>
             <Fontisto name="history" size={20} color={COLORS.blue} />
           </View>
@@ -129,6 +157,22 @@ export default function UserProfileScreen({navigation}) {
           <Text style={styles.actionText}>EK Affiliaters</Text>
           <AntDesign name="right" size={20} style={styles.rightIcon} />
         </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.actionBox, {borderBottomWidth: 0}]}
+          onPress={() => navigation.navigate('ReferAndEarnScreen')}>
+          <View style={styles.iconContainer}>
+            <Entypo name="add-user" size={22} color={COLORS.blue} />
+          </View>
+          <Text style={styles.actionText}>Refer & Earn</Text>
+          <AntDesign name="right" size={20} style={styles.rightIcon} />
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.actionBox, {borderBottomWidth: 0}]}>
+          <View style={styles.iconContainer}>
+            <AntDesign name="logout" size={22} color={COLORS.blue} />
+          </View>
+          <Text style={styles.actionText}>Logout</Text>
+          <AntDesign name="right" size={20} style={styles.rightIcon} />
+        </TouchableOpacity>
       </View>
       <Modal
         animationType="slide"
@@ -169,6 +213,8 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     marginBottom: 20,
+    marginTop: scale(25),
+    marginHorizontal: scale(15),
   },
   headerText: {
     marginLeft: 10,
@@ -178,7 +224,7 @@ const styles = StyleSheet.create({
   profileContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    backgroundColor: COLORS.watercolor,
     padding: scale(5),
     borderRadius: 10,
     elevation: 5,
@@ -202,6 +248,7 @@ const styles = StyleSheet.create({
   nameText: {
     fontSize: moderateScale(15),
     color: COLORS.Black,
+    fontWeight: '500',
   },
   infoContainer: {
     flexDirection: 'row',
@@ -211,7 +258,7 @@ const styles = StyleSheet.create({
     marginVertical: verticalScale(30),
   },
   infoBox: {
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    backgroundColor: COLORS.watercolor,
     padding: scale(10),
     borderRadius: 10,
     elevation: 5,
@@ -222,6 +269,7 @@ const styles = StyleSheet.create({
   infoText: {
     fontSize: moderateScale(15),
     color: COLORS.Black,
+    fontWeight: '600',
   },
   moneyHeader: {
     marginLeft: scale(17),
