@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1079043476552",
+    "project_id": "lazyapp-cdd49",
+    "storage_bucket": "lazyapp-cdd49.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1079043476552:android:0cf70958459a2565dbdc7d",
+        "android_client_info": {
+          "package_name": "com.lazyapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8OHj_Oqg5sBcAukPt7VFJDFmPL_pGZWY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
