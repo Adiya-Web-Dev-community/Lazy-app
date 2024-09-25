@@ -62,6 +62,8 @@ import GetHelp from '../Screen/ProfileScreen/Order/GetHelp';
 import FilterScreen from '../Screen/ProfileScreen/Order/FilterScreen';
 import PaymentHistory from '../Screen/ProfileScreen/PaymentHistory/PaymentHistory';
 import MakeLinkNow from '../Screen/ProfileScreen/PaymentHistory/MakeLinkNow';
+import FlipkartReport from '../Screen/ProfileScreen/FlipkartReport';
+import ChooseTime from '../Components/ChooseTime';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -411,10 +413,20 @@ export default function NavigationScreen() {
           component={ReferAndEarnScreen}
           options={{headerShown: true, title: 'Refer & Earn'}}
         />
-          <Stack.Screen
+        <Stack.Screen
           name="MakeLinkNow"
           component={MakeLinkNow}
-          options={{headerShown: true, title: "Make Links"}}
+          options={{headerShown: true, title: 'Make Links'}}
+        />
+        <Stack.Screen
+          name="FlipkartReport"
+          component={FlipkartReport}
+          options={{headerShown: false, title: 'Flipkart Report & Insights'}}
+        />
+        <Stack.Screen
+          name="ChooseTime"
+          component={ChooseTime}
+          options={{headerShown: true, title: 'Choose Time Period'}}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -34,7 +34,6 @@ export default function ReportScreen({ navigation }) {
 
   const handleConfirm = () => {
     setLoading(true);
-    // Simulate a network request
     setTimeout(() => {
       setLoading(false);
       setModalVisible(false);
