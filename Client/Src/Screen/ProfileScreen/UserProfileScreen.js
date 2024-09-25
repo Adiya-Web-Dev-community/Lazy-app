@@ -125,7 +125,9 @@ export default function UserProfileScreen({navigation}) {
           <AntDesign name="right" size={20} style={styles.rightIcon} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.actionBox}>
+        <TouchableOpacity
+          style={styles.actionBox}
+          onPress={() => navigation.navigate('FlipkartReport')}>
           <View style={styles.iconContainer}>
             <Foundation name="clipboard-notes" size={20} color={COLORS.blue} />
           </View>

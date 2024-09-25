@@ -284,6 +284,22 @@ export default function AllOrderDetails({navigation}) {
                 )}
               </View>
             </View>
+            <View style={styles.buttonRow}>
+              <TouchableOpacity
+                style={styles.applyButton}
+                onPress={() => {
+                  setModalVisible(false);
+                }}>
+                <Text style={[styles.buttonText, {color: COLORS.White}]}>
+                  Apply
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setModalVisible(false)}>
+                <Text style={styles.buttonText}>Close</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -449,5 +465,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: scale(10),
     width: scale(200),
     marginVertical: verticalScale(5),
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: verticalScale(380),
+    marginHorizontal: scale(20),
+  },
+  applyButton: {
+    flex: 1,
+    backgroundColor: COLORS.green,
+    paddingVertical: scale(10),
+    borderRadius: moderateScale(5),
+    alignItems: 'center',
+    marginRight: scale(10),
+  },
+  closeButton: {
+    flex: 1,
+    backgroundColor: COLORS.LightGrey,
+    paddingVertical: scale(10),
+    borderRadius: moderateScale(5),
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: COLORS.Black,
+    fontWeight: 'bold',
   },
 });

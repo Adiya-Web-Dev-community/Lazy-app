@@ -12,14 +12,19 @@ import {
 import {COLORS} from '../../../Theme/Colors';
 import {moderateScale, scale, verticalScale} from '../../../utils/Scaling';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Entypo from 'react-native-vector-icons/Entypo';
 import {MakeLinkData} from '../../../utils/CategoryData';
 import WebView from 'react-native-webview';
+import CustomCheckBox from '../../../Components/CustomCheckBox/CustomCheckBox ';
 
 export default function MakeLinkNow() {
   const MakeDatas = MakeLinkData.Categories;
   const [isLoading, setIsLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isChecked, setIsChecked] = useState(false);
+
   const scrollViewRef = useRef(null);
 
   const handleNext = () => {
@@ -82,8 +87,7 @@ export default function MakeLinkNow() {
                 <TouchableOpacity
                   key={index}
                   style={styles.imageContainer}
-                  onPress={() => openModal(item.Img)} // Open modal on press
-                >
+                  onPress={() => openModal(item.Img)}>
                   <Image
                     source={item.Img}
                     style={styles.image}
@@ -109,11 +113,68 @@ export default function MakeLinkNow() {
         onRequestClose={closeModal}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <View style={{flexDirection: 'row',borderWidth:0.5}}>
-              <View style={{backgroundColor: COLORS.blue}}>
-                <AntDesign name="link" size={20} color={COLORS.White} />
+            <TouchableOpacity
+              onPress={closeModal}
+              style={styles.closeButtonContainer}>
+              <AntDesign name="close" size={25} color={COLORS.Black} />
+            </TouchableOpacity>
+
+            <View style={[styles.inputContainer, {}]}>
+              <View
+                style={[
+                  styles.iconContainer,
+                  {height: scale(40), width: scale(40)},
+                ]}>
+                <AntDesign name="link" size={30} color={COLORS.White} />
               </View>
-              <TextInput placeholder="enter your link" />
+              <TextInput
+                style={[styles.textInput, {height: scale(35)}]}
+                placeholder="https://fkrn/gjshkg"
+                placeholderTextColor={COLORS.Black}
+              />
+            </View>
+            <View style={styles.profitContainer}>
+              <View style={styles.profitInfo}>
+                <Text style={styles.SIMPLE_TXT}>Profit Tract In</Text>
+                <Text style={styles.HOURS_TXT}>48 Hours</Text>
+              </View>
+              <View style={styles.divider} />
+              <View style={styles.profitInfo}>
+                <Text style={styles.SIMPLE_TXT}>Profit Confirms By</Text>
+                <Text style={styles.HOURS_TXT}>24 Oct 2024</Text>
+              </View>
+            </View>
+            <Text style={{textAlign: 'center'}}>
+              Share this deal woth your friends & family. When they{'\n'}shop
+              through your link, your earn profiy.
+            </Text>
+            <View style={{marginVertical: verticalScale(15)}}>
+              <CustomCheckBox
+                label="Add a Personalized Message"
+                value={isChecked}
+                onValueChange={() => setIsChecked(!isChecked)}
+              />
+            </View>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.WHATSAPPBTN}>
+                <FontAwesome name="whatsapp" size={25} color={COLORS.White} />
+                <Text style={styles.WHATSBTNTXT}>SHARE NOW</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.COPYBTN}>
+                <Entypo name="link" size={25} color={COLORS.Black} />
+                <Text style={styles.COPYBTNTXT}>Copy</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  flexDirection: 'row',
+                  marginVertical: verticalScale(15),
+                }}>
+                <AntDesign name="sharealt" size={15} color={COLORS.blue} />
+                <Text style={{color: COLORS.blue, fontSize: moderateScale(11)}}>
+                  OTHERS
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -308,5 +369,73 @@ const styles = StyleSheet.create({
     marginTop: verticalScale(10),
     color: COLORS.blue,
     fontSize: moderateScale(16),
+  },
+  closeButtonContainer: {
+    position: 'absolute',
+    top: moderateScale(10),
+    right: moderateScale(10),
+    zIndex: 1,
+  },
+  profitContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+    backgroundColor: COLORS.LightGrey,
+    paddingVertical: verticalScale(10),
+    marginVertical: verticalScale(20),
+    borderRadius: moderateScale(8),
+  },
+  profitInfo: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  divider: {
+    width: 1,
+    height: '100%',
+    backgroundColor: COLORS.grey,
+  },
+  SIMPLE_TXT: {
+    color: COLORS.Black,
+    fontWeight: 'bold',
+  },
+  HOURS_TXT: {
+    color: COLORS.Black,
+    fontWeight: 'bold',
+    paddingTop: scale(10),
+  },
+  buttonContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '100%',
+    marginTop: verticalScale(15),
+    paddingHorizontal: scale(15),
+  },
+  WHATSAPPBTN: {
+    flexDirection: 'row',
+    backgroundColor: COLORS.green,
+    paddingVertical: verticalScale(10),
+    paddingHorizontal: scale(15),
+    alignItems: 'center',
+    borderRadius: moderateScale(30),
+    width: '50%',
+    marginBottom: verticalScale(15),
+  },
+  WHATSBTNTXT: {
+    color: COLORS.White,
+    marginLeft: scale(8),
+  },
+  COPYBTN: {
+    flexDirection: 'row',
+    paddingVertical: verticalScale(10),
+    paddingHorizontal: scale(15),
+    alignItems: 'center',
+    borderRadius: moderateScale(30),
+    borderWidth: 0.5,
+    width: '50%',
+  },
+  COPYBTNTXT: {
+    color: COLORS.Black,
+    marginLeft: scale(8),
   },
 });

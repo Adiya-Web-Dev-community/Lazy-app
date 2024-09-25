@@ -240,7 +240,9 @@ export default function Reports({navigation}) {
                 <AntDesign name="link" size={20} color={COLORS.White} />
               </View>
               <View style={styles.modalTextContainer}>
-                <Text style={styles.modalLinkTitle}>Performance by All Brands</Text>
+                <Text style={styles.modalLinkTitle}>
+                  Performance by All Brands
+                </Text>
                 <Text style={styles.modalLinkDescription}>
                   Track your brand level performance easily
                 </Text>
@@ -254,7 +256,9 @@ export default function Reports({navigation}) {
                 <AntDesign name="link" size={20} color={COLORS.White} />
               </View>
               <View style={styles.modalTextContainer}>
-                <Text style={styles.modalLinkTitle}>Flipkart Reports & insights</Text>
+                <Text style={styles.modalLinkTitle}>
+                  Flipkart Reports & insights
+                </Text>
                 <Text style={styles.modalLinkDescription}>
                   Track your real-time activity and insights
                 </Text>
@@ -474,7 +478,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginVertical: scale(10),
-
   },
   modalIconContainer: {
     backgroundColor: COLORS.green,
