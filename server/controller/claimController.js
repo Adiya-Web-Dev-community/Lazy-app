@@ -1,7 +1,9 @@
 const Claim=require("../model/claimModel");
 const createClaim = async (req, res) => {
   try {
-    const claim = new Claim(req.body);
+    const data=req.body;
+    const userid=req.userId
+    const claim = new Claim({...data,userId:userid});
     const savedClaim = await claim.save();
     res.status(201).json(savedClaim);
   } catch (error) {
