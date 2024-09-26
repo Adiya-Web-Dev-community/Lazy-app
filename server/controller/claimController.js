@@ -55,7 +55,7 @@ const updateClaim = async (req, res) => {
   try {
     const updatedData = req.body;
     if (updatedData.isApproved) {
-      updatedData.status = "claimed";
+      updatedData.status = "confirm";
     }
     const updatedClaim = await Claim.findByIdAndUpdate(
       req.params.id,
@@ -85,6 +85,51 @@ const DeleteClaim = async (req, res) => {
   }
 };
 
+const pendinClaims = async (req, res) => {
+  const userId = req.userId;
+  try {
+    const pendingClaims = await Claim.find({ status: "pending", userId });
+    const totalpendingamount = pendingClaims.reduce(
+      (acc, claim) => acc + claim.orderamount,
+      0
+    );
+    res.status(200).json({ pendingClaims, pendingamount: totalpendingamount });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const ConfirmClaim = async (req, res) => {
+  const userId = req.userId;
+  try {
+    const confirmedClaims = await Claim.find({ status: "confirm", userId });
+    const totalProfit = confirmedClaims.reduce(
+      (acc, claim) => acc + claim.orderamount,
+      0
+    );
+
+    res.status(200).json({
+      claims: confirmedClaims,
+      totalProfit,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const cancelClainms = async (req, res) => {
+  const userId = req.userId;
+  try {
+    const canceledClaims = await Claim.find({ status: "cancel", userId });
+    const totalcancelAmount = canceledClaims.reduce(
+      (acc, claim) => acc + claim.orderamount,
+      0
+    );
+    res.status(200).json({canceledClaims,cancelAmount:totalcancelAmount})
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 module.exports = {
     createClaim,
@@ -93,5 +138,8 @@ module.exports = {
     getprrovedClaim,
     getClaimbyUserId,
     updateClaim,
-    DeleteClaim
+    DeleteClaim,
+    pendinClaims,
+    ConfirmClaim,
+    cancelClainms
   };

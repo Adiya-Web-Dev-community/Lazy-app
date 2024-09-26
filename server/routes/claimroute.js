@@ -8,7 +8,10 @@ const {
     getprrovedClaim,
     getClaimbyUserId,
     updateClaim,
-    DeleteClaim
+    DeleteClaim,
+    pendinClaims,
+    ConfirmClaim,
+    cancelClainms
 } = require("../controller/claimController");
 
 router.post("/", isUser, createClaim);
@@ -17,6 +20,9 @@ router.get("/:id", isAdmin, getClaimById);
 router.get("/all/approved", isAdmin, getprrovedClaim);
 router.get("/get/user",isUser,getClaimbyUserId);
 router.put("/:id",updateClaim);
-router.delete("/:id",DeleteClaim)
+router.delete("/:id",DeleteClaim);
+router.get("/report/pending",isUser,pendinClaims);
+router.get("/report/confirm",isUser,ConfirmClaim);
+router.get("/report/cancel",isUser,cancelClainms)
 
 module.exports = router;
