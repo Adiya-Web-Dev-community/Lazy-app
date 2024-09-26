@@ -20,7 +20,7 @@ const ClaimModel = new mongoose.Schema(
       type: String,
     },
     status: { type: String, default: "pending", enum: ["claimed", "pending"] },
-    orderamound: { type: Number },
+    orderamount: { type: Number },
     invoice: { type: String },
     isApproved: { type: Boolean, default: false },
   },
