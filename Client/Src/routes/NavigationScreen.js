@@ -50,7 +50,6 @@ import OTPScreen from '../Screen/ProfileScreen/OTPScreen';
 import EmailVerification from '../Screen/ProfileScreen/EmailVerification';
 import MyEarningsScreen from '../Screen/ProfileScreen/MyEarningsScreen';
 import ReferAndEarnScreen from '../Screen/ProfileScreen/ReferAndEarnScreen';
-import ReportScreen from '../Screen/ProfileScreen/ReportScreen';
 import EditProfile from '../Screen/ProfileScreen/EditProfile';
 import Earnings from '../Screen/ProfileScreen/Earnings';
 import OrderDetails from '../Screen/ProfileScreen/Order/AllOrderDetails';
@@ -60,10 +59,11 @@ import Reports from '../Screen/ProfileScreen/Order/Reports';
 import RequestPayment from '../Screen/ProfileScreen/Order/RequestPayment';
 import GetHelp from '../Screen/ProfileScreen/Order/GetHelp';
 import FilterScreen from '../Screen/ProfileScreen/Order/FilterScreen';
-import PaymentHistory from '../Screen/ProfileScreen/PaymentHistory/PaymentHistory';
+import PaymentHistory from '../Screen/ProfileScreen/PaymentHistory/OrderHistory';
 import MakeLinkNow from '../Screen/ProfileScreen/PaymentHistory/MakeLinkNow';
 import FlipkartReport from '../Screen/ProfileScreen/FlipkartReport';
 import ChooseTime from '../Components/ChooseTime';
+import OrderHistory from '../Screen/ProfileScreen/PaymentHistory/OrderHistory';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -366,11 +366,7 @@ export default function NavigationScreen() {
           options={{headerShown: true, title: 'My Earning'}}
         />
 
-        <Stack.Screen
-          name="ReportScreen"
-          component={ReportScreen}
-          options={{headerShown: true, title: 'Reports'}}
-        />
+      
         <Stack.Screen
           name="EditProfile"
           component={EditProfile}
@@ -394,7 +390,7 @@ export default function NavigationScreen() {
         <Stack.Screen
           name="Reports"
           component={Reports}
-          options={{headerShown: false}}
+          options={{headerShown: true}}
         />
         <Stack.Screen name="RequestPayment" component={RequestPayment} />
         <Stack.Screen name="GetHelp" component={GetHelp} />
@@ -404,9 +400,9 @@ export default function NavigationScreen() {
           options={{headerShown: false}}
         />
         <Stack.Screen
-          name="PaymentHistory"
-          component={PaymentHistory}
-          options={{headerShown: true, title: 'Payment History'}}
+          name="OrderHistory"
+          component={OrderHistory}
+          options={{headerShown: true, title: 'Order History'}}
         />
         <Stack.Screen
           name="ReferAndEarnScreen"
