@@ -21,6 +21,12 @@ import {moderateScale, scale, verticalScale} from '../../utils/Scaling';
 
 export default function UserProfileScreen({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
+  const [logoutModalVisible, setLogoutModalVisible] = useState(false);
+
+  const handleLogout = () => {
+    console.log('User logged out');
+    setLogoutModalVisible(false);
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -100,11 +106,11 @@ export default function UserProfileScreen({navigation}) {
 
         <TouchableOpacity
           style={[styles.actionBox, {borderBottomWidth: 0}]}
-          onPress={() => navigation.navigate('PaymentHistory')}>
+          onPress={() => navigation.navigate('OrderHistory')}>
           <View style={styles.iconContainer}>
             <Fontisto name="history" size={20} color={COLORS.blue} />
           </View>
-          <Text style={styles.actionText}>Payment History</Text>
+          <Text style={styles.actionText}>Order History</Text>
           <AntDesign name="right" size={20} style={styles.rightIcon} />
         </TouchableOpacity>
       </View>
@@ -124,41 +130,9 @@ export default function UserProfileScreen({navigation}) {
           <Text style={styles.actionText}>Reports</Text>
           <AntDesign name="right" size={20} style={styles.rightIcon} />
         </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.actionBox}
-          onPress={() => navigation.navigate('FlipkartReport')}>
-          <View style={styles.iconContainer}>
-            <Foundation name="clipboard-notes" size={20} color={COLORS.blue} />
-          </View>
-          <Text style={styles.actionText}>Flipkart Reports</Text>
-          <AntDesign name="right" size={20} style={styles.rightIcon} />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={[styles.actionBox, {borderBottomWidth: 0}]}>
-          <View style={styles.iconContainer}>
-            <AntDesign name="link" size={20} color={COLORS.blue} />
-          </View>
-          <Text style={styles.actionText}>My Link Performance</Text>
-          <AntDesign name="right" size={20} style={styles.rightIcon} />
-        </TouchableOpacity>
       </View>
       <View style={styles.actionsContainer}>
         <Text style={styles.moneyHeader}>Exclusive Tools</Text>
-        <TouchableOpacity style={styles.actionBox}>
-          <View style={styles.iconContainer}>
-            <AntDesign name="profile" size={22} color={COLORS.blue} />
-          </View>
-          <Text style={styles.actionText}>Profit Share</Text>
-          <AntDesign name="right" size={20} style={styles.rightIcon} />
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.actionBox, {borderBottomWidth: 0}]}>
-          <View style={styles.iconContainer}>
-            <FontAwesome name="sticky-note" size={22} color={COLORS.blue} />
-          </View>
-          <Text style={styles.actionText}>EK Affiliaters</Text>
-          <AntDesign name="right" size={20} style={styles.rightIcon} />
-        </TouchableOpacity>
         <TouchableOpacity
           style={[styles.actionBox, {borderBottomWidth: 0}]}
           onPress={() => navigation.navigate('ReferAndEarnScreen')}>
@@ -168,7 +142,9 @@ export default function UserProfileScreen({navigation}) {
           <Text style={styles.actionText}>Refer & Earn</Text>
           <AntDesign name="right" size={20} style={styles.rightIcon} />
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.actionBox, {borderBottomWidth: 0}]}>
+        <TouchableOpacity
+          style={[styles.actionBox, {borderBottomWidth: 0}]}
+          onPress={() => setLogoutModalVisible(true)}>
           <View style={styles.iconContainer}>
             <AntDesign name="logout" size={22} color={COLORS.blue} />
           </View>
@@ -196,6 +172,29 @@ export default function UserProfileScreen({navigation}) {
             <TouchableOpacity style={styles.MODALBTN}>
               <Text style={styles.MODALBTNTXT}>SHARE BEST DEAL</Text>
             </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={logoutModalVisible}
+        onRequestClose={() => setLogoutModalVisible(!logoutModalVisible)}>
+        <View style={styles.LmodalContainer}>
+          <View style={styles.LmodalContent}>
+            <Text style={styles.LmodalText}>
+              Are you sure you want to logout?
+            </Text>
+            <View style={styles.LmodalButtonContainer}>
+              <TouchableOpacity onPress={handleLogout}>
+                <Text style={styles.LmodalButtonText}>Logout</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setLogoutModalVisible(false)}>
+                <Text style={[styles.LmodalButtonText, {color: COLORS.red}]}>
+                  Cancel
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -359,5 +358,35 @@ const styles = StyleSheet.create({
   MODALBTNTXT: {
     fontWeight: 'bold',
     color: COLORS.White,
+  },
+  LmodalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  LmodalContent: {
+    width: '80%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+    paddingVertical: verticalScale(20),
+  },
+  LmodalText: {
+    marginBottom: scale(50),
+    textAlign: 'center',
+    fontSize: moderateScale(18),
+    color: COLORS.Black,
+    fontWeight: '500',
+  },
+  LmodalButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+  },
+  LmodalButtonText: {
+    fontSize: moderateScale(16),
+    color: COLORS.blue,
+    marginHorizontal: scale(20),
   },
 });

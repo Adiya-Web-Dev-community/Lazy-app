@@ -252,3 +252,22 @@ export const updateProfile = async username => {
     throw error;
   }
 };
+export const createClaim = async claimData => {
+  try {
+    const response = await Instance.post('/api/claim', claimData);
+    return response.data;
+  } catch (error) {
+    console.error('API call failed:', error.response || error.message || error);
+    throw error;
+  }
+};
+
+export const GetClaimUser = async () => {
+  try {
+    const response = await Instance.get('/api/claim/get/user');
+    console.log('ClaimData', response);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

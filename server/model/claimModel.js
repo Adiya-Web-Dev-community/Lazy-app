@@ -19,6 +19,7 @@ const ClaimModel = new mongoose.Schema(
     orderid: {
       type: String,
     },
+
     status: { type: String, default: "pending", enum: ["confirm", "pending","cancel"] },
     orderamount: { type: Number,required:true },
     invoice: { type: String },
