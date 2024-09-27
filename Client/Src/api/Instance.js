@@ -5,7 +5,7 @@ const Instance = axios.create({
   //  baseURL: 'https://lazy-app-n1h9.onrender.com',
   headers: {
     Authorization:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NmU5NmU4YjE1M2NiNDkwZjRiYWMzNTAiLCJlbWFpbCI6Iktpc2hhbkBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcyNjU3NDIzMywiZXhwIjoxNzI5OTU4MjMzfQ.SKwvCNPX6nfXwZ-ZLgFtDbeus7n_Cm6I89saHQxaw_o',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NmY1MzhjMjhjNTJjMzBiODliZDg5MjgiLCJlbWFpbCI6IlRoZXNreUBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcyNzM1MTk3NCwiZXhwIjoxNzMwNzM1OTc0fQ.gorM15lBlzCypNr5hXDrRbxPGLmaUStAp3kcA3J8gt8',
   },
 });
 
