@@ -20,7 +20,6 @@ import LinearGradient from 'react-native-linear-gradient';
 import {moderateScale, scale, verticalScale} from '../../utils/Scaling';
 
 export default function UserProfileScreen({navigation}) {
-  const [modalVisible, setModalVisible] = useState(false);
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
 
   const handleLogout = () => {
@@ -96,11 +95,11 @@ export default function UserProfileScreen({navigation}) {
 
         <TouchableOpacity
           style={styles.actionBox}
-          onPress={() => setModalVisible(true)}>
+          onPress={() => navigation.navigate('Transection')}>
           <View style={styles.iconContainer}>
             <AntDesign name="wallet" size={20} color={COLORS.blue} />
           </View>
-          <Text style={styles.actionText}>Request Payment</Text>
+          <Text style={styles.actionText}>Transection</Text>
           <AntDesign name="right" size={20} style={styles.rightIcon} />
         </TouchableOpacity>
 
@@ -115,22 +114,6 @@ export default function UserProfileScreen({navigation}) {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.actionsContainer}>
-        <Text style={styles.moneyHeader}>Reports</Text>
-        <TouchableOpacity
-          style={styles.actionBox}
-          onPress={() => navigation.navigate('Reports')}>
-          <View style={styles.iconContainer}>
-            <MaterialIcons
-              name="report-gmailerrorred"
-              size={25}
-              color={COLORS.blue}
-            />
-          </View>
-          <Text style={styles.actionText}>Reports</Text>
-          <AntDesign name="right" size={20} style={styles.rightIcon} />
-        </TouchableOpacity>
-      </View>
       <View style={styles.actionsContainer}>
         <Text style={styles.moneyHeader}>Exclusive Tools</Text>
         <TouchableOpacity
@@ -152,29 +135,7 @@ export default function UserProfileScreen({navigation}) {
           <AntDesign name="right" size={20} style={styles.rightIcon} />
         </TouchableOpacity>
       </View>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(!modalVisible)}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Image
-              source={require('../assets/earnmore.jpg')}
-              style={styles.MODALIMAGE}
-            />
-            <Text style={styles.MTITILE}>Share More to Earn More</Text>
-            <Text style={styles.MTXT}>
-              You need a minimum of $10 Confirmed{'\n'}Profile to transfer your
-              earnings to your{'\n'}bank account. All you need to do is share
-              {'\n'}Crazy Deals via Earnkaro
-            </Text>
-            <TouchableOpacity style={styles.MODALBTN}>
-              <Text style={styles.MODALBTNTXT}>SHARE BEST DEAL</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+
       <Modal
         animationType="slide"
         transparent={true}

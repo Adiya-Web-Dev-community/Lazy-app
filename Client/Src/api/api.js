@@ -124,13 +124,20 @@ export const getRecommended = async () => {
   }
 };
 
-export const CreateUserPost = async (content, image_url, user_id, category) => {
+export const CreateUserPost = async (
+  content,
+  image_url,
+  user_id,
+  category,
+  video_url,
+) => {
   try {
     const response = await Instance.post('/api/post', {
       content,
       image_url,
       user_id,
       category,
+      video_url,
     });
 
     return response.data;
@@ -268,6 +275,43 @@ export const GetClaimUser = async () => {
     console.log('ClaimData', response);
     return response.data;
   } catch (error) {
+    throw error;
+  }
+};
+
+export const GetReportPendingAmount = async () => {
+  try {
+    const response = await Instance.get('/api/claim/report/pending');
+    console.log('Pending', response);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+export const GetReportConfirmedAmount = async () => {
+  try {
+    const response = await Instance.get('/api/claim/report/confirm');
+    return response.data;
+  } catch (error) {
+    console.error('API call failed:', error.response || error.message || error);
+    throw error;
+  }
+};
+export const GetReportCanceledAmount = async () => {
+  try {
+    const response = await Instance.get('/api/claim/report/cancel');
+    return response.data;
+  } catch (error) {
+    console.error('API call failed:', error.response || error.message || error);
+    throw error;
+  }
+};
+export const GetTransactionHistory = async () => {
+  try {
+    const response = await Instance.get('/api/history');
+    return response.data; 
+  } catch (error) {
+    console.error('API call failed:', error.response || error.message || error);
     throw error;
   }
 };

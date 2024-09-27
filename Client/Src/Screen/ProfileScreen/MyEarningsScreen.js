@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,15 +9,68 @@ import {
 } from 'react-native';
 import {COLORS} from '../../Theme/Colors';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Fontisto from 'react-native-vector-icons/Fontisto';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {moderateScale, scale} from '../../utils/Scaling';
 import LinearGradient from 'react-native-linear-gradient';
-import {OrderDetails} from '../../utils/OrderData';
+import {
+  GetReportCanceledAmount,
+  GetReportPendingAmount,
+  GetReportConfirmedAmount,
+} from '../../api/api';
 
 export default function MyEarningsScreen({navigation}) {
-  const AllOrder = OrderDetails.Orders;
+  const [pendingAmount, setPendingAmount] = useState(0);
+  const [confirmedAmount, setConfirmedAmount] = useState(0);
+  const [canceledAmount, setCanceledAmount] = useState(0);
 
+  useEffect(() => {
+    const fetchAmounts = async () => {
+      try {
+        const pendingResponse = await GetReportPendingAmount();
+        const confirmedResponse = await GetReportConfirmedAmount();
+        const canceledResponse = await GetReportCanceledAmount();
+
+        setPendingAmount(pendingResponse.pendingamount || 0);
+        setConfirmedAmount(confirmedResponse.totalProfit || 0);
+        setCanceledAmount(canceledResponse.cancelAmount || 0);
+      } catch (error) {
+        console.error('Error fetching amounts:', error);
+      }
+    };
+
+    fetchAmounts();
+  }, []);
+  const breakdownItems = [
+    {
+      id: 1,
+      label: 'Pending',
+      amount: `₹${pendingAmount}`,
+      icon: <Fontisto name="history" color={'white'} size={15} />,
+      iconColor: 'orange',
+      labelColor: 'orange',
+      amountColor: 'orange',
+    },
+    {
+      id: 2,
+      label: 'Confirmed',
+      amount: `₹${confirmedAmount}`,
+      icon: <AntDesign name="checkcircleo" color={'white'} size={15} />,
+      iconColor: 'green',
+      labelColor: 'green',
+      amountColor: 'green',
+    },
+    {
+      id: 3,
+      label: 'Cancelled',
+      amount: `₹${canceledAmount}`,
+      icon: <AntDesign name="closecircleo" color={'white'} size={15} />,
+      iconColor: 'red',
+      labelColor: 'red',
+      amountColor: 'red',
+    },
+  ];
   return (
     <View style={styles.container}>
       <LinearGradient style={styles.gradient} colors={['#42c5f5', '#42a1f5']}>
@@ -36,7 +89,9 @@ export default function MyEarningsScreen({navigation}) {
             <View style={styles.MainContainer}>
               <View style={styles.earningsContainer}>
                 <View style={styles.earningsTextContainer}>
-                  <Text style={styles.totalEarningsText}>Total Earnings</Text>
+                  <Text style={styles.totalEarningsText}>
+                    Confirmed Earnings
+                  </Text>
                   <TouchableOpacity style={styles.questionIconContainer}>
                     <AntDesign
                       name="questioncircle"
@@ -45,7 +100,7 @@ export default function MyEarningsScreen({navigation}) {
                     />
                   </TouchableOpacity>
                 </View>
-                <Text style={styles.earningsAmount}>$200</Text>
+                <Text style={styles.earningsAmount}>₹{confirmedAmount}</Text>
               </View>
               <TouchableOpacity style={styles.walletButton}>
                 <FontAwesome5
@@ -61,68 +116,38 @@ export default function MyEarningsScreen({navigation}) {
                 Profit will appear here within 72 hours of order{'\n'}
                 placed
               </Text>
-              <TouchableOpacity
-                style={styles.exploreButton}
-                onPress={() => navigation.navigate('Earnings')}>
-                <View style={styles.exploreContent}>
-                  <Text style={styles.exploreText}>Explore</Text>
-                  <View style={styles.iconContainer}>
-                    <FontAwesome5
-                      name="angle-right"
-                      size={20}
-                      color={COLORS.green}
-                      style={styles.exploreIcon}
-                    />
-                  </View>
-                </View>
-              </TouchableOpacity>
             </View>
           </View>
         </View>
       </LinearGradient>
-      <View style={styles.listContainer}>
-        <FlatList
-          data={AllOrder}
-          renderItem={({item}) => (
-            <LinearGradient
-              colors={['#42a1f5', '#42c5f5']}
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
-              style={styles.listItem}>
-              <TouchableOpacity
-                style={styles.listItemContent}
-                onPress={() => {
-                  if (item.title === 'Order Details') {
-                    navigation.navigate('AllOrderDetails');
-                  } else if (item.title === 'Reports') {
-                    navigation.navigate('Reports');
-                  } else if (item.title === 'Request Payment') {
-                    navigation.navigate('RequestPayment');
-                  } else if (item.title === 'Get Help') {
-                    navigation.navigate('GetHelp');
-                  }
-                }}>
-                <View style={styles.itemTextContainer}>
-                  <Text style={styles.itemTitle}>{item.title}</Text>
-                  <View style={styles.separator} />
-                  <View style={styles.viewMoreContainer}>
-                    <Text style={styles.viewMoreText}>{item.secoondtxt}</Text>
-                    <FontAwesome
-                      name="angle-right"
-                      size={20}
-                      color={COLORS.White}
-                      style={[styles.viewMoreIcon, {marginLeft: scale(5)}]}
-                    />
-                  </View>
-                </View>
-                <View style={styles.walletButton}>
-                  <FontAwesome5 name="wallet" size={22} color={COLORS.green} />
-                </View>
-              </TouchableOpacity>
-            </LinearGradient>
-          )}
-          keyExtractor={(item, index) => index.toString()}
-        />
+
+      <View style={styles.breakupContainer}>
+        {breakdownItems.map(item => (
+          <TouchableOpacity key={item.id} style={styles.breakdownItem}>
+            <View
+              style={[styles.iconContainer, {backgroundColor: item.iconColor}]}>
+              {item.icon}
+            </View>
+            <View style={styles.textContainer}>
+              <View style={styles.labelAmountContainer}>
+                <Text
+                  style={[
+                    styles.labelText,
+                    {color: item.labelColor, fontSize: moderateScale(16)},
+                  ]}>
+                  {item.label}
+                </Text>
+                <Text
+                  style={[
+                    styles.amountText,
+                    {color: item.amountColor, fontSize: moderateScale(16)},
+                  ]}>
+                  {item.amount}
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        ))}
       </View>
     </View>
   );
@@ -216,61 +241,47 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  listContainer: {
-    marginTop: scale(120),
-    paddingHorizontal: scale(10),
+  breakupContainer: {
+    marginVertical: scale(10),
+    paddingTop: scale(65),
+    paddingHorizontal: scale(15),
   },
-  listItem: {
-    padding: scale(10),
-    borderRadius: 5,
-    marginVertical: scale(5),
-    elevation: 5,
-    shadowColor: COLORS.Black,
+  breakdownItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginVertical: scale(3),
+    padding: scale(12),
+    borderRadius: scale(10),
+    backgroundColor: COLORS.White,
+    elevation: 3,
+    shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    marginHorizontal: scale(8),
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
   },
-  listItemContent: {
+  iconContainer: {
+    borderRadius: 5,
+    padding: scale(10),
+    marginRight: scale(10),
+    elevation: 2, // Shadow for icons
+  },
+  textContainer: {
+    flex: 1,
+  },
+  labelText: {
+    fontWeight: 'bold',
+    color: COLORS.Black,
+  },
+  labelAmountContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    width: '100%',
   },
-  itemTextContainer: {
-    flex: 1,
-  },
-  itemTitle: {
-    fontSize: moderateScale(17),
-    color: COLORS.White,
-    fontWeight: 'bold',
-  },
-  separator: {
-    height: 1,
-    width: '50%',
-    backgroundColor: COLORS.grey,
-    marginVertical: scale(5),
-  },
-  viewMoreText: {
-    color: COLORS.White, // Set your desired color for "View More"
-  },
-  viewMoreContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  viewMoreIcon: {
-    marginRight: scale(5), // Space between the icon and text
-  },
-  walletButton: {
-    backgroundColor: COLORS.White,
-    borderRadius: moderateScale(100),
-    padding: scale(10),
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: 'auto',
-    elevation: 5,
-    shadowColor: COLORS.Black,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+  amountText: {
+    textAlign: 'right',
+    color: COLORS.Black,
+    fontWeight: 'bold', // Make amount stand out
   },
 });

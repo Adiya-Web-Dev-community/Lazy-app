@@ -29,7 +29,6 @@ export default function CategoryDetails({route}) {
       try {
         const products = await getProductsByCategory(category.name);
         setCategoryProducts(products);
-        // console.log('category ID:', category._id);
       } catch (err) {
         setError('Failed to fetch products');
       } finally {
@@ -89,6 +88,7 @@ export default function CategoryDetails({route}) {
                 resizeMode="cover">
                 <View style={styles.textContainer}>
                   <Text style={styles.title}>{item.name}</Text>
+                  <Text style={styles.title}>Good Battery</Text>
                 </View>
               </ImageBackground>
             ) : (

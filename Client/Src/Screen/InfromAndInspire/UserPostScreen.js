@@ -104,16 +104,15 @@ export default function UserPostScreen({navigation}) {
       console.error('User ID is not available');
       return;
     }
-
+  
     const selectedCategoryName =
-      categories.find(category => category._id === selectedCategory)?.name ||
-      '';
-
+      categories.find(category => category._id === selectedCategory)?.name || '';
+  
     try {
-      const mediaUrl = mediaUris.length > 0 ? mediaUris[0].uri : '';
+      const mediaUrls = mediaUris.map(media => media.uri); 
       const result = await CreateUserPost(
         text,
-        mediaUrl,
+        mediaUrls, 
         userId,
         selectedCategoryName,
       );
@@ -126,6 +125,7 @@ export default function UserPostScreen({navigation}) {
       console.error('Error submitting post:', error);
     }
   };
+  
 
   const handleCategoryChange = itemValue => {
     setSelectedCategory(itemValue);

@@ -1,12 +1,18 @@
 import storage from '@react-native-firebase/storage';
 
 export const uploadFileFireBase = async (fileName, filePath) => {
-  const reference = storage().ref(fileName);
+  try {
+    const reference = storage().ref(fileName);
 
-  // uploads file
-  await reference.putFile(filePath)
+    // Uploads the file
+    await reference.putFile(filePath);
 
-  const url = await storage().ref(fileName).getDownloadURL();
-
-  return url;
-}
+    // Get the file's download URL
+    const url = await reference.getDownloadURL();
+    
+    return url;
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    throw error; // Re-throw the error for further handling
+  }
+};

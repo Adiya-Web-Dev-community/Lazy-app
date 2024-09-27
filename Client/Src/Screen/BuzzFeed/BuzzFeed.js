@@ -41,6 +41,8 @@ export default function BuzzFeed({navigation}) {
   const [isCommentModalVisible, setIsCommentModalVisible] = useState(false);
   const [currentCommentPostId, setCurrentCommentPostId] = useState(null);
   const [postComments, setPostComments] = useState({});
+  const [isImageModalVisible, setIsImageModalVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState('');
 
   const fetchPosts = async category => {
     try {
@@ -123,7 +125,10 @@ export default function BuzzFeed({navigation}) {
       fetchPosts(selectedCategory);
     }, [selectedCategory]),
   );
-
+  const openImageModal = imageUrl => {
+    setSelectedImage(imageUrl);
+    setIsImageModalVisible(true);
+  };
   const toggleLike = async id => {
     try {
       const isLiked = likedPosts[id];
@@ -277,65 +282,67 @@ export default function BuzzFeed({navigation}) {
   );
 
   const renderItem = ({item}) => (
-      <View style={styles.postContainer}>
-        <View style={styles.profileContainer}>
-          <View style={styles.profileInfoContainer}>
-            <Image source={{uri: item.image_url}} style={styles.profileImage} />
-            <Text style={styles.username}>{username ? `${username}` : ''}</Text>
-          </View>
-          <TouchableOpacity
-            style={styles.moreIconContainer}
-            onPress={() => handleDeletePost(item._id)}>
-            <MaterialCommunityIcons
-              name="delete-outline"
-              color={COLORS.Black}
-              size={25}
-            />
-          </TouchableOpacity>
+    <View style={styles.postContainer}>
+      <View style={styles.profileContainer}>
+        <View style={styles.profileInfoContainer}>
+          <Image source={{uri: item.image_url}} style={styles.profileImage} />
+          <Text style={styles.username}>{username ? `${username}` : ''}</Text>
         </View>
+        <TouchableOpacity
+          style={styles.moreIconContainer}
+          onPress={() => handleDeletePost(item._id)}>
+          <MaterialCommunityIcons
+            name="delete-outline"
+            color={COLORS.Black}
+            size={25}
+          />
+        </TouchableOpacity>
+      </View>
+      <TouchableOpacity onPress={() => openImageModal(item.image_url)}>
         <Image
           source={{uri: item.image_url}}
           style={styles.postImage}
           resizeMode="cover"
         />
-        <View style={styles.buttonContainer}>
-          <View style={styles.leftIconsContainer}>
-            <TouchableOpacity
-              onPress={() => toggleLike(item._id)}
-              style={styles.iconButton}>
-              <AntDesign
-                name={likedPosts[item._id] ? 'like1' : 'like2'}
-                color={COLORS.Black}
-                size={25}
-                style={styles.iconMargin}
-              />
-              <Text style={styles.iconButtonText}>{item.likeCount}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setCurrentCommentPostId(item._id);
-                setIsCommentModalVisible(true);
-              }}
-              style={styles.iconButton}>
-              <FontAwesome
-                name="comment-o"
-                color={COLORS.Black}
-                size={25}
-                style={styles.iconMargin}
-              />
-            </TouchableOpacity>
-          </View>
+      </TouchableOpacity>
+      <View style={styles.buttonContainer}>
+        <View style={styles.leftIconsContainer}>
           <TouchableOpacity
-            onPress={() => toggleBookmark(item._id)}
-            style={{marginRight: scale(8)}}>
-            <FontAwesome
-              name={bookmarkedPosts[item._id] ? 'bookmark' : 'bookmark-o'}
+            onPress={() => toggleLike(item._id)}
+            style={styles.iconButton}>
+            <AntDesign
+              name={likedPosts[item._id] ? 'like1' : 'like2'}
               color={COLORS.Black}
-              size={30}
+              size={25}
+              style={styles.iconMargin}
+            />
+            <Text style={styles.iconButtonText}>{item.likeCount}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setCurrentCommentPostId(item._id);
+              setIsCommentModalVisible(true);
+            }}
+            style={styles.iconButton}>
+            <FontAwesome
+              name="comment-o"
+              color={COLORS.Black}
+              size={25}
+              style={styles.iconMargin}
             />
           </TouchableOpacity>
         </View>
+        <TouchableOpacity
+          onPress={() => toggleBookmark(item._id)}
+          style={{marginRight: scale(8)}}>
+          <FontAwesome
+            name={bookmarkedPosts[item._id] ? 'bookmark' : 'bookmark-o'}
+            color={COLORS.Black}
+            size={30}
+          />
+        </TouchableOpacity>
       </View>
+    </View>
   );
 
   return (
@@ -391,6 +398,16 @@ export default function BuzzFeed({navigation}) {
         currentUser={username}
         postId={currentCommentPostId}
       />
+      <Modal
+        visible={isImageModalVisible}
+        transparent={true}
+        onRequestClose={() => setIsImageModalVisible(false)}>
+        <Pressable
+          style={styles.modalBackground}
+          onPress={() => setIsImageModalVisible(false)}>
+          <Image source={{uri: selectedImage}} style={styles.fullScreenImage} />
+        </Pressable>
+      </Modal>
     </View>
   );
 }
@@ -584,5 +601,16 @@ const styles = StyleSheet.create({
   submitButtonText: {
     color: COLORS.White,
     fontSize: moderateScale(16),
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+  },
+  fullScreenImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
   },
 });
