@@ -21,6 +21,8 @@ router.get("/all/approved", isAdmin, getprrovedClaim);
 router.get("/get/user",isUser,getClaimbyUserId);
 router.put("/:id",updateClaim);
 router.delete("/:id",DeleteClaim);
+
+//claim report
 router.get("/report/pending",isUser,pendinClaims);
 router.get("/report/confirm",isUser,ConfirmClaim);
 router.get("/report/cancel",isUser,cancelClainms)

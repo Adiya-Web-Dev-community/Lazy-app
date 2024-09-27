@@ -28,7 +28,9 @@ const infoguideRoute = require("./routes/infoguideRoute");
 const buzzfeed = require("./routes/buzzfeedRoute");
 const postRoute = require("./routes/postRoute");
 const postCategoryRoute = require("./routes/postCategoryRoute");
-const claimRoute=require("./routes/claimroute")
+const claimRoute=require("./routes/claimroute");
+const historyRoute=require("./routes/historyRoute");
+const transactioRoute=require("./routes/transactionRoute")
 const routes = [
   {
     path: `${rootEndPoint}/user/`,
@@ -77,6 +79,14 @@ const routes = [
   {
     path: `${rootEndPoint}/claim/`,
     func: claimRoute,
+  },
+  {
+    path: `${rootEndPoint}/history/`,
+    func: historyRoute,
+  },
+  {
+    path: `${rootEndPoint}/transaction/`,
+    func: transactioRoute,
   },
 ];
 routes.forEach(({ path, func }) => {

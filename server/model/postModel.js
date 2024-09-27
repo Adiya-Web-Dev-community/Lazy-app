@@ -11,14 +11,14 @@ const PostModel = new Schema(
   {
     //   title: { type: String, required: true },
     content: { type: String, required: true },
-    image_url: { type: String }, // Optional image URL
-    video_url: { type: String }, // Optional video URL
-    user_id: { type: Schema.Types.ObjectId, ref: "user", required: true }, // Reference to the User collection
-    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }], // Stores user IDs who liked the post
+    image_url: [{ type: String }], 
+    video_url: { type: String }, 
+    user_id: { type: Schema.Types.ObjectId, ref: "user", required: true }, 
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }], 
     comments: [CommentsSchema],
     shares: { type: Number, default: 0 }, // Share count
     category: { type: String },
-    savedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }], // Stores user IDs who saved the post
+    savedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }], 
   },
   {
     timestamps: true,

@@ -1,13 +1,58 @@
 const Claim=require("../model/claimModel");
+const ClaimHistory = require("../model/claimhistory");
+const mongoose = require("mongoose");
+const User=require("../model/userModel");
+
 const createClaim = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
-    const data=req.body;
-    const userid=req.userId
-    const claim = new Claim({...data,userId:userid});
-    const savedClaim = await claim.save();
-    res.status(201).json(savedClaim);
+    const data = req.body;
+    const userId = req.userId;
+    const claim = new Claim({ ...data, userId });
+    const savedClaim = await claim.save({ session });
+    const historyEntry = new ClaimHistory({
+      claimId: savedClaim._id,
+      userId: userId,
+      action: [
+        {
+          status: savedClaim.status,
+          updateBy: "user",
+          description: "submitted a new claim.",
+        },
+      ],
+     
+      amount: savedClaim.orderamount, 
+    });
+    const savedHistory = await historyEntry.save({ session });
+if(!savedHistory){
+  return res.status(403).json({success:false,message:"history Not created"});
+}
+    await User.findByIdAndUpdate(
+      userId,
+      {
+        $push: {
+          claims: {
+            claimId: savedClaim._id,
+            amount: savedClaim.orderamount,
+            status: savedClaim.status,
+          },
+        },
+      },
+      { new: true, session }
+    );
+    await session.commitTransaction();
+    session.endSession();
+
+    res.status(201).json({
+      message: "Claim created successfully.",
+      claim: savedClaim,
+    });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+  
+    await session.abortTransaction();
+    session.endSession();
+    res.status(500).json({ message: error.message });
   }
 };
 

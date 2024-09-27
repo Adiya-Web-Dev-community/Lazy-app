@@ -21,15 +21,33 @@ const userModel = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    role:{
-      type:String,
-      enum:["user","admin"],
-      default:"user"
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
     },
+    claim: [
+      {
+        claimId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "claim",
+        },
+        amount: { type: Number },
+        status: {
+          type: String,
+          enum: ["pending", "cancel", "confirm"],
+          default: "pending",
+        },
+        isApproved: {
+          type: Boolean,
+          default: false,
+        },
+        bonusAmount:{type:Number}
+      },
+    ],
     otp: {
       type: Number,
     },
-    
   },
   {
     timestamps: true,
