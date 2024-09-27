@@ -18,7 +18,7 @@ const createClaim = async (req, res) => {
         {
           status: savedClaim.status,
           updateBy: "user",
-          description: "submitted a new claim.",
+           description: "submitted a new claim.",
         },
       ],
      
@@ -97,24 +97,54 @@ const getClaimbyUserId = async (req, res) => {
 };
 
 const updateClaim = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
     const updatedData = req.body;
-    if (updatedData.isApproved) {
-      updatedData.status = "confirm";
-    }
+
+    const {id}=req.params;
     const updatedClaim = await Claim.findByIdAndUpdate(
-      req.params.id,
+      id,
       { $set: updatedData },
-      { new: true }
+      { new: true, session, runValidators: true }
     );
 
     if (!updatedClaim) {
+      await session.abortTransaction();
+      session.endSession();
       return res.status(404).json({ message: "Claim not found" });
     }
 
-    res.status(200).json(updatedClaim);
+    const historyUpdate = {
+      status: updatedClaim.status,
+      updateBy: "LazyBet",
+      description: `your Claim is ${updatedClaim.status} by LazyBet`,
+    };
+
+    const updatedHistory = await ClaimHistory.findOneAndUpdate(
+      { claimId: updatedClaim._id },
+      { $push: { action: historyUpdate } },
+      { new: true, session }
+    );
+
+    if (!updatedHistory) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(403).json({ message: "History not updated" });
+    }
+
+    await session.commitTransaction();
+    session.endSession();
+
+    res.status(200).json({
+      message: "Claim updated successfully.",
+      claim: updatedClaim,
+    });
+
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    await session.abortTransaction();
+    session.endSession();
+    res.status(500).json({ message: error.message });
   }
 };
 

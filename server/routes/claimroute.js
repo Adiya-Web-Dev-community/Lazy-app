@@ -19,7 +19,7 @@ router.get("/", isAdmin, getAllClaim);
 router.get("/:id", isAdmin, getClaimById);
 router.get("/all/approved", isAdmin, getprrovedClaim);
 router.get("/get/user",isUser,getClaimbyUserId);
-router.put("/:id",updateClaim);
+router.put("/:id",isAdmin,updateClaim);
 router.delete("/:id",DeleteClaim);
 
 //claim report

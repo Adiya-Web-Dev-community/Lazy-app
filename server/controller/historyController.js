@@ -9,7 +9,7 @@ const gethistoryData = async (req, res) => {
     }).lean();
     const claimHistories = await ClaimHistory.find({
       userId: req.userId,
-    }).lean();
+    }).populate("claimId").lean();
 
     const mergedData = [
       ...transactions.map((item) => ({ ...item, type: "transaction" })),

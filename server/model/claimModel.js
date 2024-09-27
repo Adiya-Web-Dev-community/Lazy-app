@@ -30,7 +30,7 @@ const ClaimModel = new mongoose.Schema(
     orderamount: { type: Number, required: true },
     invoice: { type: String },
     isApproved: { type: Boolean, default: false },
-    note: { type: String },
+    remarks: { type: String },
   },
   {
     timestamps: true,
