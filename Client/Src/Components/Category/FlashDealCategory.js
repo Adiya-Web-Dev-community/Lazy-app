@@ -27,6 +27,7 @@ const FlashDealCategory = ({ data, handleFlashDealPress }) => {
               <ImageBackground source={{ uri: item.images[0] }} style={styles.flashDealImage}>
                 <View style={styles.flashDealTextContainer}>
                   <Text style={styles.flashDealTitle}>{item.name}</Text>
+                  <Text style={styles.flashDealTitle}>Good Camera</Text>
                 </View>
               </ImageBackground>
             ) : (

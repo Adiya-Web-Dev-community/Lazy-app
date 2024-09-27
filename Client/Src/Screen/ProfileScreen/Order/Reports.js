@@ -1,27 +1,45 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
-  Modal,
-  TouchableWithoutFeedback,
 } from 'react-native';
-import {COLORS} from '../../../Theme/Colors';
+import { COLORS } from '../../../Theme/Colors';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-import {moderateScale, scale} from '../../../utils/Scaling';
+import { moderateScale, scale } from '../../../utils/Scaling';
+import { GetReportPendingAmount, GetReportConfirmedAmount, GetReportCanceledAmount } from '../../../api/api';
 
-export default function Reports({navigation}) {
-  const [modalVisible, setModalVisible] = useState(false);
+export default function Reports({ navigation }) {
+  const [pendingAmount, setPendingAmount] = useState(0);
+  const [confirmedAmount, setConfirmedAmount] = useState(0);
+  const [canceledAmount, setCanceledAmount] = useState(0);
+
+  useEffect(() => {
+    const fetchAmounts = async () => {
+      try {
+        const pendingResponse = await GetReportPendingAmount();
+        const confirmedResponse = await GetReportConfirmedAmount();
+        const canceledResponse = await GetReportCanceledAmount();
+
+        setPendingAmount(pendingResponse.pendingamount || 0);
+        setConfirmedAmount(confirmedResponse.totalProfit || 0);
+        setCanceledAmount(canceledResponse.cancelAmount || 0);
+      } catch (error) {
+        console.error('Error fetching amounts:', error);
+      }
+    };
+
+    fetchAmounts();
+  }, []);
 
   const breakdownItems = [
     {
       id: 1,
       label: 'Pending',
-      amount: '$80.3',
+      amount: `$${pendingAmount}`,
       icon: <Fontisto name="history" color={'white'} size={15} />,
       iconColor: 'orange',
       labelColor: 'orange',
@@ -30,7 +48,7 @@ export default function Reports({navigation}) {
     {
       id: 2,
       label: 'Confirmed',
-      amount: '$0',
+      amount: `$${confirmedAmount}`,
       icon: <AntDesign name="checkcircleo" color={'white'} size={15} />,
       iconColor: 'green',
       labelColor: 'green',
@@ -39,7 +57,7 @@ export default function Reports({navigation}) {
     {
       id: 3,
       label: 'Cancelled',
-      amount: '$0',
+      amount: `$${canceledAmount}`,
       icon: <AntDesign name="closecircleo" color={'white'} size={15} />,
       iconColor: 'red',
       labelColor: 'red',
@@ -59,23 +77,18 @@ export default function Reports({navigation}) {
           style={styles.questionIcon}
         />
       </View>
-      <Text style={styles.totalProfit}>$20.00</Text>
+      <Text style={styles.totalProfit}>${confirmedAmount}</Text>
 
       <View style={styles.breakupContainer}>
         {breakdownItems.map(item => (
           <View key={item.id} style={styles.breakdownItem}>
-            <View
-              style={[styles.iconContainer, {backgroundColor: item.iconColor}]}>
+            <View style={[styles.iconContainer, { backgroundColor: item.iconColor }]}>
               {item.icon}
             </View>
             <View style={styles.textContainer}>
               <View style={styles.labelAmountContainer}>
-                <Text style={[styles.labelText, {color: item.labelColor}]}>
-                  {item.label}
-                </Text>
-                <Text style={[styles.amountText, {color: item.amountColor}]}>
-                  {item.amount}
-                </Text>
+                <Text style={[styles.labelText, { color: item.labelColor }]}>{item.label}</Text>
+                <Text style={[styles.amountText, { color: item.amountColor }]}>{item.amount}</Text>
               </View>
             </View>
           </View>
@@ -90,26 +103,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.White,
     padding: scale(15),
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: scale(25),
-  },
-  leftContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  title: {
-    marginLeft: scale(10),
-    fontWeight: 'bold',
-    fontSize: moderateScale(18),
-    color: COLORS.Black,
-  },
-  seeAll: {
-    color: COLORS.green,
-    fontWeight: 'bold',
   },
   profitContainer: {
     marginVertical: scale(20),
@@ -141,9 +134,9 @@ const styles = StyleSheet.create({
     padding: scale(10),
     borderRadius: scale(8),
     backgroundColor: COLORS.LightGrey,
-    elevation: 2, // Shadow effect on Android
-    shadowColor: '#000', // Shadow effect on iOS
-    shadowOffset: {width: 0, height: 2},
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
   },
@@ -168,16 +161,5 @@ const styles = StyleSheet.create({
   amountText: {
     textAlign: 'right',
     color: COLORS.Black,
-  },
-  whatIsThisText: {
-    textDecorationLine: 'underline',
-    fontStyle: 'italic',
-    color: COLORS.green,
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
 });

@@ -8,7 +8,9 @@ const COLORS = {
     yellow:'yellow',
     blue:'#2daafe',
     LightGrey:"#f2f3f4",
-    watercolor:'#DEF4FC'
+    watercolor:'#DEF4FC',
+    darkGreen: '#155724',
+  lightGreen: '#B2E0B2',
   };
   
   export {COLORS};

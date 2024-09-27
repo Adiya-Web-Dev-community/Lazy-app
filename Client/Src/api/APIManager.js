@@ -20,7 +20,7 @@ export const getRequest = async (url, params = {}) => {
   try {
     const response = await apiClient.get(url, {params});
     console.log(
-      '-------------------------------------- URL --------------------------------------------------\n',
+      '- URL -\n',
     );
     console.log(`${BASE_URL + url}\n`);
     console.log(

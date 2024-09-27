@@ -64,6 +64,7 @@ import MakeLinkNow from '../Screen/ProfileScreen/PaymentHistory/MakeLinkNow';
 import FlipkartReport from '../Screen/ProfileScreen/FlipkartReport';
 import ChooseTime from '../Components/ChooseTime';
 import OrderHistory from '../Screen/ProfileScreen/PaymentHistory/OrderHistory';
+import Transection from '../Screen/ProfileScreen/PaymentHistory/Transection';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -366,7 +367,6 @@ export default function NavigationScreen() {
           options={{headerShown: true, title: 'My Earning'}}
         />
 
-      
         <Stack.Screen
           name="EditProfile"
           component={EditProfile}
@@ -424,6 +424,7 @@ export default function NavigationScreen() {
           component={ChooseTime}
           options={{headerShown: true, title: 'Choose Time Period'}}
         />
+        <Stack.Screen name="Transection" component={Transection} />
       </Stack.Navigator>
     </NavigationContainer>
   );
