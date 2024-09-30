@@ -13,6 +13,8 @@ import {
   SinglBlogResponseData,
   BlogReviewType,
   PostCategoryResponseData,
+  TransactionResponse,
+  TransactionSingleResponse,
 } from "../types/contentType";
 import { apiGetRequest } from "../api/adminGetApi";
 import { useQuery } from "@tanstack/react-query";
@@ -192,6 +194,31 @@ export const usePostCategories = () => {
     queryFn: async () => {
       return await apiGetRequest<PostCategoryResponseData>({
         url: "api/admin/post/category",
+      });
+    },
+  });
+};
+//Transection
+
+//get all
+export const useTransaction = () => {
+  return useQuery<ApiGetResponse<TransactionResponse>, ApiError>({
+    queryKey: ["Transaction"],
+    queryFn: async () => {
+      return await apiGetRequest<TransactionResponse>({
+        url: "api/transaction",
+      });
+    },
+  });
+};
+
+//get single
+export const useSingleTransaction = (id: string) => {
+  return useQuery<ApiGetResponse<TransactionSingleResponse>, ApiError>({
+    queryKey: [`Transaction/${id}`],
+    queryFn: async () => {
+      return await apiGetRequest<TransactionSingleResponse>({
+        url: `api/transaction/single/admin/${id}`,
       });
     },
   });

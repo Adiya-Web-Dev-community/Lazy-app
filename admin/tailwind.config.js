@@ -24,6 +24,8 @@ export default {
         customFaqProfile: "40px  1fr 1fr",
         customeProsCons: "40px 1fr 1fr 1fr 0.6fr",
         customePostCategory: "40px  2fr  0.6fr",
+        customePostTransaction:
+          "40px  1fr 1fr 1fr 1.6fr 1.6fr 1.6fr 2.4fr 1.6fr 0.6fr",
       },
     },
   },

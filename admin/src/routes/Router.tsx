@@ -29,6 +29,9 @@ import FaqForm from "../forms/FaqForm";
 import ProfileFaq from "../pages/ProfileFaq";
 import ProsCons from "../pages/ProsCons";
 import ProsConsForm from "../forms/ProsConsForm";
+import PostCategory from "../pages/PostCategory";
+import Transaction from "../pages/Transaction";
+import TransactionForm from "../pages/TransactionForm";
 
 const route = createBrowserRouter([
   {
@@ -109,6 +112,13 @@ const route = createBrowserRouter([
       { path: "/proscons", element: <ProsCons /> },
       { path: "/proscons/form", element: <ProsConsForm /> },
       { path: "/proscons/form/:id", element: <ProsConsForm /> },
+
+      //Post-Category
+      { path: "/post-category", element: <PostCategory /> },
+
+      //transaction
+      { path: "/transaction", element: <Transaction /> },
+      { path: "/transaction/:id", element: <TransactionForm /> },
     ],
   },
 ]);
