@@ -756,3 +756,105 @@ export interface MutationObjectPostCategoryType {
   condition: "creat" | "update";
   data: PostCategoryPostData;
 }
+
+//Post Category Types
+export interface PostCategoryStateType {
+  creat: boolean;
+  updateId: string;
+  updateData: string;
+}
+export interface PostCategoryPostData {
+  name: string;
+}
+export interface CreatPostCategoryProps {
+  setPostCategoryForm: Dispatch<SetStateAction<PostCategoryStateType>>;
+  isPostCategoryForm: PostCategoryStateType;
+  refetch: () => void;
+  clear: () => void;
+}
+export interface GetPostCatgeoryData extends PostCategoryPostData {
+  _id: string;
+}
+export interface PostCategoryResponseData {
+  data: GetPostCatgeoryData[];
+}
+export interface PostCategoryPostResponseType {
+  success?: boolean;
+  message?: string;
+  data?: GetPostCatgeoryData;
+}
+export interface MutationObjectPostCategoryType {
+  path: string;
+  condition: "creat" | "update";
+  data: PostCategoryPostData;
+}
+
+//transaction
+export interface UserDetails {
+  name: string;
+  email: string;
+  password: string;
+  isVerify: boolean;
+  role: string;
+  claim: string[];
+}
+
+export interface UserDetailsGet extends UserDetails {
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TransactionPost {
+  userId: UserDetails;
+  type: string;
+  status: string;
+  paymenttype: string;
+  paymentMode: string;
+  transactionId: string;
+  remarks: string;
+  amount: number;
+}
+
+export interface TransactionUpdatePost {
+  userId: string;
+  type: string;
+  status: string;
+  paymenttype: string;
+  paymentMode: string;
+  transactionId: string;
+  remarks: string;
+  amount: number;
+}
+
+export interface TransactionGet extends TransactionPost {
+  userId: UserDetailsGet;
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+//for all
+export interface TransactionResponse {
+  sucess: boolean;
+  data: TransactionGet[];
+}
+
+//for single
+export interface TransactionSingleResponse {
+  sucess: boolean;
+  data: TransactionGet;
+}
+
+//update type
+
+export interface MutationObjectTransactionType {
+  path: string;
+  data: TransactionUpdatePost;
+}
+
+export interface TransactionPostResponseType {
+  success?: boolean;
+  message?: string;
+  data?: TransactionGet;
+}
