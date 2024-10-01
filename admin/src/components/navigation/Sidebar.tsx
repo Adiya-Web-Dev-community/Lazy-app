@@ -340,7 +340,7 @@ const SideBar: React.FC<SideBarPropsType> = ({
             </span>
           </NavLink>
           <NavLink
-            to={"/transaction"}
+            to={"/claim"}
             className={({ isActive }) =>
               ` relative group rounded-md flex font-medium items-center
                     ${

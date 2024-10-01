@@ -1,19 +1,5 @@
-// import { IoIosSend } from "react-icons/io";
+import { TransactionGet } from "../types/contentType";
 
-import { ApiError, ApiResponse } from "../types/apiType";
-
-import { useMutation } from "@tanstack/react-query";
-
-import { toast } from "react-toastify";
-import {
-  DeletElementData,
-  ProductDeleteStateType,
-  TransactionGet,
-  UniDelet,
-} from "../types/contentType";
-import { apiRequest } from "../api/adminApi";
-
-import ConfirmDeleteModal from "../components/modal/ConfirmDeleteModal";
 import { useState } from "react";
 import Pagination from "../components/pagination/Pagination";
 import CategoryLoading from "../components/loading-elemnts/CategoryLoading";
@@ -22,11 +8,6 @@ import { useTransaction } from "../api/querys";
 import { useNavigate } from "react-router-dom";
 
 const Transaction: React.FC = () => {
-  const [isDeletModal, setDeletModal] = useState<ProductDeleteStateType>({
-    delet: false,
-    deletElementId: "",
-  });
-
   const navigate = useNavigate();
 
   const transactionHeading = [
@@ -48,7 +29,7 @@ const Transaction: React.FC = () => {
   //     }));
   //   };
 
-  const { isPending, isError, data, error, refetch } = useTransaction();
+  const { isPending, isError, data, error } = useTransaction();
 
   const transactionApiData = data?.data?.data;
   //   const categoryApiData = data?.data?.data;
@@ -72,87 +53,12 @@ const Transaction: React.FC = () => {
     setCurrentPage(pageNumber);
   };
 
-  const mutation = useMutation<
-    ApiResponse<DeletElementData>,
-    ApiError,
-    UniDelet
-  >({
-    mutationFn: async (deletObj) => {
-      toast.loading("Checking Details");
-      try {
-        // console.log(path, method);
-        const response = await apiRequest<UniDelet, DeletElementData>({
-          url: deletObj.path,
-          method: "delete",
-        });
-
-        // return { data: response.data };
-        return response as ApiResponse<DeletElementData>;
-      } catch (error) {
-        console.log(error);
-        const apiError: ApiError = {
-          message: (error as ApiError)?.message || "An error occurred",
-          status: (error as ApiError)?.status || 500,
-        };
-        throw apiError;
-      }
-    },
-    onSuccess: (data: ApiResponse<DeletElementData>) => {
-      refetch();
-      toast.dismiss();
-      toast.success(`${data?.message}`);
-      setDeletModal((prev) => ({
-        ...prev,
-        delet: false,
-        deletElementId: "",
-      }));
-    },
-    onError: (error: ApiError) => {
-      console.log(error);
-      toast.dismiss();
-      toast.error(error?.message);
-      setDeletModal((prev) => ({
-        ...prev,
-        delet: false,
-        deletElementId: "",
-      }));
-    },
-  });
-
-  const deletCategory = (id: string) => {
-    setDeletModal((prev) => ({
-      ...prev,
-      delet: true,
-      deletElementId: id,
-    }));
-  };
-
-  const closehandler = () => {
-    setDeletModal((prev) => ({
-      ...prev,
-      delet: false,
-      deletElementId: "",
-    }));
-  };
-
-  const confirmhandler = () => {
-    const deleteObj: UniDelet = {
-      path: `/api/admin/post/category/${isDeletModal?.deletElementId}`,
-    };
-
-    // Proceed with the deletion
-    mutation.mutate(deleteObj);
-  };
-
   const updateCategory = (value: TransactionGet) => {
     navigate(`/transaction/${value._id}`);
   };
 
   return (
     <>
-      {isDeletModal?.delet && (
-        <ConfirmDeleteModal onClose={closehandler} onConfirm={confirmhandler} />
-      )}
       <section
         className={`md:pl-0 p-4 h-full rounded-md font-philosopher  mx-auto [&::-webkit-scrollbar]:hidden`}
       >
@@ -257,12 +163,6 @@ const Transaction: React.FC = () => {
                           onClick={() => updateCategory(transaction)}
                         >
                           Edit
-                        </button>
-                        <button
-                          className="px-3 py-2 text-sm font-semibold rounded-md bg-rose-800 hover:bg-rose-700"
-                          onClick={() => deletCategory(transaction?._id)}
-                        >
-                          Delete
                         </button>
                       </div>
                     </section>

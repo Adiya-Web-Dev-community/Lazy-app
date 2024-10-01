@@ -19,7 +19,7 @@ import {
 
 import { useSingleTransaction } from "../api/querys.ts";
 
-interface OpenStateType {
+export interface OpenStateType {
   status: boolean;
   paymenttype: boolean;
 }
@@ -106,12 +106,10 @@ const TransactionForm: React.FC = () => {
     },
 
     onSuccess: (data) => {
-      console.log(data, "Blog created");
+      console.log(data, "Transaction update");
       toast.dismiss();
       clearhandler();
-      toast.success(
-        `${isUpdate ? "Update Successfull" : "Create Successfull"}`
-      );
+      toast.success("Update Successfull");
     },
     onError: (error: ApiError) => {
       console.log(error);
@@ -262,6 +260,8 @@ const TransactionForm: React.FC = () => {
                   ))}
                 </ul>
               </div>
+
+              {/* Payment Type */}
               <div className="relative">
                 <div
                   className="flex justify-between p-2 font-medium pl-4 bg-[#252525] focus:border-[#DEE1E2] text-gray-400 border-transparent rounded-md cursor-pointer"

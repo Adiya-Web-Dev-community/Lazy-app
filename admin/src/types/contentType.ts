@@ -858,3 +858,40 @@ export interface TransactionPostResponseType {
   message?: string;
   data?: TransactionGet;
 }
+
+//claim
+
+export interface ClaimPost {
+  name: string;
+  userId: string;
+  productname: string;
+  dateOfOrder: string;
+  orderid: string;
+  status: string;
+  invoice: string;
+  isApproved: boolean;
+  remarks: string;
+  orderamount: number;
+}
+
+export interface ClaimGet extends ClaimPost {
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+//patch method only status update of claim
+export interface ClaimUpdate {
+  status: string;
+}
+
+//update claim
+export interface MutationObjectClaimType {
+  path: string;
+  data: ClaimUpdate;
+}
+
+export interface ClaimResponse {
+  success: boolean;
+  data: ClaimGet[];
+}

@@ -15,6 +15,7 @@ import {
   PostCategoryResponseData,
   TransactionResponse,
   TransactionSingleResponse,
+  ClaimGet,
 } from "../types/contentType";
 import { apiGetRequest } from "../api/adminGetApi";
 import { useQuery } from "@tanstack/react-query";
@@ -200,7 +201,7 @@ export const usePostCategories = () => {
 };
 //Transection
 
-//get all
+////get all
 export const useTransaction = () => {
   return useQuery<ApiGetResponse<TransactionResponse>, ApiError>({
     queryKey: ["Transaction"],
@@ -212,13 +213,25 @@ export const useTransaction = () => {
   });
 };
 
-//get single
+////get single
 export const useSingleTransaction = (id: string) => {
   return useQuery<ApiGetResponse<TransactionSingleResponse>, ApiError>({
     queryKey: [`Transaction/${id}`],
     queryFn: async () => {
       return await apiGetRequest<TransactionSingleResponse>({
         url: `api/transaction/single/admin/${id}`,
+      });
+    },
+  });
+};
+
+//Claim
+export const useClaims = () => {
+  return useQuery<ApiGetResponse<ClaimGet[]>, ApiError>({
+    queryKey: ["Claim"],
+    queryFn: async () => {
+      return await apiGetRequest<ClaimGet[]>({
+        url: "api/claim",
       });
     },
   });

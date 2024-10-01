@@ -32,6 +32,7 @@ import ProsConsForm from "../forms/ProsConsForm";
 import PostCategory from "../pages/PostCategory";
 import Transaction from "../pages/Transaction";
 import TransactionForm from "../pages/TransactionForm";
+import Claim from "../pages/Claim";
 
 const route = createBrowserRouter([
   {
@@ -119,6 +120,9 @@ const route = createBrowserRouter([
       //transaction
       { path: "/transaction", element: <Transaction /> },
       { path: "/transaction/:id", element: <TransactionForm /> },
+
+      //Claim
+      { path: "/claim", element: <Claim /> },
     ],
   },
 ]);

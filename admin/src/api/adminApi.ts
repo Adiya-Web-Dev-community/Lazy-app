@@ -4,7 +4,7 @@ import axiosInstance from "./axiosInstance";
 
 interface ApiRequestConfig<TRequest> {
   url: string;
-  method: "get" | "post" | "put" | "delete";
+  method: "get" | "post" | "put" | "delete" | "patch";
   data?: TRequest;
 }
 
