@@ -1,7 +1,7 @@
-const Claim=require("../model/claimModel");
+const Claim = require("../model/claimModel");
 const ClaimHistory = require("../model/claimhistory");
 const mongoose = require("mongoose");
-const User=require("../model/userModel");
+const User = require("../model/userModel");
 
 const createClaim = async (req, res) => {
   const session = await mongoose.startSession();
@@ -18,16 +18,18 @@ const createClaim = async (req, res) => {
         {
           status: savedClaim.status,
           updateBy: "user",
-           description: "submitted a new claim.",
+          description: "submitted a new claim.",
         },
       ],
-     
-      amount: savedClaim.orderamount, 
+
+      amount: savedClaim.orderamount,
     });
     const savedHistory = await historyEntry.save({ session });
-if(!savedHistory){
-  return res.status(403).json({success:false,message:"history Not created"});
-}
+    if (!savedHistory) {
+      return res
+        .status(403)
+        .json({ success: false, message: "history Not created" });
+    }
     await User.findByIdAndUpdate(
       userId,
       {
@@ -49,7 +51,6 @@ if(!savedHistory){
       claim: savedClaim,
     });
   } catch (error) {
-  
     await session.abortTransaction();
     session.endSession();
     res.status(500).json({ message: error.message });
@@ -102,7 +103,7 @@ const updateClaim = async (req, res) => {
   try {
     const updatedData = req.body;
 
-    const {id}=req.params;
+    const { id } = req.params;
     const updatedClaim = await Claim.findByIdAndUpdate(
       id,
       { $set: updatedData },
@@ -127,6 +128,14 @@ const updateClaim = async (req, res) => {
       { new: true, session }
     );
 
+    console.log(
+      updatedHistory,
+      historyUpdate,
+      updatedClaim,
+      updatedData,
+      ClaimHistory,
+      "from update"
+    );
     if (!updatedHistory) {
       await session.abortTransaction();
       session.endSession();
@@ -140,7 +149,6 @@ const updateClaim = async (req, res) => {
       message: "Claim updated successfully.",
       claim: updatedClaim,
     });
-
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
@@ -200,21 +208,38 @@ const cancelClainms = async (req, res) => {
       (acc, claim) => acc + claim.orderamount,
       0
     );
-    res.status(200).json({canceledClaims,cancelAmount:totalcancelAmount})
+    res.status(200).json({ canceledClaims, cancelAmount: totalcancelAmount });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const singleClaimHistory = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const claimHistory = await ClaimHistory.findOne({
+      claimId: id,
+    });
+    if (!claimHistory) {
+      return res.status(404).json({ message: "History not found" });
+    }
+
+    res.status(200).json(claimHistory);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
 module.exports = {
-    createClaim,
-    getAllClaim,
-    getClaimById,
-    getprrovedClaim,
-    getClaimbyUserId,
-    updateClaim,
-    DeleteClaim,
-    pendinClaims,
-    ConfirmClaim,
-    cancelClainms
-  };
+  createClaim,
+  getAllClaim,
+  getClaimById,
+  getprrovedClaim,
+  getClaimbyUserId,
+  updateClaim,
+  DeleteClaim,
+  pendinClaims,
+  ConfirmClaim,
+  cancelClainms,
+  singleClaimHistory,
+};
