@@ -4,7 +4,6 @@ import { useMutation } from "@tanstack/react-query";
 
 import { toast } from "react-toastify";
 import {
-  ClaimGet,
   DeletElementData,
   ProductDeleteStateType,
   UniDelet,
@@ -15,12 +14,13 @@ import ConfirmDeleteModal from "../components/modal/ConfirmDeleteModal";
 import { useState } from "react";
 import Pagination from "../components/pagination/Pagination";
 import CategoryLoading from "../components/loading-elemnts/CategoryLoading";
-import { useClaims } from "../api/querys";
+import { useClaimsHistory } from "../api/querys";
 // import CreatPostCategory from "../forms/CreatPostCategory";
 import UpdateClaim, { ClaimStateType } from "../forms/UpdateClaim";
-import { useNavigate } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { TiArrowBackOutline } from "react-icons/ti";
 
-const Claim: React.FC = () => {
+const ClaimHistory: React.FC = () => {
   const [isClaimForm, setClaimForm] = useState<ClaimStateType>({
     updateId: "",
     updatedata: "",
@@ -30,25 +30,23 @@ const Claim: React.FC = () => {
     deletElementId: "",
   });
 
-  const navigate = useNavigate();
+  //   const navigate = useNavigate();
+  const { id } = useParams();
 
   const categoryHeading = [
-    "Name",
-    "Product Name",
-    "Date Of Order",
-    "Order Id",
     "Status",
-    // "Invoice",
-    // "Approved",
-    "Order Amount",
-    "Remark",
-    "Setting",
+    "UpdateBy",
+    "Description",
+    "Date",
+    // "Setting",
   ];
 
-  const { isPending, isError, data, error, refetch } = useClaims();
+  const { isPending, isError, data, error, refetch } = useClaimsHistory(
+    id ?? ""
+  );
 
-  const categoryApiData = data?.data;
-  console.log(data, categoryApiData, error, "claims");
+  const categoryApiData = data?.data?.action;
+  console.log(data, categoryApiData, error, "claims-history");
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 5;
@@ -114,20 +112,20 @@ const Claim: React.FC = () => {
     },
   });
 
-  const deletCategory = (id: string) => {
-    setDeletModal((prev) => ({
-      ...prev,
-      delet: true,
-      deletElementId: id,
-    }));
-  };
-  const updateCategory = (claim: ClaimGet) => {
-    setClaimForm((prev) => ({
-      ...prev,
-      updateId: claim._id,
-      updatedata: claim.status,
-    }));
-  };
+  //   const deletCategory = (id: string) => {
+  //     setDeletModal((prev) => ({
+  //       ...prev,
+  //       delet: true,
+  //       deletElementId: id,
+  //     }));
+  //   };
+  //   const updateCategory = (claim: ClaimGet) => {
+  //     setClaimForm((prev) => ({
+  //       ...prev,
+  //       updateId: claim._id,
+  //       updatedata: claim.status,
+  //     }));
+  //   };
 
   const closehandler = () => {
     setDeletModal((prev) => ({
@@ -154,10 +152,6 @@ const Claim: React.FC = () => {
     }));
   };
 
-  const navigateHandler = (id: string) => {
-    navigate(`/claim/${id}`);
-  };
-
   return (
     <>
       {isClaimForm.updateId && (
@@ -176,10 +170,13 @@ const Claim: React.FC = () => {
         <section
           className={` md:p-8 p-6 h-full border-gray-200 rounded-md  font-philosopher max-w-full w-full shadow-md`}
         >
-          <div className="flex items-center mb-2 md:mb-6">
+          <div className="flex items-center pb-3 md:pb-6 border-b-2 border-[#1A1A1A]">
             <h1 className=" text-[28px] font-bold md:text-4xl text-[#DEE1E2]">
-              Claims
+              Claims History
             </h1>
+            <Link to={"/claim"}>
+              <TiArrowBackOutline className="w-10 h-10 ml-4 text-emerald-600 hover:text-emerald-500" />
+            </Link>
           </div>
           <div className="flex justify-between mb-4">
             <div className={`flex items-center   `}>
@@ -187,32 +184,32 @@ const Claim: React.FC = () => {
                 type="search"
                 placeholder={`Search`}
                 className={` p-2 text-sm md:text-base  sm:px-4 py-1 border-[2px] border-transparent 
-             bg-[#252525] focus:border-gray-800
-          shadow-inner rounded-[0.26rem] outline-none `}
+                 bg-[#252525] focus:border-gray-800
+              shadow-inner rounded-[0.26rem] outline-none `}
                 // value={searchQuery}
                 // onChange={(e) => setSearchQuery(e.target.value)}
                 // onFocus={() => setCurrentPage(1)}
               />
             </div>
             {/* <div className="relative flex items-center self-end ">
-              <button
-                className={` px-2 py-1 
-                     bg-emerald-800  hover:bg-emerald-700 text-[#DEE1E2] font-semibold
-                }    rounded shadow-xl md:px-4 md:py-2  sm:self-center`}
-                onClick={handlingCategory}
-              >
-                <span className="hidden md:inline-block">
-                  Creat Post Category
-                </span>
-
-                <IoIosSend className="w-6 h-6 md:hidden" />
-              </button>
-            </div> */}
+                  <button
+                    className={` px-2 py-1 
+                         bg-emerald-800  hover:bg-emerald-700 text-[#DEE1E2] font-semibold
+                    }    rounded shadow-xl md:px-4 md:py-2  sm:self-center`}
+                    onClick={handlingCategory}
+                  >
+                    <span className="hidden md:inline-block">
+                      Creat Post Category
+                    </span>
+    
+                    <IoIosSend className="w-6 h-6 md:hidden" />
+                  </button>
+                </div> */}
           </div>
           <section
             className={`w-full overflow-auto  border-2  [&::-webkit-scrollbar]:hidden rounded-lg border-[#1A1A1A] shadow-md bg-[#1A1A1A]`}
           >
-            <section className="grid gap-4 p-2 pb-2 min-w-[1200px] font-medium  grid-cols-customePostClaim text-[#DEE1E2] md:font-semibold bg-[#1A1A1A]">
+            <section className="grid gap-4 p-2 pb-2 min-w-[800px] font-medium  grid-cols-customeHistory text-[#DEE1E2] md:font-semibold bg-[#1A1A1A]">
               <p className="pl-2 md:text-lg">SrNo.</p>
 
               {categoryHeading.map((heading, index) => (
@@ -227,7 +224,7 @@ const Claim: React.FC = () => {
               ))}
             </section>
 
-            <div className=" h-[380px] overflow-y-auto [&::-webkit-scrollbar]:hidden min-w-[1200px] bg-[#252525]">
+            <div className=" h-[380px] overflow-y-auto [&::-webkit-scrollbar]:hidden min-w-[800px] bg-[#252525]">
               {
                 isPending ? (
                   <CategoryLoading />
@@ -239,62 +236,43 @@ const Claim: React.FC = () => {
                   currentCategory?.map((claim, i) => (
                     <section
                       key={i}
-                      className="grid items-center gap-4 py-2 pl-6 pr-4 border-t-2 text-[#DEE1E2] border-[#1A1A1A] grid-cols-customePostClaim group hover:bg-[#2c2c2c]"
+                      className="grid items-center gap-4 py-2 pl-6 pr-4 border-t-2 text-[#DEE1E2] border-[#1A1A1A] grid-cols-customeHistory group hover:bg-[#2c2c2c]"
                     >
                       <span>{i + 1}</span>
 
                       <span className="flex ml-2 text-sm font-semibold md:text-base">
-                        {claim?.name}
+                        {claim?.status}
                       </span>
                       <span className="flex justify-center ml-2 text-sm font-semibold md:text-base">
-                        {claim?.productname}
+                        {claim?.updateBy}
                       </span>
                       <span className="flex justify-center ml-2 text-sm font-semibold md:text-base">
-                        {claim?.dateOfOrder.split("T")[0]}
+                        {claim?.description}
                       </span>
-                      <span
-                        className="flex justify-center ml-2 text-sm font-semibold text-green-400 cursor-pointer md:text-base hover:text-green-600"
-                        onClick={() => navigateHandler(claim._id)}
-                      >
-                        {claim?.orderid}
+                      <span className="flex justify-center ml-2 text-sm font-semibold md:text-base">
+                        {claim?.date.split("T")[0]}
                       </span>
-                      {/* <span className="flex ml-4 text-sm font-semibold md:text-base">
-                        {claim.isApproved === true ? (
-                          claim.status
-                        ) : 
-                        
-                        (
-                          <button
-                            className="px-3 py-2 text-sm font-semibold rounded-md bg-emerald-700 hover:bg-emerald-600 "
-                            onClick={() => approvehandler(claim)}
-                          >
-                            Approve
-                          </button>
-                        )}
-                      </span> */}
-                      <span className="flex ml-4 text-sm font-semibold md:text-base">
-                        {claim.status}
-                      </span>
+
                       {/* <span className="flex justify-center ml-2 text-sm font-semibold md:text-base">
-                        <div className="grid gap-3">
-                          <button
-                            className="px-3 py-2 text-sm font-semibold rounded-md bg-emerald-700 hover:bg-emerald-600 "
-                            onClick={() => approvehandler(category)}
-                          >
-                            Approve
-                          </button>
-                         
-                        </div>
-                      </span> */}
-                      <span className="flex justify-center ml-2 text-sm font-semibold md:text-base">
+                            <div className="grid gap-3">
+                              <button
+                                className="px-3 py-2 text-sm font-semibold rounded-md bg-emerald-700 hover:bg-emerald-600 "
+                                onClick={() => approvehandler(category)}
+                              >
+                                Approve
+                              </button>
+                             
+                            </div>
+                          </span> */}
+                      {/* <span className="flex justify-center ml-2 text-sm font-semibold md:text-base">
                         {claim?.orderamount}
                       </span>
 
                       <span className="flex justify-center ml-2 text-sm font-semibold md:text-base">
                         {claim?.remarks ? claim?.remarks : "Add remark"}
-                      </span>
+                      </span> */}
 
-                      <div className="grid gap-3">
+                      {/* <div className="grid gap-3">
                         <button
                           className="px-3 py-2 text-sm font-semibold rounded-md bg-emerald-800 hover:bg-emerald-700 "
                           onClick={() => updateCategory(claim)}
@@ -307,7 +285,7 @@ const Claim: React.FC = () => {
                         >
                           Delete
                         </button>
-                      </div>
+                      </div> */}
                     </section>
                   ))
                 )
@@ -327,4 +305,5 @@ const Claim: React.FC = () => {
     </>
   );
 };
-export default Claim;
+
+export default ClaimHistory;

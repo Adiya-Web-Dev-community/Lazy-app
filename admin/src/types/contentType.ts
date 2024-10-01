@@ -885,13 +885,50 @@ export interface ClaimUpdate {
   status: string;
 }
 
+export interface ClaimResponse {
+  success: boolean;
+  data: ClaimGet[];
+}
+
 //update claim
 export interface MutationObjectClaimType {
   path: string;
   data: ClaimUpdate;
 }
-
-export interface ClaimResponse {
+export interface ClaimPostResponse {
   success: boolean;
-  data: ClaimGet[];
+  data: ClaimGet;
 }
+
+//claimHistory
+
+export interface Action {
+  status: string;
+  updateBy: string;
+  description: string;
+
+  date: string;
+}
+
+export interface ClaimHistoryPost {
+  type: string;
+  claimId: string;
+  userId: string;
+  action: Action[];
+  amount: number;
+}
+
+export interface ActionGet extends Action {
+  _id: string;
+}
+
+export interface ClaimHistorGet extends ClaimHistoryPost {
+  _id: string;
+  action: ActionGet[];
+  createdAt: string;
+  updatedAt: string;
+}
+// export interface ClaimHistoryResponse {
+//   success: boolean;
+//   data: ClaimHistorGet[];
+// }

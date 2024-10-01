@@ -16,6 +16,7 @@ import {
   TransactionResponse,
   TransactionSingleResponse,
   ClaimGet,
+  ClaimHistorGet,
 } from "../types/contentType";
 import { apiGetRequest } from "../api/adminGetApi";
 import { useQuery } from "@tanstack/react-query";
@@ -232,6 +233,17 @@ export const useClaims = () => {
     queryFn: async () => {
       return await apiGetRequest<ClaimGet[]>({
         url: "api/claim",
+      });
+    },
+  });
+};
+//Claim history
+export const useClaimsHistory = (id: string) => {
+  return useQuery<ApiGetResponse<ClaimHistorGet>, ApiError>({
+    queryKey: [`ClaimHistory/${id}`],
+    queryFn: async () => {
+      return await apiGetRequest<ClaimHistorGet>({
+        url: `api/claim/history/${id}`,
       });
     },
   });
