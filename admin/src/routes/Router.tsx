@@ -34,6 +34,8 @@ import Transaction from "../pages/Transaction";
 import TransactionForm from "../pages/TransactionForm";
 import Claim from "../pages/Claim";
 import ClaimHistory from "../pages/ClaimHistory";
+import Users from "../pages/Users";
+import UserClaim from "../pages/UserClaim";
 
 const route = createBrowserRouter([
   {
@@ -125,6 +127,10 @@ const route = createBrowserRouter([
       //Claim
       { path: "/claim", element: <Claim /> },
       { path: "/claim/:id", element: <ClaimHistory /> },
+
+      //Users
+      { path: "/users", element: <Users /> },
+      { path: "/users/:id", element: <UserClaim /> },
     ],
   },
 ]);

@@ -259,6 +259,18 @@ const UserUpdatePassword = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
+
+const getAllUser = async (req, res) => {
+  try {
+    const users = await User.find().sort({ updatedAt: -1 });
+
+    console.log("Sorted Users:", users);
+
+    return res.status(200).json({ success: true, data: users });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
 module.exports = {
   UserRegister,
   UserLogin,
@@ -268,4 +280,6 @@ module.exports = {
   UserfogotVerifyOTP,
   UpdateUserProfile,
   UserUpdatePassword,
+
+  getAllUser,
 };
