@@ -872,6 +872,7 @@ export interface ClaimPost {
   isApproved: boolean;
   remarks: string;
   orderamount: number;
+  type: string;
 }
 
 export interface ClaimGet extends ClaimPost {
