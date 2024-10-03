@@ -15,6 +15,7 @@ export interface UserClaimStateType {
   updatedata: {
     status: string;
     orderamount: number;
+    type: string;
   };
 }
 
@@ -30,6 +31,7 @@ const UserClaim: React.FC = () => {
     updatedata: {
       status: "",
       orderamount: 0,
+      type: "",
     },
   });
 
@@ -83,7 +85,11 @@ const UserClaim: React.FC = () => {
     setClaimForm((prev) => ({
       ...prev,
       updateId: claim._id,
-      updatedata: { status: claim.status, orderamount: claim.orderamount },
+      updatedata: {
+        status: claim.status,
+        orderamount: claim.orderamount,
+        type: claim.type,
+      },
     }));
   };
 
@@ -94,6 +100,7 @@ const UserClaim: React.FC = () => {
       updatedata: {
         status: "",
         orderamount: 0,
+        type: "",
       },
     }));
   };
@@ -235,6 +242,11 @@ const UserClaim: React.FC = () => {
 
                       <span className="flex justify-center ml-2 text-sm font-semibold md:text-base">
                         {claim?.orderamount}
+                        {claim.type
+                          ? claim.type?.toLowerCase() === "amount"
+                            ? "₹"
+                            : "P"
+                          : "₹"}
                       </span>
 
                       <span className="flex justify-center ml-2 text-sm font-semibold md:text-base">

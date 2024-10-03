@@ -25,10 +25,12 @@ const UpdateUserClaim: React.FC<UserClaimUpdateProps> = ({
   const [claimDataForm, setClaimData] = useState({
     status: isClaimForm.updatedata.status || "",
     orderamount: isClaimForm.updatedata.orderamount || "",
+    type: isClaimForm.updatedata.type || "",
   });
 
   const [isOpen, setOpen] = useState({
     status: false,
+    type: false,
   });
 
   //   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,6 +42,7 @@ const UpdateUserClaim: React.FC<UserClaimUpdateProps> = ({
   //   };
 
   const statusHeading = ["confirm", "cancel"];
+  const typeHeading = ["Point", "Amount"];
 
   const mutation = useMutation<
     ApiResponse<ClaimPostResponse>,
@@ -103,15 +106,24 @@ const UpdateUserClaim: React.FC<UserClaimUpdateProps> = ({
 
     console.log(claimDataForm);
 
-    // const categoryName: PostCategoryPostData = {
-    //   name: claimDataForm.categoryName,
-    // };
+    const postUserClaim = {
+      status: claimDataForm.status,
+      type: claimDataForm.type?.toLowerCase(),
+      orderamount: claimDataForm.orderamount,
+    };
+
+    console.log(postUserClaim);
 
     if (isClaimForm.updateId) {
       console.log("update Id");
       mutation.mutate({
         path: `api/claim/${isClaimForm.updateId}`,
-        data: claimDataForm,
+        data:
+          claimDataForm.status !== "cancel"
+            ? postUserClaim
+            : {
+                status: postUserClaim.status,
+              },
       });
     }
   };
@@ -177,32 +189,72 @@ const UpdateUserClaim: React.FC<UserClaimUpdateProps> = ({
               </ul>
             </div>
 
-            <div className="mb-4">
-              <label
-                htmlFor="orderamount"
-                className="block text-[#DEE1E2] font-semibold mb-2"
-              >
-                Order Amount
-                {claimDataForm.status === "cancel" ? (
-                  <span className="ml-4 text-sm font-semibold text-rose-400">
-                    Disabel
-                  </span>
-                ) : (
-                  ""
-                )}
-              </label>
+            {claimDataForm.status !== "cancel" && (
+              <div className="relative mb-4">
+                <label
+                  htmlFor="Status"
+                  className="block text-[#DEE1E2] font-semibold mb-2"
+                >
+                  Type
+                </label>
+                <div
+                  id="status"
+                  className="flex justify-between p-2 font-medium pl-4 bg-[#252525] focus:border-[#DEE1E2] text-gray-400 border-transparent rounded-md cursor-pointer"
+                  onClick={() => setOpen({ ...isOpen, type: !isOpen.type })}
+                >
+                  {claimDataForm?.type !== ""
+                    ? claimDataForm?.type
+                    : "Select Type"}
+                  <FaCaretDown className="m-1" />
+                </div>
+                <ul
+                  className={`mt-2 p-2 rounded-md w-64 text-[#DEE1E2] bg-[#1A1A1A] overflow-auto shadow-lg absolute z-10 ${
+                    isOpen.type ? "max-h-36" : "hidden"
+                  } custom-scrollbar`}
+                >
+                  {typeHeading?.map((type, i) => (
+                    <li
+                      key={i}
+                      className={`p-2 mb-2 text-sm text-[#DEE1E2] rounded-md cursor-pointer hover:bg-blue-200/60 ${
+                        claimDataForm?.type === type ? "bg-rose-600" : ""
+                      }`}
+                      onClick={() => selectOption("type", type)}
+                    >
+                      <span>{type}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
-              <input
-                id="orderamount"
-                name="orderamount"
-                type="number"
-                className="w-full p-2 rounded-md bg-[#252525] text-gray-400 focus:outline-none focus:border-[#DEE1E2] disabled:bg-[#202020] disabled:cursor-not-allowed"
-                placeholder="Write your remark here..."
-                value={claimDataForm?.orderamount || ""}
-                onChange={changeHandler}
-                disabled={claimDataForm.status === "cancel"}
-              />
-            </div>
+            {claimDataForm.status !== "cancel" && (
+              <div className="mb-4">
+                <label
+                  htmlFor="orderamount"
+                  className="block text-[#DEE1E2] font-semibold mb-2"
+                >
+                  {claimDataForm.type ? claimDataForm.type : "Amount"}
+                  {claimDataForm.status === "cancel" ? (
+                    <span className="ml-4 text-sm font-semibold text-rose-400">
+                      Disabel
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                </label>
+
+                <input
+                  id="orderamount"
+                  name="orderamount"
+                  type="number"
+                  className="w-full p-2 rounded-md bg-[#252525] text-gray-400 focus:outline-none focus:border-[#DEE1E2] disabled:bg-[#202020] disabled:cursor-not-allowed"
+                  placeholder="Write your remark here..."
+                  value={claimDataForm?.orderamount || ""}
+                  onChange={changeHandler}
+                  disabled={claimDataForm.status === "cancel"}
+                />
+              </div>
+            )}
 
             <div className="flex text-[#DEE1E2]">
               <button

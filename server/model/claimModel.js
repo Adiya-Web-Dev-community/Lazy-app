@@ -27,6 +27,8 @@ const ClaimModel = new mongoose.Schema(
       default: "pending",
       enum: ["confirm", "pending", "cancel"],
     },
+
+    type: { type: String },
     orderamount: { type: Number, required: true },
     invoice: { type: String },
     isApproved: { type: Boolean, default: false },
