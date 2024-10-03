@@ -13,6 +13,9 @@ import { SideBarPropsType } from "../../types/contentType";
 import { BiLogoBlogger } from "react-icons/bi";
 import { FaBook } from "react-icons/fa";
 import { TbIcons, TbMessageQuestion } from "react-icons/tb";
+import { GrTransaction } from "react-icons/gr";
+import { LuBaggageClaim } from "react-icons/lu";
+import { FaUsers } from "react-icons/fa";
 
 const SideBar: React.FC<SideBarPropsType> = ({
   isOpen,
@@ -329,7 +332,7 @@ const SideBar: React.FC<SideBarPropsType> = ({
               }`
             }
           >
-            <MdOutlineCategory className="w-6 h-6" />
+            <GrTransaction className="w-6 h-6" />
 
             <span
               className={`mx-1 p-1  text-[15px] font-montserrat ${
@@ -354,7 +357,7 @@ const SideBar: React.FC<SideBarPropsType> = ({
               }`
             }
           >
-            <MdOutlineCategory className="w-6 h-6" />
+            <LuBaggageClaim className="w-6 h-6" />
 
             <span
               className={`mx-1 p-1  text-[15px] font-montserrat ${
@@ -379,7 +382,7 @@ const SideBar: React.FC<SideBarPropsType> = ({
               }`
             }
           >
-            <MdOutlineCategory className="w-6 h-6" />
+            <FaUsers className="w-6 h-6" />
 
             <span
               className={`mx-1 p-1  text-[15px] font-montserrat ${
