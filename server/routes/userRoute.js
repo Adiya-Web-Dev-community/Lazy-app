@@ -9,6 +9,7 @@ const {
   UserfogotVerifyOTP,
   UpdateUserProfile,
   UserUpdatePassword,
+  getAllUser,
 } = require("../controller/userController");
 const { GetCategory } = require("../controller/categoryController");
 
@@ -16,6 +17,9 @@ router.post("/register", UserRegister);
 router.post("/login", UserLogin);
 router.get("/get-myself", isUser, GetUserData);
 router.get("/category", GetCategory);
+
+//get all users
+router.get("/all", getAllUser);
 
 //update user Profile
 router.put("/update-profile", isUser, UpdateUserProfile);

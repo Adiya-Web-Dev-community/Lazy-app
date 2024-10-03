@@ -34,7 +34,7 @@ const createClaim = async (req, res) => {
       userId,
       {
         $push: {
-          claims: {
+          claim: {
             claimId: savedClaim._id,
             amount: savedClaim.orderamount,
             status: savedClaim.status,
@@ -43,6 +43,7 @@ const createClaim = async (req, res) => {
       },
       { new: true, session }
     );
+
     await session.commitTransaction();
     session.endSession();
 
@@ -87,10 +88,56 @@ const getprrovedClaim = async (req, res) => {
   }
 };
 
+//for filter claim base on filter
+const getClaimByStatus = async (req, res) => {
+  try {
+    const { status } = req.query;
+
+    console.log(typeof status, status, "from finding calims by stauts");
+    //checking status is correct one
+    if (
+      status &&
+      !["pending", "cancel", "confirm"].includes(status.toLowerCase())
+    ) {
+      res.status(401).json({
+        success: false,
+        message: "Invalid status",
+      });
+    }
+
+    const claims = await Claim.find(
+      status ? { status: status.toLowerCase() } : {}
+    );
+
+    if (!claims) {
+      res.status(402).json({
+        success: false,
+        message: `No Claims with status ${status} found`,
+      });
+    }
+
+    console.log(status, claims, "from finding calims by stauts");
+    res.status(200).json(claims);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const getClaimbyUserId = async (req, res) => {
   const userid = req.userId;
   try {
     const response = await Claim.find({ userId: userid });
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//for getting claim by user Id by passing in params
+const getClaimUserId = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const response = await Claim.find({ userId: id });
     res.status(200).json(response);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -128,14 +175,6 @@ const updateClaim = async (req, res) => {
       { new: true, session }
     );
 
-    console.log(
-      updatedHistory,
-      historyUpdate,
-      updatedClaim,
-      updatedData,
-      ClaimHistory,
-      "from update"
-    );
     if (!updatedHistory) {
       await session.abortTransaction();
       session.endSession();
@@ -242,4 +281,6 @@ module.exports = {
   ConfirmClaim,
   cancelClainms,
   singleClaimHistory,
+  getClaimByStatus,
+  getClaimUserId,
 };

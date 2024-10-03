@@ -364,6 +364,31 @@ const SideBar: React.FC<SideBarPropsType> = ({
               Claim
             </span>
           </NavLink>
+          <NavLink
+            to={"/users"}
+            className={({ isActive }) =>
+              ` relative group rounded-md flex font-medium items-center
+                    ${
+                      isOpen.large
+                        ? "m-0 p-1 justify-center"
+                        : "m-1 p-2 w-[95%]"
+                    } h-[2.7rem]   ${
+                isActive
+                  ? " bg-gradient-to-r from-emerald-800 text-white font-semibold"
+                  : "hover:from-emerald-700 hover:bg-gradient-to-r  hover:text-white text-gray-400"
+              }`
+            }
+          >
+            <MdOutlineCategory className="w-6 h-6" />
+
+            <span
+              className={`mx-1 p-1  text-[15px] font-montserrat ${
+                isOpen.large ? "hidden" : ""
+              } `}
+            >
+              Users
+            </span>
+          </NavLink>
         </div>
       </section>
       <button

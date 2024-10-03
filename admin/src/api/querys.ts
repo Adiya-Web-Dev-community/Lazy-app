@@ -17,6 +17,7 @@ import {
   TransactionSingleResponse,
   ClaimGet,
   ClaimHistorGet,
+  UserAllResponse,
 } from "../types/contentType";
 import { apiGetRequest } from "../api/adminGetApi";
 import { useQuery } from "@tanstack/react-query";
@@ -227,6 +228,7 @@ export const useSingleTransaction = (id: string) => {
 };
 
 //Claim
+////get all
 export const useClaims = () => {
   return useQuery<ApiGetResponse<ClaimGet[]>, ApiError>({
     queryKey: ["Claim"],
@@ -237,13 +239,52 @@ export const useClaims = () => {
     },
   });
 };
+////get all claim by user Id
+export const useClaimsByUserId = (id: string) => {
+  return useQuery<ApiGetResponse<ClaimGet[]>, ApiError>({
+    queryKey: [`Claim/${id}`],
+    queryFn: async () => {
+      return await apiGetRequest<ClaimGet[]>({
+        url: `api/claim/get/${id}`,
+      });
+    },
+  });
+};
+
+////by status
+export const useClaimsByStatus = (status: string) => {
+  return useQuery<ApiGetResponse<ClaimGet[]>, ApiError>({
+    queryKey: [`Claim/bystatus/${status}`],
+    queryFn: async () => {
+      return await apiGetRequest<ClaimGet[]>({
+        url: `api/claim/bystatus?status=${status}`,
+      });
+    },
+  });
+};
+
 //Claim history
+////get all claim
 export const useClaimsHistory = (id: string) => {
   return useQuery<ApiGetResponse<ClaimHistorGet>, ApiError>({
     queryKey: [`ClaimHistory/${id}`],
     queryFn: async () => {
       return await apiGetRequest<ClaimHistorGet>({
         url: `api/claim/history/${id}`,
+      });
+    },
+  });
+};
+
+//Users
+
+////get All Users
+export const useUsers = () => {
+  return useQuery<ApiGetResponse<UserAllResponse>, ApiError>({
+    queryKey: [`User`],
+    queryFn: async () => {
+      return await apiGetRequest<UserAllResponse>({
+        url: `api/user/all`,
       });
     },
   });

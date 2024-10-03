@@ -27,8 +27,8 @@ export default {
         customePostTransaction:
           "40px  1fr 1fr 1fr 1.6fr 1.6fr 1.6fr 2.4fr 1.6fr 0.6fr",
         customePostClaim:
-          "40px  1.2fr 1.6fr  1.6fr 1fr 1fr  1.4fr 1.6fr  0.6fr",
-        customeUsers: "40px  1.2fr 1.6fr  1.6fr 1fr 1.6fr 1.4fr 1.6fr  0.6fr",
+          "40px  1.2fr 1.6fr  1.6fr 1.2fr 1fr  1.4fr 1.6fr  1fr",
+        customeUsers: "40px  1.2fr   2.8fr 1fr 1.6fr  1.6fr  1.6fr",
         customeHistory: "40px  1.2fr 1.6fr  1.6fr 1fr ",
       },
     },

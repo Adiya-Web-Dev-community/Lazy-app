@@ -11,20 +11,20 @@ import { ApiError, ApiResponse } from "../types/apiType";
 import {
   ClaimPostResponse,
   ClaimUpdate,
-  ClaimUpdateProps,
   MutationObjectClaimType,
 } from "../types/contentType";
 
 import { FaCaretDown } from "react-icons/fa";
+import { UserClaimUpdateProps } from "../pages/UserClaim";
 
-const UpdateClaim: React.FC<ClaimUpdateProps> = ({
+const UpdateUserClaim: React.FC<UserClaimUpdateProps> = ({
   isClaimForm,
   refetch,
   clear,
 }) => {
   const [claimDataForm, setClaimData] = useState({
     status: isClaimForm.updatedata.status || "",
-    remarks: isClaimForm.updatedata.remark || "",
+    orderamount: isClaimForm.updatedata.orderamount || "",
   });
 
   const [isOpen, setOpen] = useState({
@@ -39,7 +39,7 @@ const UpdateClaim: React.FC<ClaimUpdateProps> = ({
   //     }));
   //   };
 
-  const statusHeading = ["confirm", "pending", "cancel"];
+  const statusHeading = ["confirm", "cancel"];
 
   const mutation = useMutation<
     ApiResponse<ClaimPostResponse>,
@@ -116,23 +116,8 @@ const UpdateClaim: React.FC<ClaimUpdateProps> = ({
     }
   };
 
-  //   const closeHandler = () => {
-  //     clear();
-  //     if (isClaimForm.creat) {
-  //       setPostCategoryForm((prev) => ({
-  //         ...prev,
-  //         creat: !prev.creat,
-  //       }));
-  //     } else {
-  //       setPostCategoryForm((prev) => ({
-  //         ...prev,
-  //         updateId: "",
-  //       }));
-  //     }
-  //   };
-
-  const textAreaHandler = (e: ChangeEvent<HTMLTextAreaElement>) =>
-    setClaimData({ ...claimDataForm, remarks: e.target.value });
+  const changeHandler = (e: ChangeEvent<HTMLInputElement>) =>
+    setClaimData({ ...claimDataForm, orderamount: e.target.value });
 
   return (
     <div
@@ -154,18 +139,6 @@ const UpdateClaim: React.FC<ClaimUpdateProps> = ({
                 <TiArrowBackOutline className="w-10 h-10 ml-4 hover:text-orange-600 text-sky-600" />
               </button>
             </div>
-
-            {/* <input
-              value={claimDataForm?.categoryName}
-              type="text"
-              onChange={handleChange}
-              name="categoryName"
-              className={
-                " font-medium outline-none w-full my-4 border h-10 bg-[#252525] border-transparent text-[#DEE1E2] rounded-md pl-4 focus-within:border-gray-800"
-              }
-              placeholder={"Category Name"}
-              required
-            /> */}
 
             {/* Status Dropdown */}
             <div className="relative mb-4">
@@ -204,23 +177,31 @@ const UpdateClaim: React.FC<ClaimUpdateProps> = ({
               </ul>
             </div>
 
-            {/* Remark Section */}
             <div className="mb-4">
               <label
-                htmlFor="remark"
+                htmlFor="orderamount"
                 className="block text-[#DEE1E2] font-semibold mb-2"
               >
-                Remark
+                Order Amount
+                {claimDataForm.status === "cancel" ? (
+                  <span className="ml-4 text-sm font-semibold text-rose-400">
+                    Disabel
+                  </span>
+                ) : (
+                  ""
+                )}
               </label>
-              <textarea
-                id="remark"
-                name="remark"
-                // rows="4"
-                className="w-full p-2 rounded-md bg-[#252525] text-gray-400 focus:outline-none focus:border-[#DEE1E2] resize-none"
+
+              <input
+                id="orderamount"
+                name="orderamount"
+                type="number"
+                className="w-full p-2 rounded-md bg-[#252525] text-gray-400 focus:outline-none focus:border-[#DEE1E2] disabled:bg-[#202020] disabled:cursor-not-allowed"
                 placeholder="Write your remark here..."
-                value={claimDataForm?.remarks || ""}
-                onChange={textAreaHandler}
-              ></textarea>
+                value={claimDataForm?.orderamount || ""}
+                onChange={changeHandler}
+                disabled={claimDataForm.status === "cancel"}
+              />
             </div>
 
             <div className="flex text-[#DEE1E2]">
@@ -245,4 +226,4 @@ const UpdateClaim: React.FC<ClaimUpdateProps> = ({
   );
 };
 
-export default UpdateClaim;
+export default UpdateUserClaim;

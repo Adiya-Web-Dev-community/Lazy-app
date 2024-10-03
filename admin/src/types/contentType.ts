@@ -928,7 +928,46 @@ export interface ClaimHistorGet extends ClaimHistoryPost {
   createdAt: string;
   updatedAt: string;
 }
+
+//users
+
+export interface UserAllPost {
+  // "_id": "667d371100ee0821f4bddcb3",
+  name: string;
+  email: string;
+  password: string;
+  isVerify: boolean;
+  role: string;
+  createdAt: string;
+  updatedAt: string;
+  claim: ClaimGet[];
+}
+
+export interface UserAllGet extends UserAllPost {
+  _id: string;
+}
+
+export interface UserAllResponse {
+  success: boolean;
+  data: UserAllGet[];
+}
 // export interface ClaimHistoryResponse {
 //   success: boolean;
 //   data: ClaimHistorGet[];
 // }
+
+//claim form and state type
+
+export interface ClaimStateType {
+  updateId: string;
+  updatedata: {
+    status: string;
+    remark: string;
+  };
+}
+
+export interface ClaimUpdateProps {
+  isClaimForm: ClaimStateType;
+  refetch: () => void;
+  clear: () => void;
+}
