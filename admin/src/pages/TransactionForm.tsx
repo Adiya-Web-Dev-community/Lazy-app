@@ -155,14 +155,14 @@ const TransactionForm: React.FC = () => {
     e.preventDefault();
 
     const payloade = {
-      userId: singTransactionData?.userId?._id ?? "",
+      userId: singTransactionData?.userId?._id || "",
       type: transactionData.type,
       status: transactionData.status,
       paymenttype: transactionData.paymenttype,
       paymentMode: transactionData.paymentMode,
-      transactionId: singTransactionData?.transactionId ?? "",
-      remarks: singTransactionData?.remarks ?? "",
-      amount: +transactionData?.amount ?? 0,
+      transactionId: singTransactionData?.transactionId || "",
+      remarks: singTransactionData?.remarks || "",
+      amount: +transactionData?.amount || 0,
     };
 
     console.log(transactionData, payloade);
