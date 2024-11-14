@@ -4,6 +4,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const userlogin = async (email, password) => {
   try {
     const response = await Instance.post('/api/user/login', {email, password});
+    if (response.data.token) {
+      await AsyncStorage.setItem('userToken', response.data.token);
+    }
     return response.data;
   } catch (error) {
     throw error;
@@ -72,7 +75,12 @@ export const getPost = async () => {
     const response = await Instance.get('/api/blog/all/category');
     return response.data;
   } catch (error) {
-    console.error('Error fetching posts:', error);
+    if (error.response && error.response.status === 401) {
+      console.error('Unauthorized: Invalid or expired token');
+      // You might want to trigger a logout or token refresh here
+    } else {
+      console.error('Error fetching posts:', error);
+    }
     throw error;
   }
 };
@@ -129,7 +137,7 @@ export const CreateUserPost = async (
   image_url,
   user_id,
   category,
-  video_url,
+  video_url
 ) => {
   try {
     const response = await Instance.post('/api/post', {
@@ -137,7 +145,7 @@ export const CreateUserPost = async (
       image_url,
       user_id,
       category,
-      video_url,
+      video_url
     });
 
     return response.data;
@@ -154,7 +162,7 @@ export const CreateUserPost = async (
 export const getUserPost = async () => {
   try {
     const response = await Instance.get('/api/post/bycategory/all');
-    console.log('Get All Post Data', response.data);
+    // console.log('Get All Post Data', response.data);
     return response.data;
   } catch (error) {
     console.error('Failed to fetch posts', error);
@@ -167,13 +175,19 @@ export const getRegisterdetails = async () => {
     const response = await Instance.get('/api/user/get-myself');
     return response.data;
   } catch (error) {
-    console.error(
-      'Failed to fetch user data',
-      error.response ? error.response.data : error.message,
-    );
+    if (error.response && error.response.status === 401) {
+      console.error('Unauthorized: Invalid or expired token');
+      // You might want to trigger a logout or token refresh here
+    } else {
+      console.error(
+        'Failed to fetch user data',
+        error.response ? error.response.data : error.message,
+      );
+    }
     throw error;
   }
 };
+
 export const likePost = async postId => {
   try {
     const response = await Instance.put(`/api/post/${postId}/like`);
@@ -183,6 +197,7 @@ export const likePost = async postId => {
     throw error;
   }
 };
+
 export const AllPostCategory = async () => {
   try {
     const response = await Instance.get('/api/admin/post/category');
@@ -191,6 +206,7 @@ export const AllPostCategory = async () => {
     throw error;
   }
 };
+
 export const DeletePost = async postId => {
   try {
     const response = await Instance.delete(`/api/post/${postId}`);
@@ -199,6 +215,7 @@ export const DeletePost = async postId => {
     throw error;
   }
 };
+
 export const PostComment = async (postId, commentText) => {
   try {
     const response = await Instance.post(`/api/post/${postId}/comment`, {
@@ -209,6 +226,7 @@ export const PostComment = async (postId, commentText) => {
     throw error;
   }
 };
+
 export const savePost = async postId => {
   try {
     const response = await Instance.put(`/api/post/${postId}/save`);
@@ -217,6 +235,7 @@ export const savePost = async postId => {
     throw error;
   }
 };
+
 export const getSavedPosts = async () => {
   try {
     const response = await Instance.get('/api/post/saved');
@@ -248,6 +267,7 @@ export const verifyOtpAndResetPassword = async (email, otp, newPassword) => {
     throw error;
   }
 };
+
 export const updateProfile = async username => {
   try {
     const response = await Instance.put('/api/user/update-profile', {
@@ -259,6 +279,7 @@ export const updateProfile = async username => {
     throw error;
   }
 };
+
 export const createClaim = async claimData => {
   try {
     const response = await Instance.post('/api/claim', claimData);
@@ -288,6 +309,7 @@ export const GetReportPendingAmount = async () => {
     throw error;
   }
 };
+
 export const GetReportConfirmedAmount = async () => {
   try {
     const response = await Instance.get('/api/claim/report/confirm');
@@ -297,6 +319,7 @@ export const GetReportConfirmedAmount = async () => {
     throw error;
   }
 };
+
 export const GetReportCanceledAmount = async () => {
   try {
     const response = await Instance.get('/api/claim/report/cancel');
@@ -306,12 +329,38 @@ export const GetReportCanceledAmount = async () => {
     throw error;
   }
 };
+
 export const GetTransactionHistory = async () => {
   try {
     const response = await Instance.get('/api/history');
-    return response.data; 
+    return response.data;
   } catch (error) {
     console.error('API call failed:', error.response || error.message || error);
     throw error;
+  }
+};
+
+export const userLogout = async () => {
+  try {
+    await AsyncStorage.removeItem('userToken');
+    // Any other logout logic...
+  } catch (error) {
+    console.error('Error during logout:', error);
+    throw error;
+  }
+};
+
+export const checkAndRefreshToken = async () => {
+  try {
+    const token = await AsyncStorage.getItem('userToken');
+    if (!token) {
+      // No token found, user needs to login
+      return false;
+    }
+    // You can add additional checks here, like token expiration
+    return true;
+  } catch (error) {
+    console.error('Error checking token:', error);
+    return false;
   }
 };
