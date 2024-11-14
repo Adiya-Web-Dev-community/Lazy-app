@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { StatusBar, StyleSheet, Text, View, ScrollView } from 'react-native';
-import { COLORS } from '../../../Theme/Colors';
-import { moderateScale, scale } from '../../../utils/Scaling';
-import { GetTransactionHistory } from '../../../api/api';
+import React, {useEffect, useState} from 'react';
+import {StatusBar, StyleSheet, Text, View, ScrollView} from 'react-native';
+import {COLORS} from '../../../Theme/Colors';
+import {moderateScale, scale} from '../../../utils/Scaling';
+import {GetTransactionHistory} from '../../../api/api';
 
 export default function Transaction() {
   const [transactionHistory, setTransactionHistory] = useState([]);
@@ -73,10 +73,12 @@ export default function Transaction() {
               {item.type === 'claim_history' && (
                 <>
                   <Text style={styles.subLabel}>
-                    Claim ID: <Text style={styles.value}>{item.claimId._id}</Text>
+                    Claim ID:{' '}
+                    <Text style={styles.value}>{item.claimId._id}</Text>
                   </Text>
                   <Text style={styles.subLabel}>
-                    Product Name: <Text style={styles.value}>{item.claimId.productname}</Text>
+                    Product Name:{' '}
+                    <Text style={styles.value}>{item.claimId.productname}</Text>
                   </Text>
                   {item.action.map(action => (
                     <View key={action._id} style={styles.actionContainer}>
@@ -120,7 +122,7 @@ const styles = StyleSheet.create({
     borderRadius: moderateScale(12),
     padding: scale(15),
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: {width: 0, height: 4},
     shadowOpacity: 0.3,
     shadowRadius: 6,
   },

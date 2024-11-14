@@ -26,6 +26,7 @@ import {
   AllPostCategory,
 } from '../../api/api';
 import Video from 'react-native-video';
+import {uploadFileToFirebase} from '../../utils/firebase-file-upload';
 
 export default function UserPostScreen({navigation}) {
   const [mediaUris, setMediaUris] = useState([]);
@@ -69,15 +70,20 @@ export default function UserPostScreen({navigation}) {
 
   const pickMedia = () => {
     launchImageLibrary({mediaType: 'mixed', selectionLimit: 0}, response => {
-      if (response.assets) {
-        setMediaUris(prevUris => [
-          ...prevUris,
-          ...response.assets.map(asset => ({uri: asset.uri, type: asset.type})),
-        ]);
-        if (response.assets.length > 0) {
-          setMediaType(
-            response.assets[0].type.includes('video') ? 'video' : 'image',
-          );
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.error('ImagePicker Error: ', response.error);
+      } else if (response.assets) {
+        const validAssets = response.assets.filter(asset => asset.uri && asset.type);
+        console.log('Valid assets:', validAssets);
+        setMediaUris(prevUris => {
+          const newUris = [...prevUris, ...validAssets.map(asset => ({uri: asset.uri, type: asset.type}))];
+          console.log('New mediaUris:', newUris);
+          return newUris;
+        });
+        if (validAssets.length > 0) {
+          setMediaType(validAssets[0].type.includes('video') ? 'video' : 'image');
         }
       }
     });
@@ -86,14 +92,15 @@ export default function UserPostScreen({navigation}) {
   const openCamera = () => {
     launchCamera({mediaType: 'mixed'}, response => {
       if (response.assets) {
-        setMediaUris(prevUris => [
-          ...prevUris,
-          ...response.assets.map(asset => ({uri: asset.uri, type: asset.type})),
-        ]);
-        if (response.assets.length > 0) {
-          setMediaType(
-            response.assets[0].type.includes('video') ? 'video' : 'image',
-          );
+        const validAssets = response.assets.filter(asset => asset.uri && asset.type);
+        console.log('Valid assets from camera:', validAssets);
+        setMediaUris(prevUris => {
+          const newUris = [...prevUris, ...validAssets.map(asset => ({uri: asset.uri, type: asset.type}))];
+          console.log('New mediaUris from camera:', newUris);
+          return newUris;
+        });
+        if (validAssets.length > 0) {
+          setMediaType(validAssets[0].type.includes('video') ? 'video' : 'image');
         }
       }
     });
@@ -104,28 +111,60 @@ export default function UserPostScreen({navigation}) {
       console.error('User ID is not available');
       return;
     }
-  
+
     const selectedCategoryName =
-      categories.find(category => category._id === selectedCategory)?.name || '';
-  
+      categories.find(category => category._id === selectedCategory)?.name ||
+      '';
+
     try {
-      const mediaUrls = mediaUris.map(media => media.uri); 
+      setLoading(true);
+
+      const mediaUrls = [];
+
+      for (let i = 0; i < mediaUris.length; i++) {
+        const media = mediaUris[i];
+        console.log('mediaUri',media)
+        const fileExtension = media.uri.split('.').pop();
+        const fileName = `${Date.now()}_${i}.${fileExtension}`;
+        const filePath = media.type.includes('video') ? `videos/${fileName}` : `images/${fileName}`;
+
+        console.log(`Uploading file ${i + 1}:`, media.uri);
+        try {
+          const getUploadedFileURL = await uploadFileToFirebase(filePath, media.uri);
+          console.log(`File ${i + 1} uploaded:`, getUploadedFileURL);
+          mediaUrls.push(getUploadedFileURL);
+          
+          Alert.alert('Success', `File ${i + 1} uploaded successfully!`);
+        } catch (uploadError) {
+          console.error(`Error uploading file ${i + 1}:`, uploadError);
+          Alert.alert('Error', `Failed to upload file ${i + 1}. Please try again.`);
+        }
+      }
+
+      console.log('All media URLs:', mediaUrls);
+
+      if (mediaUrls.length === 0) {
+        throw new Error('All media files failed to upload');
+      }
+
       const result = await CreateUserPost(
         text,
-        mediaUrls, 
+        mediaUrls,
         userId,
         selectedCategoryName,
       );
       console.log('Post submitted successfully:', result);
+      setLoading(false);
       navigation.navigate('BuzzFeed', {
         refresh: true,
         selectedCategory: selectedCategory,
       });
     } catch (error) {
       console.error('Error submitting post:', error);
+      setLoading(false);
+      Alert.alert('Error', 'Failed to submit post. Please try again.');
     }
   };
-  
 
   const handleCategoryChange = itemValue => {
     setSelectedCategory(itemValue);
@@ -133,21 +172,34 @@ export default function UserPostScreen({navigation}) {
   };
 
   const renderMedia = () => {
+    console.log('Rendering media, mediaUris:', mediaUris);
     if (mediaUris.length > 0) {
-      return mediaUris.map((media, index) => (
-        <View key={index} style={styles.mediaContainer}>
-          {media.type.includes('video') ? (
-            <Video
-              source={{uri: media.uri}}
-              style={styles.media}
-              controls={true}
-              resizeMode="contain"
-            />
-          ) : (
-            <Image source={{uri: media.uri}} style={styles.image} />
-          )}
-        </View>
-      ));
+      return mediaUris.map((media, index) => {
+        console.log(`Rendering media item ${index}:`, media);
+        if (!media.uri) {
+          console.error(`Media item ${index} has no URI`);
+          return null;
+        }
+        return (
+          <View key={index} style={styles.mediaContainer}>
+            {media.type.includes('video') ? (
+              <Video
+                source={{uri: media.uri}}
+                style={styles.media}
+                controls={true}
+                resizeMode="contain"
+                onError={(error) => console.error(`Video error for ${media.uri}:`, error.message)}
+              />
+            ) : (
+              <Image
+                source={{uri: media.uri}}
+                style={styles.image}
+                onError={(error) => console.error(`Image error for ${media.uri}:`, error.nativeEvent.error)}
+              />
+            )}
+          </View>
+        );
+      }).filter(Boolean); // Remove any null items
     } else {
       return null;
     }
@@ -180,8 +232,10 @@ export default function UserPostScreen({navigation}) {
           <AntDesign name="arrowleft" size={25} color={COLORS.Black} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Create a Post</Text>
-        <TouchableOpacity onPress={submitPost}>
-          <Text style={styles.postButton}>Post</Text>
+        <TouchableOpacity onPress={submitPost} disabled={loading}>
+          <Text style={[styles.postButton, loading && styles.disabledButton]}>
+            {loading ? 'Posting...' : 'Post'}
+          </Text>
         </TouchableOpacity>
       </View>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -320,5 +374,8 @@ const styles = StyleSheet.create({
   picker: {
     height: 50,
     width: '100%',
+  },
+  disabledButton: {
+    opacity: 0.5,
   },
 });
