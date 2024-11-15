@@ -3,7 +3,7 @@ import {View, Text, Switch, StyleSheet} from 'react-native';
 import { COLORS } from '../../Theme/Colors';
 
 export default function SwitchMain() {
-  const [isEnabled1, setIsEnabled1] = useState(false);
+  const [isEnabled1, setIsEnabled1] = useState(true);
   const [isEnabled2, setIsEnabled2] = useState(false);
 
   const toggleSwitch1 = () => setIsEnabled1(previousState => !previousState);

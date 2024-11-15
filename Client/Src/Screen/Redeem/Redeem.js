@@ -51,9 +51,8 @@ export default function Redeem({navigation}) {
       </View>
 
       <View style={styles.newcontainer}>
-        <Text style={styles.headerTxt}>Redeem Store</Text>
+        {/* <Text style={styles.headerTxt}>Redeem Store</Text> */}
         <View style={styles.webviewContainer}>
-
         {isLoading && (
             <ActivityIndicator
               size="large"
@@ -61,7 +60,6 @@ export default function Redeem({navigation}) {
               style={styles.activityIndicator}
             />
           )}
-
           <WebView
             source={{ uri: 'https://www.youtube.com/watch?v=PuTrN28TW4k' }}
             javaScriptEnabled={true}
@@ -248,20 +246,20 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: moderateScale(13),
-    fontWeight: 'bold',
-    color: '#555',
+    fontWeight: '500',
+    color:COLORS.Black,
   },
   cardDescription: {
     fontSize: moderateScale(13),
     color: '#000',
-    fontWeight: 'bold',
+    fontWeight: '400',
   },
   cardPoints: {
     flex:1,
     fontSize: moderateScale(14),
-    fontWeight: 'bold',
+    fontWeight: '500',
     color: COLORS.red,
-    textAlign:'center'
+    // textAlign:'center'
   },
   detailsScrollView: {
     padding: moderateScale(15),

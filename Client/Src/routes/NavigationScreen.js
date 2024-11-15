@@ -65,6 +65,10 @@ import FlipkartReport from '../Screen/ProfileScreen/FlipkartReport';
 import ChooseTime from '../Components/ChooseTime';
 import OrderHistory from '../Screen/ProfileScreen/PaymentHistory/OrderHistory';
 import Transection from '../Screen/ProfileScreen/PaymentHistory/Transection';
+import AccountDelete from '../Components/AccountDelete/AccountDelete';
+import TermsAndConditions from '../Screen/DrawerScreen/TermsAndConditions';
+import UserPolicy from '../Screen/DrawerScreen/UserPolicy';
+import AboutUs from '../Screen/DrawerScreen/AboutUs';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -128,10 +132,10 @@ function DrawerTab({route, navigation}) {
       />
       {fromProfile ? (
         <>
-          <Drawer.Screen name="DrawerProfile" component={DrawerProfile} />
-          <Drawer.Screen name="AccountSettings" component={AccountSettings} />
+          {/* <Drawer.Screen name="DrawerProfile" component={DrawerProfile} /> */}
+          {/* <Drawer.Screen name="AccountSettings" component={AccountSettings} /> */}
           <Drawer.Screen name="LazybatWorks" component={LazybatWorks} />
-          <Drawer.Screen name="EarnMore" component={EarnMore} />
+          {/* <Drawer.Screen name="EarnMore" component={EarnMore} /> */}
           <Drawer.Screen name="TelegramChannel" component={TelegramChannel} />
           <Drawer.Screen
             name="Know More About Products THROUGH MINI VIDEOS"
@@ -143,15 +147,28 @@ function DrawerTab({route, navigation}) {
           <Drawer.Screen name="RateUS" component={RateUS} />
           <Drawer.Screen name="Privacy" component={Privacy} />
           <Drawer.Screen name="Logout" component={Logout} />
+          {/* <Drawer.Screen name="Account Delete" component={AccountDelete} /> */}
+          <Drawer.Screen name="Terms & Conditions" component={TermsAndConditions} />
+          <Drawer.Screen name="User Policy" component={UserPolicy} />
+          <Drawer.Screen name="AboutUs" component={AboutUs} />
+          
         </>
       ) : (
         <>
           <Drawer.Screen name="LazybatWorks" component={LazybatWorks} />
-          <Drawer.Screen name="EarnMore" component={EarnMore} />
+          {/* <Drawer.Screen name="EarnMore" component={EarnMore} /> */}
           <Drawer.Screen name="TelegramChannel" component={TelegramChannel} />
           <Drawer.Screen name="ContactUS" component={ContactUS} />
           <Drawer.Screen name="RateUS" component={RateUS} />
           <Drawer.Screen name="Privacy" component={Privacy} />
+          {/* <Drawer.Screen name="Account Delete" component={AccountDelete} /> */}
+          <Drawer.Screen name="Terms & Conditions" component={TermsAndConditions} />
+          <Drawer.Screen name="User Policy" component={UserPolicy} />
+          <Drawer.Screen name="AboutUs" component={AboutUs} />
+
+
+
+
         </>
       )}
     </Drawer.Navigator>
@@ -240,18 +257,14 @@ function BottomTab({navigation}) {
       />
       <Tab.Screen
         name="Profile"
-        component={Profile}
+        component={UserProfileScreen}
         options={{
           tabBarLabel: 'Profile',
           headerShown: false,
           tabBarButton: props => (
             <TouchableOpacity
               {...props}
-              onPress={() => {
-                setFromProfile(true);
-                navigation.navigate('DrawerTab', {fromProfile: true});
-                navigation.dispatch(DrawerActions.openDrawer());
-              }}
+          
             />
           ),
         }}
@@ -259,7 +272,6 @@ function BottomTab({navigation}) {
     </Tab.Navigator>
   );
 }
-
 export default function NavigationScreen() {
   const linking = {
     prefixes: ['https://lazydeeplink.netlify.app/app'],
@@ -377,6 +389,11 @@ export default function NavigationScreen() {
           component={Earnings}
           options={{headerShown: true, title: 'My Earning'}}
         />
+              <Stack.Screen
+          name="MissingCashback"
+          component={MissingCashback}
+          options={{headerShown: true, title: 'MissingCashback'}}
+        />
         <Stack.Screen
           name="AllOrderDetails"
           component={AllOrderDetails}
@@ -413,6 +430,11 @@ export default function NavigationScreen() {
           name="MakeLinkNow"
           component={MakeLinkNow}
           options={{headerShown: true, title: 'Make Links'}}
+        />
+              <Stack.Screen
+          name="AccountDelete"
+          component={AccountDelete}
+          options={{headerShown: true, title: 'Account Delete'}}
         />
         <Stack.Screen
           name="FlipkartReport"

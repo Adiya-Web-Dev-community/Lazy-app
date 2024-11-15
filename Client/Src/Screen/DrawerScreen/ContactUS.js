@@ -108,16 +108,17 @@ export default function TelegramChannel({}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginVertical:verticalScale(20)
+    marginVertical:verticalScale(20),
+    backgroundColor:COLORS.White
   },
   textContainer: {
     alignItems: 'center',
     marginVertical: verticalScale(50),
   },
   headerText: {
-    fontSize: moderateScale(30),
+    fontSize: moderateScale(24),
     color: COLORS.Black,
-    fontWeight: '500',
+    fontWeight: '400',
     textAlign: 'center',
   },
   subText: {
@@ -132,16 +133,16 @@ const styles = StyleSheet.create({
   iconOuter: {
     backgroundColor: '#8888',
     borderRadius:scale(30),
-    height: scale(60),
-    width: scale(60),
+    height: scale(50),
+    width: scale(50),
     alignItems: 'center',
     justifyContent: 'center',
   },
   iconBackground: {
     backgroundColor: COLORS.blue,
     borderRadius:scale(25),
-    width: scale(50),
-    height: scale(50),
+    width: scale(40),
+    height: scale(40),
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -170,7 +171,8 @@ const styles = StyleSheet.create({
     margin: scale(10),
     justifyContent: 'center',
     paddingHorizontal: moderateScale(10),
-    color:COLORS.Black
+    color:COLORS.Black,
+    borderWidth:0.5,
   },
   modalText: {
     paddingTop: verticalScale(2),
@@ -184,10 +186,11 @@ const styles = StyleSheet.create({
   BTN: {
     marginHorizontal: scale(25),
     backgroundColor: COLORS.blue,
-    width: scale(190),
+    width:"90%",
     height: verticalScale(32),
     alignItems: 'center',
-    alignSelf:'center'
+    alignSelf:'center',
+    borderRadius:scale(10)
   },
   BTNTXT: {
     paddingVertical: verticalScale(7),

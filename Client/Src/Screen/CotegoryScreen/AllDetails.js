@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Linking,
   Image,
+  TextInput,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {COLORS} from '../../Theme/Colors';
@@ -15,13 +16,18 @@ import {moderateScale, scale, verticalScale} from '../../utils/Scaling';
 import ImageSlider from '../../Components/Slider/ImageSlider';
 import RenderHTML from 'react-native-render-html';
 import {getProductById} from '../../api/api';
-
+import { AirbnbRating } from 'react-native-ratings';
 export default function AllDetails({route}) {
   const {productId} = route.params;
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [rating, setRating] = useState(0);
 
+  // Callback function to update rating
+  const handleRating = (newRating) => {
+    setRating(newRating);
+  };
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
@@ -127,6 +133,26 @@ export default function AllDetails({route}) {
           tagsStyles={htmlStyles}
         />
       </View>
+      <View style={styles.reviewBox}>
+        <Text style={styles.reviewText}>Review</Text>
+        <TextInput style={styles.textinputBoxs} multiline={true}/>
+      </View>
+      <TouchableOpacity style={styles.buttonBox}>
+        <Text style={styles.saveText}>Save</Text>
+      </TouchableOpacity>
+      <View style={styles.mapBox}>
+
+      <AirbnbRating
+        count={5} 
+        defaultRating={rating}
+        size={40} 
+        onFinishRating={handleRating} 
+        showRating={false} 
+        ratingColor="#FFD700"
+        ratingBackgroundColor="#C8C8C8" 
+      />
+      </View>
+
       <View style={styles.BottomBtnContainer}>
         {product.productsLink.map((link, index) => (
           <View style={styles.ImgndBtn} key={index}>
@@ -227,8 +253,8 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(17),
   },
   Bottoming: {
-    height: scale(125),
-    width: scale(125),
+    height: scale(100),
+    width: scale(100),
     borderRadius: moderateScale(5),
   },
   ImgndBtn: {
@@ -236,4 +262,40 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     padding: scale(10),
   },
+  reviewText: {
+    color: COLORS.blue,
+    fontSize:scale(14)
+  },
+  textinputBoxs:{
+    height:200,
+    borderWidth:1,
+    // marginHorizontal:scale(14),
+    borderColor:COLORS.blue,
+    marginTop:scale(10),
+    borderRadius:scale(4),
+    textAlignVertical: 'top',
+    padding:scale(5),
+    color:COLORS.Black,
+  },
+  reviewBox:{
+    marginHorizontal:scale(14)
+  },
+  buttonBox:{
+    backgroundColor:COLORS.blue,
+    padding:10,
+    borderRadius:scale(10),
+    marginHorizontal:24,
+    marginTop:10
+  },
+  reviewText:{
+    color:COLORS.blue,
+    
+  },
+  saveText:{
+    color:COLORS.White,
+    textAlign:"center"
+  },
+  mapBox:{
+    marginTop:scale(10)
+  }
 });

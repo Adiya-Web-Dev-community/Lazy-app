@@ -6,9 +6,11 @@ export const userlogin = async (email, password) => {
     const response = await Instance.post('/api/user/login', {email, password});
     if (response.data.token) {
       await AsyncStorage.setItem('userToken', response.data.token);
+      console.log(response,"this si sfngskjdjkdfjkghjhtdfjhgefuh")
     }
     return response.data;
   } catch (error) {
+    console.log(error,"this is eror +++++++++++++++++++++++")
     throw error;
   }
 };

@@ -20,7 +20,6 @@ const TrustedGrid = ({navigation}) => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     
@@ -44,8 +43,8 @@ const styles = StyleSheet.create({
   },
   title: {
     flex:1,
-    fontSize: moderateScale(14),
-    fontWeight: 'bold',
+    fontSize: moderateScale(12),
+    fontWeight: '600',
     color: '#fff', 
     textAlign:'center'
   },

@@ -1,11 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, ScrollView, View } from 'react-native';
 
-export default function Privacy() {
+export default function AboutUs() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {/* Title */}
-      <Text style={styles.title}>Privacy Policy</Text>
+      <Text style={styles.title}>AboutUs</Text>
 
       {/* Privacy Policy Content */}
       <View style={styles.section}>

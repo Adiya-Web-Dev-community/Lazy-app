@@ -101,7 +101,16 @@ const SuggestUsScreen = ({navigation}) => {
 
       <View style={styles.userList}>
         {userData.map(user => (
-          <Text key={user.id} style={styles.user}>{user.name}</Text>
+          <>
+        <View style={styles.detailsContaianer}>
+        <Text key={user.id} style={styles.users}>{user.name}</Text>
+          <Text key={user.id} style={styles.user}>Product Details</Text>
+          <Text key={user.id} style={styles.user}>this is very good in use </Text>
+        </View>
+
+          
+          </>
+
         ))}
       </View>
     </ScrollView>
@@ -115,8 +124,8 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   header: {
-    fontSize: moderateScale(18),
-    fontWeight: 'bold',
+    fontSize: moderateScale(14),
+    fontWeight: '400',
     marginBottom: verticalScale(10),
     color: '#fff',
     textAlign:'center',
@@ -145,7 +154,7 @@ const styles = StyleSheet.create({
     borderRadius: moderateScale(10),
     alignItems: 'center',
     marginBottom: verticalScale(20),
-    width:scale(100),
+    width:"90%",
     alignSelf:'center'
   },
   submitButtonText: {
@@ -154,15 +163,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   thankYouContainer: {
-    backgroundColor: '#003366',
+   borderColor:COLORS.blue,
     paddingVertical: verticalScale(10),
     paddingHorizontal: scale(20),
     borderRadius: moderateScale(10),
     marginBottom: verticalScale(20),
     alignItems: 'center',
+    elevation:1,
+    backgroundColor:COLORS.White,
+    borderWidth:0.5,
+    borderStyle:"dotted"
   },
   thankYouText: {
-    color: '#ffffff',
+    color:COLORS.Black,
     fontSize: moderateScale(14),
     textAlign: 'center',
   },
@@ -174,6 +187,19 @@ const styles = StyleSheet.create({
     color: '#333333',
     marginBottom: verticalScale(5),
   },
+  users: {
+    fontSize: moderateScale(14),
+    color:COLORS.blue,
+    marginBottom: verticalScale(5),
+    fontWeight:"500"
+  },
+  detailsContaianer:{
+    elevation:4,
+    backgroundColor:COLORS.White,
+    marginVertical:scale(5),
+    padding:scale(10),
+    borderRadius:scale(5)
+  }
 });
 
 export default SuggestUsScreen ;

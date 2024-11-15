@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Image,
   ScrollView,
@@ -6,14 +6,14 @@ import {
   Text,
   TouchableOpacity,
   View,
-  ActivityIndicator
+  ActivityIndicator,
 } from 'react-native';
 import Header from '../../Components/Header/Header';
 import WebView from 'react-native-webview';
-import { moderateScale, scale, verticalScale } from '../../utils/Scaling';
-import { COLORS } from '../../Theme/Colors';
+import {moderateScale, scale, verticalScale} from '../../utils/Scaling';
+import {COLORS} from '../../Theme/Colors';
 import SwitchMain from '../../Components/Switch/Switch';
-import { green } from 'react-native-reanimated/lib/typescript/Colors';
+import {green} from 'react-native-reanimated/lib/typescript/Colors';
 
 export default function RedeemCoupon({navigation}) {
   const [isLoading, setIsLoading] = useState(true);
@@ -39,7 +39,7 @@ export default function RedeemCoupon({navigation}) {
       </View>
 
       <View style={styles.newcontainer}>
-        <Text style={styles.headerTxt}>Redeem Store</Text>
+        
         <View style={styles.webviewContainer}>
           {isLoading && (
             <ActivityIndicator
@@ -50,7 +50,7 @@ export default function RedeemCoupon({navigation}) {
           )}
 
           <WebView
-            source={{ uri: 'https://www.youtube.com/watch?v=PuTrN28TW4k' }}
+            source={{uri: 'https://www.youtube.com/watch?v=PuTrN28TW4k'}}
             javaScriptEnabled={true}
             style={styles.webview}
             onLoadStart={() => setIsLoading(true)}
@@ -60,25 +60,20 @@ export default function RedeemCoupon({navigation}) {
         </View>
 
         <View style={styles.redeemContent}>
-            
-            <Text style={styles.redeemText}> Thanks! For Redeeming, Your 
-            Coupon Code is xxxxxx2906</Text>
-            
-          </View>
+          <Text style={styles.redeemText}>
+            Thanks! For Redeeming, Your Coupon Code is xxxxxx2906
+          </Text>
+        </View>
         <View style={styles.redeemContent}>
-            
-            <Text style={styles.redeemText}> Watch Video to Know How to use Your 
-            Coupon Code</Text>
-            
-          </View>
-         
-
-          <TouchableOpacity style={styles.Redeembtn} onPress={()=>navigation.navigate('RedeemCoupon')}>
-              <Text style={styles.redeemtxt}>Congratulations 
-              Messages</Text>
-            </TouchableOpacity>
- 
-        
+          <Text style={styles.redeemText}>
+            Watch Video to Know How to use Your Coupon Code
+          </Text>
+        </View>
+        <TouchableOpacity
+          style={styles.Redeembtn}
+          onPress={() => navigation.navigate('RedeemCoupon')}>
+          <Text style={styles.redeemtxt}>Congratulations Messages</Text>
+        </TouchableOpacity>
         {/* <View style={styles.fixedBottomButtons}>
           <TouchableOpacity>
             <Text style={{ textAlign: 'center', color: COLORS.Black }}>
@@ -95,95 +90,92 @@ export default function RedeemCoupon({navigation}) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: COLORS.White,
-    },
-    header: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-around',
-      marginVertical: verticalScale(5),
-    },
-    logo: {
-      height: scale(45),
-      width: scale(135),
-    },
-    FeedBtn: {
-      backgroundColor: COLORS.blue,
-      paddingVertical: verticalScale(10),
-      paddingHorizontal: scale(20),
-      borderRadius: moderateScale(10),
-    },
-    FeedBtnTxt: {
-      color: COLORS.White,
-      fontWeight: 'bold',
-      fontSize: moderateScale(15),
-    },
-    newcontainer: {
-      padding: moderateScale(15),
-      backgroundColor: COLORS.White,
-    },
-    headerTxt: {
-      fontSize: moderateScale(20),
-      fontWeight: 'bold',
-      color: COLORS.White,
-      marginBottom: verticalScale(10),
-      textAlign:'center',
-      backgroundColor:COLORS.blue,
-      padding:moderateScale(10),
-      borderRadius:moderateScale(10)
-  
-    },
-    webviewContainer: {
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginTop: scale(10),
-      height: verticalScale(225),
-    },
-    webview: {
-      height: verticalScale(220),
-      width: scale(350),
-    },
-    howItWorks: {
-      fontSize: moderateScale(18),
-      fontWeight: 'bold',
-      color: COLORS.Black,
-      marginTop: verticalScale(10),
-    },
-    
-    redeemContent:{
-        backgroundColor:COLORS.grey,
-        height:verticalScale(70),
-        alignItems:'center',
-        justifyContent:'center',
-        borderRadius:moderateScale(10),
-        marginVertical:verticalScale(10),
-        marginHorizontal:moderateScale(10)
-    },
-    redeemText:{
-        fontSize:moderateScale(21),
-        textAlign:'center',
-        color:COLORS.White
-    },
-    Redeembtn:{
-        // width:scale(100),
-      backgroundColor:'green',
-      alignItems:'center',
-      justifyContent:'center',
-      padding:moderateScale(10),
-      borderRadius:moderateScale(10),
-      elevation:verticalScale(5),
-      alignSelf:'center',
-      paddingHorizontal:moderateScale(20)
-    
-      },
-      redeemtxt:{
-        fontSize:moderateScale(19),
-        color:COLORS.White,
-        fontWeight:'500'
-    
-      }
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.White,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    marginVertical: verticalScale(5),
+  },
+  logo: {
+    height: scale(45),
+    width: scale(135),
+  },
+  FeedBtn: {
+    backgroundColor: COLORS.blue,
+    paddingVertical: verticalScale(10),
+    paddingHorizontal: scale(20),
+    borderRadius: moderateScale(10),
+  },
+  FeedBtnTxt: {
+    color: COLORS.White,
+    fontWeight: 'bold',
+    fontSize: moderateScale(15),
+  },
+  newcontainer: {
+    padding: moderateScale(15),
+    backgroundColor: COLORS.White,
+  },
+  headerTxt: {
+    fontSize: moderateScale(20),
+    fontWeight: 'bold',
+    color: COLORS.White,
+    marginBottom: verticalScale(10),
+    textAlign: 'center',
+    backgroundColor: COLORS.blue,
+    padding: moderateScale(10),
+    borderRadius: moderateScale(10),
+  },
+  webviewContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: scale(10),
+    height: verticalScale(225),
+  },
+  webview: {
+    height: verticalScale(220),
+    width: scale(350),
+  },
+  howItWorks: {
+    fontSize: moderateScale(18),
+    fontWeight: 'bold',
+    color: COLORS.Black,
+    marginTop: verticalScale(10),
+  },
+
+  redeemContent: {
+    backgroundColor: COLORS.White,
+    height: verticalScale(70),
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: moderateScale(10),
+    marginVertical: verticalScale(10),
+    marginHorizontal: moderateScale(10),
+    elevation:4,
+  },
+  redeemText: {
+    fontSize: moderateScale(14),
+    textAlign: 'center',
+    color: COLORS.Black,
+  },
+  Redeembtn: {
+    // width:scale(100),
+    backgroundColor: 'green',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: moderateScale(10),
+    borderRadius: moderateScale(10),
+    elevation: verticalScale(5),
+    alignSelf: 'center',
+    paddingHorizontal: moderateScale(20),
+    width:"90%"
+  },
+  redeemtxt: {
+    fontSize: moderateScale(19),
+    color: COLORS.White,
+    fontWeight: '400',
+  },
 });
-
-

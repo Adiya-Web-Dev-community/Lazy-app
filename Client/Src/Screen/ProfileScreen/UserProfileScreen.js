@@ -12,19 +12,28 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
-import Foundation from 'react-native-vector-icons/Foundation';
 import {COLORS} from '../../Theme/Colors';
 import LinearGradient from 'react-native-linear-gradient';
 import {moderateScale, scale, verticalScale} from '../../utils/Scaling';
-
+import Ionicons from "react-native-vector-icons/Ionicons"
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function UserProfileScreen({navigation}) {
+  const Navigation=useNavigation()
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
 
-  const handleLogout = () => {
-    console.log('User logged out');
-    setLogoutModalVisible(false);
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('userToken');
+      setLogoutModalVisible(false)
+      Navigation.reset({
+        index: 0,  
+        routes: [{ name: 'Login' }], 
+      });
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
   };
 
   return (
@@ -49,14 +58,12 @@ export default function UserProfileScreen({navigation}) {
           <AntDesign name="arrowleft" size={22} color={COLORS.White} />
           <Text style={styles.headerText}>Profile</Text>
         </View>
-
         <View style={styles.profileContainer}>
           <View style={styles.initialContainer}>
             <Text style={styles.initialText}>K</Text>
           </View>
           <Text style={styles.nameText}>KISHAN VAGHASIYA</Text>
         </View>
-
         <View style={styles.infoContainer}>
           <View style={styles.infoBox}>
             <Text style={styles.infoText}>User ID: 123456</Text>
@@ -68,7 +75,6 @@ export default function UserProfileScreen({navigation}) {
       </LinearGradient>
       <View style={[styles.actionsContainer, {}]}>
         <Text style={styles.moneyHeader}>Profile</Text>
-
         <TouchableOpacity
           style={[styles.actionBox, {borderBottomWidth: 0}]}
           onPress={() => navigation.navigate('EditProfile')}>
@@ -79,10 +85,8 @@ export default function UserProfileScreen({navigation}) {
           <AntDesign name="right" size={20} style={styles.rightIcon} />
         </TouchableOpacity>
       </View>
-
       <View style={styles.actionsContainer}>
         <Text style={styles.moneyHeader}>Money</Text>
-
         <TouchableOpacity
           style={styles.actionBox}
           onPress={() => navigation.navigate('MyEarningsScreen')}>
@@ -92,7 +96,6 @@ export default function UserProfileScreen({navigation}) {
           <Text style={styles.actionText}>My Earnings</Text>
           <AntDesign name="right" size={20} style={styles.rightIcon} />
         </TouchableOpacity>
-
         <TouchableOpacity
           style={styles.actionBox}
           onPress={() => navigation.navigate('Transection')}>
@@ -102,7 +105,6 @@ export default function UserProfileScreen({navigation}) {
           <Text style={styles.actionText}>Transection</Text>
           <AntDesign name="right" size={20} style={styles.rightIcon} />
         </TouchableOpacity>
-
         <TouchableOpacity
           style={[styles.actionBox, {borderBottomWidth: 0}]}
           onPress={() => navigation.navigate('OrderHistory')}>
@@ -112,8 +114,16 @@ export default function UserProfileScreen({navigation}) {
           <Text style={styles.actionText}>Order History</Text>
           <AntDesign name="right" size={20} style={styles.rightIcon} />
         </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.actionBox, {borderBottomWidth: 0}]}
+          onPress={() => navigation.navigate('MissingCashback')}>
+          <View style={styles.iconContainer}>
+            <Ionicons name="cash" size={20} color={COLORS.blue} />
+          </View>
+          <Text style={styles.actionText}>Missing CashBack</Text>
+          <AntDesign name="right" size={20} style={styles.rightIcon} />
+        </TouchableOpacity>
       </View>
-
       <View style={styles.actionsContainer}>
         <Text style={styles.moneyHeader}>Exclusive Tools</Text>
         <TouchableOpacity
@@ -134,8 +144,16 @@ export default function UserProfileScreen({navigation}) {
           <Text style={styles.actionText}>Logout</Text>
           <AntDesign name="right" size={20} style={styles.rightIcon} />
         </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.actionBox, {borderBottomWidth: 0}]}
+          onPress={() =>navigation.navigate("AccountDelete")}>
+          <View style={styles.iconContainer}>
+            <AntDesign name="delete" size={22} color={COLORS.red} />
+          </View>
+          <Text style={styles.actionText}>Delete</Text>
+          <AntDesign name="right" size={20} style={styles.rightIcon} />
+        </TouchableOpacity>
       </View>
-
       <Modal
         animationType="slide"
         transparent={true}

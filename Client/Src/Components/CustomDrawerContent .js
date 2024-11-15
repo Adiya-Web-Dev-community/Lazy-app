@@ -44,13 +44,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderTopRightRadius: moderateScale(20),
     borderBottomRightRadius: moderateScale(20),
-    elevation: verticalScale(2),
-    marginRight: moderateScale(10),
-    marginVertical: verticalScale(5),
+
   },
   drawerLabel: {
-    fontSize: moderateScale(16),
+    fontSize: moderateScale(14),
     marginLeft: scale(2),
+    color:COLORS.Black
   },
 });
 

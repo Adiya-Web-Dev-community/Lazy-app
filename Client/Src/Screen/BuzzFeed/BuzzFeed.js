@@ -369,7 +369,7 @@ export default function BuzzFeed({navigation}) {
       </View>
       <View style={styles.Secondcontainer}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('UserProfileScreen')}>
+        >
           <MaterialCommunityIcons
             name="account-circle-outline"
             size={45}

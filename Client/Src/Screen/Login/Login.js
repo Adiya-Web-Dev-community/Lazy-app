@@ -14,6 +14,7 @@ import {scale, verticalScale, moderateScale} from '../../utils/Scaling';
 import {COLORS} from '../../Theme/Colors';
 import {Instance} from '../../api/Instance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CheckBox from '@react-native-community/checkbox';
 import axios from 'axios';
 import {userlogin} from '../../api/api';
 import CustomStatusBar from '../../Components/CustomStatusBar/CustomStatusBar';
@@ -24,7 +25,9 @@ export default function Login({navigation}) {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [loading, setLoading] = useState(false);
-
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [privacyPolicyAccepted, setPrivacyPolicyAccepted] = useState(false);
+  const [userPolicyAccepted, setUserPolicyAccepted] = useState(false);
   const validateEmail = email => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(String(email).toLowerCase());
@@ -51,6 +54,7 @@ export default function Login({navigation}) {
         const response = await userlogin(email, password);
         console.log('Login Response:', response);
         if (response.success) {
+          console.log(response,"this is response")
           const token = response.token;
           await AsyncStorage.setItem('userToken', token);
           await AsyncStorage.setItem('username', email); 
@@ -123,6 +127,42 @@ export default function Login({navigation}) {
             )}
           </LinearGradient>
         </TouchableOpacity>
+        <View style={styles.checkboxContainer}>
+            <CheckBox
+              value={termsAccepted}
+              onValueChange={setTermsAccepted}
+              tintColors={{true: COLORS.STEELBLUE, false: COLORS.gray}}
+            />
+            <TouchableOpacity  onPress={()=>{navigation.navigate("TermsCondition")}}>
+              <Text style={styles.checkboxLabel}>
+                Accept Terms & Conditions
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.checkboxContainer}>
+            <CheckBox
+              value={privacyPolicyAccepted}
+              onValueChange={setPrivacyPolicyAccepted}
+              tintColors={{true: COLORS.STEELBLUE, false: COLORS.gray}}
+            />
+            <TouchableOpacity onPress={()=>{navigation.navigate("PrivacyPolicy")}}>
+              <Text style={styles.checkboxLabel}>Accept Privacy Policy</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.checkboxContainer}>
+            <CheckBox
+              value={userPolicyAccepted}
+              onValueChange={setUserPolicyAccepted}
+              tintColors={{true: COLORS.STEELBLUE, false: COLORS.gray}}
+            />
+            <TouchableOpacity  onPress={()=>{navigation.navigate("UserPolicy")}}>
+              <Text style={styles.checkboxLabel}>Accept User Policy</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* {error ? <Text style={styles.error}>{error}</Text> : null} */}
 
         <View
           style={{
@@ -203,5 +243,10 @@ const styles = StyleSheet.create({
   },
   Loader: {
     marginVertical: verticalScale(4),
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: verticalScale(5),
   },
 });

@@ -53,11 +53,9 @@ export default function Home({navigation}) {
   const [categoryProducts, setCategoryProducts] = useState([]);
   const [flashDeals, setFlashDeals] = useState([]);
   const [recomendedDeals, setRecomendedDeals] = useState([]);
-
   const Categoriess = shoppingApp.Categories;
   const FlashDeals = FlashDealsData.FlashDeals;
   const Recommended = RecommendedData.Recommended;
-
   const [loadingRecommended, setLoadingRecommended] = useState(true);
   const [loadingMobile, setLoadingMobile] = useState(true);
   const isFocused = useIsFocused();
@@ -70,7 +68,6 @@ export default function Home({navigation}) {
       setLoadingMobile(false);
     }, 10000);
   }, []);
-
   useEffect(() => {
     getRequest('/api/user/category');
     const fetchCategories = async () => {
@@ -301,7 +298,6 @@ export default function Home({navigation}) {
   const handleIconPress = url => {
     Linking.openURL(url);
   };
-
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={COLORS.green} />
@@ -322,7 +318,6 @@ export default function Home({navigation}) {
             />
           </View>
         )}
-
         {!selectedCategory && !selectedFlashDeal && !selectedRecommended && (
           <View>
             <View style={styles.TITLEBTNCONTAINER}>
@@ -339,9 +334,15 @@ export default function Home({navigation}) {
                 <Text style={styles.FeedBtnTxt}>The Buzz Feed</Text>
               </TouchableOpacity>
             </View>
-
             <TrustedGrid navigation={navigation} />
             <HomeSlider />
+            <WebView
+              source={{uri: 'https://www.youtube.com/watch?v=PuTrN28TW4k'}}
+              javaScriptEnabled={true}
+              style={styles.webview}
+              onLoadStart={() => setIsLoading(true)}
+              onLoadEnd={() => setIsLoading(false)}
+            />
           </View>
         )}
         {!selectedItem && !selectedFlashDeal && !selectedRecommended && (
@@ -350,7 +351,6 @@ export default function Home({navigation}) {
             handleCategoryPress={handleCategoryPress}
           />
         )}
-
         {selectedItem && (
           <ScrollView style={styles.itemDetails}>
             <TouchableOpacity
@@ -479,7 +479,6 @@ export default function Home({navigation}) {
               <Text style={styles.HowItTxt}>How it works?</Text>
             </View>
             <SectionHeader title="Recommended" />
-
             {loadingRecommended ? (
               <ActivityIndicator size="large" color={COLORS.blue} />
             ) : (
@@ -571,6 +570,10 @@ export default function Home({navigation}) {
             )}
           </View>
         )}
+          <Image
+              source={require('../assets/banner2.webp')}
+              style={styles.BannerImg}
+            />
       </ScrollView>
     </View>
   );
@@ -927,5 +930,12 @@ const styles = StyleSheet.create({
     marginHorizontal: scale(10),
     marginBottom: scale(10),
     lineHeight: scale(24),
+  },
+  webview: {
+    height: verticalScale(200),
+    width: scale(320),
+    marginTop: scale(10),
+    alignSelf: 'center',
+    marginHorizontal: scale(14),
   },
 });

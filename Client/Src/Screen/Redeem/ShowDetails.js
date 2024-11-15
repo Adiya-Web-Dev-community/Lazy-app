@@ -39,7 +39,7 @@ export default function ShowDetails({navigation}) {
       </View>
 
       <View style={styles.newcontainer}>
-        <Text style={styles.headerTxt}>Redeem Store</Text>
+        {/* <Text style={styles.headerTxt}>Redeem Store</Text> */}
         <View style={styles.webviewContainer}>
           {isLoading && (
             <ActivityIndicator
@@ -58,9 +58,6 @@ export default function ShowDetails({navigation}) {
           />
           <Text style={styles.howItWorks}>How it works?</Text>
         </View>
-
-        
-          
           <View style={styles.detailsScrollView}>
             <View style={styles.detailsContainer}>
               <Text style={styles.detailsText}>
@@ -76,39 +73,39 @@ export default function ShowDetails({navigation}) {
             <Text style={styles.largePriceText}>2999</Text>
             <View style={styles.synopsisContainer}>
               <Text style={styles.synopsisText}>
-                From New York Times bestselling author {'\n'}of The Perfect
-                Marriage and You Shouldn't{'\n'} Have Come Here comes a
-                chilling family {'\n'}thriller about the (sometimes literal)
-                {'\n'}
+                From New York Times bestselling author  of The Perfect
+                Marriage and You Shouldn't  Have Come Here comes a
+                chilling family  thriller about the (sometimes literal)
+                 
                 skeletons in the closet.
               </Text>
               <Text style={styles.synopsisText}>
-                After their mother passes, three estranged{'\n'} siblings
-                reunite to sort out her estate. Beth,{'\n'} the oldest, never
-                left home. She stayed with{'\n'} her mom, caring for her until
-                the very end.{'\n'}Nicole, the middle child, has been kept at
-                {'\n'}arm's length due to her ongoing battle with{'\n'} a
-                serious drug addiction. Michael, the{'\n'}youngest, lives out of
-                state and hasn't been{'\n'}back to their small Wisconsin town
-                since{'\n'} their father ran out on them seven years{'\n'}
+                After their mother passes, three estranged  siblings
+                reunite to sort out her estate. Beth,  the oldest, never
+                left home. She stayed with  her mom, caring for her until
+                the very end. Nicole, the middle child, has been kept at
+                 arm's length due to her ongoing battle with  a
+                serious drug addiction. Michael, the youngest, lives out of
+                state and hasn't been back to their small Wisconsin town
+                since  their father ran out on them seven years 
                 before.
               </Text>
               <Text style={styles.synopsisText}>
-                While going through their parent's{'\n'}belongings, the
-                siblings stumble upon a{'\n'}collection of home videos and
-                decide to{'\n'}
-                revisit those happier memories. However,{'\n'}the nostalgia is
-                cut short when one of the{'\n'}VHS tapes reveals a night back
-                in 1999 that{'\n'}none of them have any recollection of. On
-                {'\n'}
-                screen, their father appears covered in{'\n'}blood. What follows
-                is a dead body and a{'\n'}pact between their parents to get rid
-                of it,{'\n'}before the video abruptly ends.
+                While going through their parent's belongings, the
+                siblings stumble upon a collection of home videos and
+                decide to 
+                revisit those happier memories. However, the nostalgia is
+                cut short when one of the VHS tapes reveals a night back
+                in 1999 that none of them have any recollection of. On
+                 
+                screen, their father appears covered in blood. What follows
+                is a dead body and a pact between their parents to get rid
+                of it, before the video abruptly ends.
               </Text>
               <Text style={styles.synopsisText}>
-                Beth, Nicole, and Michael must now decide{'\n'}whether to leave
-                the past in the past or{'\n'}uncover the dark secret their
-                mother took to{'\n'}her grave.
+                Beth, Nicole, and Michael must now decide whether to leave
+                the past in the past or uncover the dark secret their
+                mother took to her grave.
               </Text>
             </View>
             <TouchableOpacity style={styles.Redeembtn} onPress={()=>navigation.navigate('RedeemCoupon')}>
@@ -135,8 +132,6 @@ export default function ShowDetails({navigation}) {
               </TouchableOpacity>
             </View>
           </View>
- 
-        
         <View style={styles.fixedBottomButtons}>
           <TouchableOpacity>
             <Text style={{ textAlign: 'center', color: COLORS.Black }}>
@@ -184,7 +179,7 @@ const styles = StyleSheet.create({
     },
     headerTxt: {
       fontSize: moderateScale(20),
-      fontWeight: 'bold',
+      fontWeight: '400',
       color: COLORS.White,
       marginBottom: verticalScale(10),
       textAlign:'center',
@@ -254,19 +249,20 @@ const styles = StyleSheet.create({
       backgroundColor: COLORS.White,
     },
     detailsContainer: {
-      marginBottom: verticalScale(10),
+      // marginBottom: verticalScale(10),
     },
     detailsText: {
       fontSize: moderateScale(15),
-      lineHeight: verticalScale(22),
+      lineHeight: verticalScale(14),
       color: '#000',
-      fontWeight:'bold'
+      fontWeight:'semiBold',
+      textAlign:"center"
     },
     largeImage: {
-      width: scale(250),
+      width:scale(330),
       height: scale(250),
       marginVertical: verticalScale(10),
-      borderRadius:moderateScale(20),
+      borderRadius:moderateScale(5),
       alignSelf:'center'
     },
     largePriceText: {
@@ -276,18 +272,18 @@ const styles = StyleSheet.create({
       textAlign: 'center',
     },
     synopsisContainer: {
-      marginVertical: verticalScale(10),
+      marginVertical: verticalScale(5),
     },
     synopsisText: {
       fontSize: moderateScale(15),
       lineHeight: verticalScale(20),
       color: '#555',
-      marginBottom: verticalScale(10),
-      textAlign:'center'
+      marginBottom: verticalScale(5),
+      // textAlign:'center'
     },
     RecommendedTXt: {
       fontSize: moderateScale(18),
-      fontWeight: 'bold',
+      fontWeight: '500',
       color: '#000',
       marginVertical: verticalScale(10),
     },
@@ -302,20 +298,21 @@ const styles = StyleSheet.create({
       marginHorizontal: moderateScale(5),
       alignItems: 'center',
       marginBottom: verticalScale(10),
-      
+      justifyContent:"space-between"
     },
     recommendedImage: {
-      width: scale(100),
+      width: scale(140),
       height: scale(110),
       borderRadius: moderateScale(8),
-    marginVertical:verticalScale(10)
+    // marginVertical:verticalScale(10)
     },
     ImgTxt: {
       textAlign: 'center',
       marginTop: verticalScale(5),
       fontSize: moderateScale(12),
       color: '#000',
-      marginBottom:verticalScale(50)
+      marginBottom:verticalScale(50),
+      fontWeight:"400",
     },
     fixedBottomButtons: {
       position: 'absolute',
@@ -335,11 +332,12 @@ const styles = StyleSheet.create({
       borderRadius: moderateScale(5),
       marginTop: verticalScale(10),
       alignItems:'center',
-      justifyContent:'center'
+      justifyContent:'center',
+      width:"90%"
     },
     TITLEBTNTXT: {
       color: COLORS.White,
-      fontWeight: 'bold',
+      fontWeight: '500',
       fontSize: moderateScale(15),
     },
     activityIndicator:{
@@ -347,7 +345,7 @@ const styles = StyleSheet.create({
       marginVertical:verticalScale(20)
     },
     Redeembtn:{
-      width:scale(100),
+      width:"90%",
     backgroundColor:'green',
     alignItems:'center',
     justifyContent:'center',
@@ -355,13 +353,11 @@ const styles = StyleSheet.create({
     borderRadius:moderateScale(10),
     elevation:verticalScale(5),
     alignSelf:'center'
-  
     },
     redeemtxt:{
       fontSize:moderateScale(19),
       color:COLORS.White,
-      fontWeight:'500'
-  
+      fontWeight:'400'
     },
     redeemCoupon:{
         backgroundColor:COLORS.grey,

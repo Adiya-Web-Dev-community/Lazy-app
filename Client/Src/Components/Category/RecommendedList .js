@@ -18,7 +18,7 @@ const RecommendedList = ({data, handlePress}) => {
       showsHorizontalScrollIndicator={false}
       renderItem={({item}) => (
         <TouchableOpacity style={styles.item} onPress={() => handlePress(item)}>
-          <Image
+          <Image resizeMethod='contain'
             source={require('../../Screen/assets/mackbook.jpg')}
             style={styles.image}
           />

@@ -18,6 +18,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {COLORS} from '../../Theme/Colors';
 import {moderateScale, scale, verticalScale} from '../../utils/Scaling';
 import {createClaim} from '../../api/api';
+import WebView from 'react-native-webview';
 
 const {width, height} = Dimensions.get('window');
 
@@ -145,9 +146,15 @@ export default function Claim({navigation}) {
       <LinearGradient colors={['#42a1f5', '#03bafc', '#42c5f5']}>
         <StatusBar />
       </LinearGradient>
-
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.Second_Container}>
+          <WebView
+            source={{uri: 'https://www.youtube.com/watch?v=PuTrN28TW4k'}}
+            javaScriptEnabled={true}
+            style={styles.webview}
+            // onLoadStart={() => setIsLoading(true)}
+            // onLoadEnd={() => setIsLoading(false)}
+          />
           <View style={styles.inputContainer}>
             <Text style={styles.title}>Buyer's Name</Text>
             <TextInput
@@ -371,5 +378,13 @@ const styles = StyleSheet.create({
     color: COLORS.White,
     fontSize: moderateScale(15),
     fontWeight: 'bold',
+  },
+  webview: {
+    height: verticalScale(200),
+    width: scale(320),
+    marginTop: scale(10),
+    alignSelf: 'center',
+    marginHorizontal: scale(10),
+    marginBottom:10
   },
 });
