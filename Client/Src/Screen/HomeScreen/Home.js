@@ -340,8 +340,7 @@ export default function Home({navigation}) {
               source={{uri: 'https://www.youtube.com/watch?v=PuTrN28TW4k'}}
               javaScriptEnabled={true}
               style={styles.webview}
-              onLoadStart={() => setIsLoading(true)}
-              onLoadEnd={() => setIsLoading(false)}
+           
             />
           </View>
         )}

@@ -35,7 +35,6 @@ export default function UserProfileScreen({navigation}) {
       console.error('Error logging out:', error);
     }
   };
-
   return (
     <ScrollView style={styles.container}>
       <LinearGradient
