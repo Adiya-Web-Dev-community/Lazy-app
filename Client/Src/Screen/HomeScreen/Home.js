@@ -1033,7 +1033,7 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
-    backgroundColor: '#2daafe',
+    // backgroundColor: '#2daafe',
     paddingVertical: verticalScale(15),
     paddingHorizontal: moderateScale(10),
     marginHorizontal: moderateScale(5),
@@ -1041,18 +1041,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     elevation: verticalScale(5),
+    backgroundColor:COLORS.White
   },
   title: {
     flex: 1,
     fontSize: moderateScale(12),
     fontWeight: '600',
-    color: '#fff',
+    color:COLORS.Black,
     textAlign: 'center',
   },
   subtitle: {
     flex: 1,
     fontSize: moderateScale(13),
-    color: '#fff',
+    color:COLORS.Black,
+
     marginTop: verticalScale(5),
     textAlign: 'center',
   },

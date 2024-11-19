@@ -37,7 +37,7 @@ export default function UserPostScreen({navigation}) {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [mediaType, setMediaType] = useState('');
-  console.log(userId, 'this is userId');
+
   useEffect(() => {
     const fetchUserId = async () => {
       try {
@@ -49,7 +49,6 @@ export default function UserPostScreen({navigation}) {
         console.error('Error fetching user ID:', error);
       }
     };
-
     fetchUserId();
   }, []);
   useEffect(() => {

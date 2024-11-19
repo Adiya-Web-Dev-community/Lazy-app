@@ -137,7 +137,7 @@ function DrawerTab({route, navigation}) {
         <>
           {/* <Drawer.Screen name="DrawerProfile" component={DrawerProfile} /> */}
           {/* <Drawer.Screen name="AccountSettings" component={AccountSettings} /> */}
-          <Drawer.Screen name="LazybatWorks" component={LazybatWorks} />
+          {/* <Drawer.Screen name="LazybatWorks" component={LazybatWorks} /> */}
           {/* <Drawer.Screen name="EarnMore" component={EarnMore} /> */}
           <Drawer.Screen name="TelegramChannel" component={TelegramChannel} />
           <Drawer.Screen
@@ -160,7 +160,7 @@ function DrawerTab({route, navigation}) {
         </>
       ) : (
         <>
-          <Drawer.Screen name="LazybatWorks" component={LazybatWorks} />
+          {/* <Drawer.Screen name="LazybatWorks" component={LazybatWorks} /> */}
           {/* <Drawer.Screen name="EarnMore" component={EarnMore} /> */}
           <Drawer.Screen name="TelegramChannel" component={TelegramChannel} />
           <Drawer.Screen name="ContactUS" component={ContactUS} />
