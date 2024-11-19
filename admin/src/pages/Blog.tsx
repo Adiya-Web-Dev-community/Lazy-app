@@ -201,7 +201,6 @@ const Blog = () => {
               >
                 <Link to={"/blog/form"}>
                   <span className="hidden md:inline-block">Create Blog</span>
-
                   <IoIosSend className="w-6 h-6 md:hidden" />
                 </Link>
               </button>

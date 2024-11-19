@@ -69,6 +69,9 @@ import AccountDelete from '../Components/AccountDelete/AccountDelete';
 import TermsAndConditions from '../Screen/DrawerScreen/TermsAndConditions';
 import UserPolicy from '../Screen/DrawerScreen/UserPolicy';
 import AboutUs from '../Screen/DrawerScreen/AboutUs';
+import VideoPlayer from '../Screen/Info/VideoPlayer';
+import NewsPage from '../Screen/HomeScreen/NewsPage';
+import DealPage from '../Screen/HomeScreen/DealPage';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -148,10 +151,12 @@ function DrawerTab({route, navigation}) {
           <Drawer.Screen name="Privacy" component={Privacy} />
           <Drawer.Screen name="Logout" component={Logout} />
           {/* <Drawer.Screen name="Account Delete" component={AccountDelete} /> */}
-          <Drawer.Screen name="Terms & Conditions" component={TermsAndConditions} />
+          <Drawer.Screen
+            name="Terms & Conditions"
+            component={TermsAndConditions}
+          />
           <Drawer.Screen name="User Policy" component={UserPolicy} />
           <Drawer.Screen name="AboutUs" component={AboutUs} />
-          
         </>
       ) : (
         <>
@@ -162,13 +167,12 @@ function DrawerTab({route, navigation}) {
           <Drawer.Screen name="RateUS" component={RateUS} />
           <Drawer.Screen name="Privacy" component={Privacy} />
           {/* <Drawer.Screen name="Account Delete" component={AccountDelete} /> */}
-          <Drawer.Screen name="Terms & Conditions" component={TermsAndConditions} />
+          <Drawer.Screen
+            name="Terms & Conditions"
+            component={TermsAndConditions}
+          />
           <Drawer.Screen name="User Policy" component={UserPolicy} />
           <Drawer.Screen name="AboutUs" component={AboutUs} />
-
-
-
-
         </>
       )}
     </Drawer.Navigator>
@@ -261,12 +265,7 @@ function BottomTab({navigation}) {
         options={{
           tabBarLabel: 'Profile',
           headerShown: false,
-          tabBarButton: props => (
-            <TouchableOpacity
-              {...props}
-          
-            />
-          ),
+          tabBarButton: props => <TouchableOpacity {...props} />,
         }}
       />
     </Tab.Navigator>
@@ -373,12 +372,27 @@ export default function NavigationScreen() {
           component={ForgotPassword}
           options={{headerShown: false}}
         />
+           <Stack.Screen
+          name="DealPage"
+          component={DealPage}
+          options={{headerShown: true, title: 'DealPages'}}
+        />
+          <Stack.Screen
+          name="NewsPage"
+          component={NewsPage}
+          options={{headerShown: true, title: 'News'}}
+        />
+         
         <Stack.Screen
           name="MyEarningsScreen"
           component={MyEarningsScreen}
           options={{headerShown: true, title: 'My Earning'}}
         />
-
+        <Stack.Screen
+          name="VideoPlayer"
+          component={VideoPlayer}
+          options={{headerShown: true, title: 'My Video'}}
+        />
         <Stack.Screen
           name="EditProfile"
           component={EditProfile}
@@ -389,7 +403,7 @@ export default function NavigationScreen() {
           component={Earnings}
           options={{headerShown: true, title: 'My Earning'}}
         />
-              <Stack.Screen
+        <Stack.Screen
           name="MissingCashback"
           component={MissingCashback}
           options={{headerShown: true, title: 'MissingCashback'}}
@@ -431,7 +445,7 @@ export default function NavigationScreen() {
           component={MakeLinkNow}
           options={{headerShown: true, title: 'Make Links'}}
         />
-              <Stack.Screen
+        <Stack.Screen
           name="AccountDelete"
           component={AccountDelete}
           options={{headerShown: true, title: 'Account Delete'}}

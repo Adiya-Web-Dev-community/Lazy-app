@@ -110,7 +110,7 @@ const Login = () => {
       </div>
       <div className="flex flex-col items-center justify-center h-screen px-4 mx-auto  w-[100%]  sm:w-[80%] md:w-[50%]  lg:w-[40%]">
         <div className="">
-          <h4 className="text-[24px] md:text-3xl lg:text-4xl font-bold pb-2 text-gray-600">
+          <h4 className="text-[24px] md:text-3xl lg:text-4xl font-bold pb-2 text-black">
             Log in to your Account
           </h4>
           <p className="text-sm font-medium text-gray-600 sm:text-base">

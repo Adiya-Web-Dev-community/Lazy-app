@@ -1,11 +1,7 @@
 import React, { useState } from "react";
-
 import { TiArrowBackOutline } from "react-icons/ti";
-
 import { useMutation } from "@tanstack/react-query";
-
 import { toast } from "react-toastify";
-
 import { apiRequest } from "../api/adminApi";
 import { ApiError, ApiResponse } from "../types/apiType";
 import {
@@ -64,7 +60,6 @@ const CreatPostCategory: React.FC<CreatPostCategoryProps> = ({
         throw apiError;
       }
     },
-
     onSuccess: (data) => {
       console.log(data);
       refetch();
@@ -159,7 +154,6 @@ const CreatPostCategory: React.FC<CreatPostCategoryProps> = ({
                 <TiArrowBackOutline className="w-10 h-10 ml-4 hover:text-orange-600 text-sky-600" />
               </button>
             </div>
-
             <input
               value={categoryDataForm?.categoryName}
               type="text"

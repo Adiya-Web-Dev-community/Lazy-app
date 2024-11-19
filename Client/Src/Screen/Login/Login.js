@@ -249,4 +249,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: verticalScale(5),
   },
+  checkboxLabel:{
+    color:COLORS.Black
+  }
 });

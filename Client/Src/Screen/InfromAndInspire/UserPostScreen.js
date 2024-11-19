@@ -37,12 +37,13 @@ export default function UserPostScreen({navigation}) {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [mediaType, setMediaType] = useState('');
-
+  console.log(userId, 'this is userId');
   useEffect(() => {
     const fetchUserId = async () => {
       try {
         const userData = await getRegisterdetails();
         const fetchedUserId = userData.data._id;
+        console.log(fetchedUserId, 'Fetched User ID');
         setUserId(fetchedUserId);
       } catch (error) {
         console.error('Error fetching user ID:', error);
@@ -51,7 +52,6 @@ export default function UserPostScreen({navigation}) {
 
     fetchUserId();
   }, []);
-
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -75,15 +75,22 @@ export default function UserPostScreen({navigation}) {
       } else if (response.error) {
         console.error('ImagePicker Error: ', response.error);
       } else if (response.assets) {
-        const validAssets = response.assets.filter(asset => asset.uri && asset.type);
+        const validAssets = response.assets.filter(
+          asset => asset.uri && asset.type,
+        );
         console.log('Valid assets:', validAssets);
         setMediaUris(prevUris => {
-          const newUris = [...prevUris, ...validAssets.map(asset => ({uri: asset.uri, type: asset.type}))];
+          const newUris = [
+            ...prevUris,
+            ...validAssets.map(asset => ({uri: asset.uri, type: asset.type})),
+          ];
           console.log('New mediaUris:', newUris);
           return newUris;
         });
         if (validAssets.length > 0) {
-          setMediaType(validAssets[0].type.includes('video') ? 'video' : 'image');
+          setMediaType(
+            validAssets[0].type.includes('video') ? 'video' : 'image',
+          );
         }
       }
     });
@@ -92,15 +99,22 @@ export default function UserPostScreen({navigation}) {
   const openCamera = () => {
     launchCamera({mediaType: 'mixed'}, response => {
       if (response.assets) {
-        const validAssets = response.assets.filter(asset => asset.uri && asset.type);
+        const validAssets = response.assets.filter(
+          asset => asset.uri && asset.type,
+        );
         console.log('Valid assets from camera:', validAssets);
         setMediaUris(prevUris => {
-          const newUris = [...prevUris, ...validAssets.map(asset => ({uri: asset.uri, type: asset.type}))];
+          const newUris = [
+            ...prevUris,
+            ...validAssets.map(asset => ({uri: asset.uri, type: asset.type})),
+          ];
           console.log('New mediaUris from camera:', newUris);
           return newUris;
         });
         if (validAssets.length > 0) {
-          setMediaType(validAssets[0].type.includes('video') ? 'video' : 'image');
+          setMediaType(
+            validAssets[0].type.includes('video') ? 'video' : 'image',
+          );
         }
       }
     });
@@ -118,26 +132,31 @@ export default function UserPostScreen({navigation}) {
 
     try {
       setLoading(true);
-
       const mediaUrls = [];
-
       for (let i = 0; i < mediaUris.length; i++) {
         const media = mediaUris[i];
-        console.log('mediaUri',media)
+        console.log('mediaUri', media);
         const fileExtension = media.uri.split('.').pop();
         const fileName = `${Date.now()}_${i}.${fileExtension}`;
-        const filePath = media.type.includes('video') ? `videos/${fileName}` : `images/${fileName}`;
-
+        const filePath = media.type.includes('video')
+          ? `videos/${fileName}`
+          : `images/${fileName}`;
         console.log(`Uploading file ${i + 1}:`, media.uri);
         try {
-          const getUploadedFileURL = await uploadFileToFirebase(filePath, media.uri);
+          const getUploadedFileURL = await uploadFileToFirebase(
+            filePath,
+            media.uri,
+          );
           console.log(`File ${i + 1} uploaded:`, getUploadedFileURL);
           mediaUrls.push(getUploadedFileURL);
-          
+
           Alert.alert('Success', `File ${i + 1} uploaded successfully!`);
         } catch (uploadError) {
           console.error(`Error uploading file ${i + 1}:`, uploadError);
-          Alert.alert('Error', `Failed to upload file ${i + 1}. Please try again.`);
+          Alert.alert(
+            'Error',
+            `Failed to upload file ${i + 1}. Please try again.`,
+          );
         }
       }
 
@@ -174,32 +193,44 @@ export default function UserPostScreen({navigation}) {
   const renderMedia = () => {
     console.log('Rendering media, mediaUris:', mediaUris);
     if (mediaUris.length > 0) {
-      return mediaUris.map((media, index) => {
-        console.log(`Rendering media item ${index}:`, media);
-        if (!media.uri) {
-          console.error(`Media item ${index} has no URI`);
-          return null;
-        }
-        return (
-          <View key={index} style={styles.mediaContainer}>
-            {media.type.includes('video') ? (
-              <Video
-                source={{uri: media.uri}}
-                style={styles.media}
-                controls={true}
-                resizeMode="contain"
-                onError={(error) => console.error(`Video error for ${media.uri}:`, error.message)}
-              />
-            ) : (
-              <Image
-                source={{uri: media.uri}}
-                style={styles.image}
-                onError={(error) => console.error(`Image error for ${media.uri}:`, error.nativeEvent.error)}
-              />
-            )}
-          </View>
-        );
-      }).filter(Boolean); // Remove any null items
+      return mediaUris
+        .map((media, index) => {
+          console.log(`Rendering media item ${index}:`, media);
+          if (!media.uri) {
+            console.error(`Media item ${index} has no URI`);
+            return null;
+          }
+          return (
+            <View key={index} style={styles.mediaContainer}>
+              {media.type.includes('video') ? (
+                <Video
+                  source={{uri: media.uri}}
+                  style={styles.media}
+                  controls={true}
+                  resizeMode="contain"
+                  onError={error =>
+                    console.error(
+                      `Video error for ${media.uri}:`,
+                      error.message,
+                    )
+                  }
+                />
+              ) : (
+                <Image
+                  source={{uri: media.uri}}
+                  style={styles.image}
+                  onError={error =>
+                    console.error(
+                      `Image error for ${media.uri}:`,
+                      error.nativeEvent.error,
+                    )
+                  }
+                />
+              )}
+            </View>
+          );
+        })
+        .filter(Boolean); // Remove any null items
     } else {
       return null;
     }
@@ -244,7 +275,9 @@ export default function UserPostScreen({navigation}) {
           <Picker
             selectedValue={selectedCategory}
             onValueChange={handleCategoryChange}
-            style={styles.picker}>
+            style={styles.picker} // Apply styles for the Picker
+            itemStyle={styles.pickerItem} // Works on iOS for individual items
+          >
             <Picker.Item label="Select Category" value="" />
             {categories.map(category => (
               <Picker.Item
@@ -259,12 +292,16 @@ export default function UserPostScreen({navigation}) {
         {showTextInput && (
           <TextInput
             style={styles.textInput}
+            placeholderTextColor={COLORS.grey}
             placeholder="Say something about this media..."
             value={text}
             onChangeText={setText}
             multiline
           />
         )}
+        <TouchableOpacity onPress={submitPost} style={styles.postData}>
+          <Text style={styles.postText}>Post</Text>
+        </TouchableOpacity>
       </ScrollView>
 
       <View style={styles.bottomBar}>
@@ -338,6 +375,7 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(16),
     backgroundColor: COLORS.White,
     height: 100,
+    color: COLORS.Black,
   },
   bottomBar: {
     flexDirection: 'row',
@@ -374,8 +412,19 @@ const styles = StyleSheet.create({
   picker: {
     height: 50,
     width: '100%',
+    color: COLORS.Black,
   },
   disabledButton: {
     opacity: 0.5,
+  },
+  postData: {
+    backgroundColor: COLORS.blue,
+    padding: 10,
+    borderRadius: scale(10),
+  },
+  postText: {
+    color: COLORS.White,
+    textAlign: 'center',
+    fontSize: scale(14),
   },
 });

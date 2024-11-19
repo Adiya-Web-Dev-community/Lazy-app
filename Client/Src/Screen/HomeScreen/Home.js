@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   Image,
   ScrollView,
@@ -25,7 +25,7 @@ import {WebView} from 'react-native-webview';
 import RecommendedData from './RecommendedData';
 import {useIsFocused} from '@react-navigation/native';
 import ImageSlider from '../../Components/Slider/ImageSlider';
-import FlatLisItem from '../../Components/FlatList/FlatLisItem';
+
 import {
   getCategories,
   getProductsByCategory,
@@ -45,6 +45,8 @@ import TrustedGrid from './TrustedGride';
 import {getRequest} from '../../api/APIManager';
 
 export default function Home({navigation}) {
+  const scrollViewRef = useRef(null); // Reference to the ScrollView
+
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedFlashDeal, setSelectedFlashDeal] = useState(null);
@@ -149,6 +151,13 @@ export default function Home({navigation}) {
 
   const handleBackPress = () => {
     setSelectedItem(null);
+  };
+
+  const scrollToSection = () => {
+    scrollViewRef.current?.scrollTo({
+      y: 200, // Adjust this value based on the position of the section
+      animated: true,
+    });
   };
   useEffect(() => {
     const handleBackPress = () => {
@@ -301,7 +310,10 @@ export default function Home({navigation}) {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={COLORS.green} />
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        ref={scrollViewRef}
+        style={styles.content}
+        showsVerticalScrollIndicator={false}>
         {!selectedCategory && !selectedFlashDeal && !selectedRecommended && (
           <View style={styles.SeachContainer}>
             <TextInput
@@ -334,13 +346,36 @@ export default function Home({navigation}) {
                 <Text style={styles.FeedBtnTxt}>The Buzz Feed</Text>
               </TouchableOpacity>
             </View>
-            <TrustedGrid navigation={navigation} />
+            <View style={styles.containers}>
+              <TouchableOpacity onPress={scrollToSection} style={styles.button}>
+                <Text style={styles.title}>Trusted/Best Product</Text>
+                <Text style={styles.subtitle}>Verified By Lazybat Team</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  navigation.navigate('BrandHub');
+                }}>
+                <Text style={styles.title}>Brand Hub</Text>
+                <Text style={styles.subtitle}>{'\n'}Non-Verified Product</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  navigation.navigate('SuggestUsScreen');
+                }}>
+                <Text style={styles.title}>Suggest Us</Text>
+                <Text style={[styles.subtitle, {}]}>
+                  Help Us Discover Hidden Gems.
+                </Text>
+              </TouchableOpacity>
+            </View>
+
             <HomeSlider />
             <WebView
               source={{uri: 'https://www.youtube.com/watch?v=PuTrN28TW4k'}}
               javaScriptEnabled={true}
               style={styles.webview}
-           
             />
           </View>
         )}
@@ -350,6 +385,7 @@ export default function Home({navigation}) {
             handleCategoryPress={handleCategoryPress}
           />
         )}
+
         {selectedItem && (
           <ScrollView style={styles.itemDetails}>
             <TouchableOpacity
@@ -403,7 +439,6 @@ export default function Home({navigation}) {
             </View>
           </ScrollView>
         )}
-
         {!selectedFlashDeal && !selectedCategory && !selectedRecommended && (
           <>
             <SectionHeader title="Flash Deals" />
@@ -431,7 +466,6 @@ export default function Home({navigation}) {
             </Text>
             <ImageSlider productId={selectedFlashDeal?._id} />
             <View style={styles.ICONROW}>{renderFlashDealIcons()}</View>
-
             <RenderHTML
               contentWidth={scale(360)}
               source={{html: selectedFlashDeal.description}}
@@ -442,7 +476,6 @@ export default function Home({navigation}) {
               baseStyle={styles.htmlContent}
               source={{html: selectedFlashDeal.feature}}
             />
-
             <View style={styles.BottomBtnContainer}>
               {selectedFlashDeal.company.map((link, index) => (
                 <View style={styles.ImgndBtn} key={index}>
@@ -545,7 +578,6 @@ export default function Home({navigation}) {
             </View>
           </ScrollView>
         )}
-
         {!selectedFlashDeal && !selectedCategory && !selectedRecommended && (
           <View>
             <View style={styles.SectionHeader}>
@@ -553,7 +585,8 @@ export default function Home({navigation}) {
               <TouchableOpacity
                 style={styles.ViewAllButton}
                 onPress={() => {
-                  navigation.navigate('CotegoryScreen');
+                  navigation.navigate('CotegoryScreen', { category: { name: 'Mobile' } });
+
                 }}>
                 <Text style={styles.FlashDealsTxts}>View All</Text>
               </TouchableOpacity>
@@ -569,10 +602,71 @@ export default function Home({navigation}) {
             )}
           </View>
         )}
-          <Image
-              source={require('../assets/banner2.webp')}
-              style={styles.BannerImg}
-            />
+        {!selectedFlashDeal && !selectedCategory && !selectedRecommended && (
+          <View>
+            <View style={styles.SectionHeader}>
+              <Text style={styles.FlashDealsTxt}>Daily Deals</Text>
+              <TouchableOpacity
+                style={styles.ViewAllButton}
+                onPress={() => {
+                  navigation.navigate('CotegoryScreen');
+                }}>
+                <Text style={styles.FlashDealsTxts}>View All</Text>
+              </TouchableOpacity>
+            </View>
+            {loadingMobile ? (
+              <ActivityIndicator size="large" color={COLORS.blue} />
+            ) : (
+              <>
+              <View style={{marginVertical:2}}>
+              <ScrollView showsHorizontalScrollIndicator={false}  horizontal={true}>
+                <TouchableOpacity onPress={()=>{navigation.navigate(
+                  "DealPage"
+                )}} style={styles.imageContainer}>
+                  <Image
+                    resizeMode="contain"
+                    style={styles.imageBox}
+                    source={require('../assets/L1.png')}
+                  />
+                  <Text style={styles.offPercent}>20% off</Text>
+                  <Text style={styles.offPercents}>This is new Deal of the Day</Text>
+
+                </TouchableOpacity>
+            </ScrollView>
+              </View>
+              </>
+            )}
+          </View>
+        )}
+        {!selectedFlashDeal && !selectedCategory && !selectedRecommended && (
+          <View>
+            <View style={styles.SectionHeader}>
+              <Text style={styles.FlashDealsTxt}>
+                News/Reviews/Guide section
+              </Text>
+              <TouchableOpacity
+                style={styles.ViewAllButton}
+                onPress={() => {
+                  navigation.navigate('NewsPage');
+                }}>
+                <Text style={styles.FlashDealsTxts}>View All</Text>
+              </TouchableOpacity>
+            </View>
+
+            {loadingMobile ? (
+              <ActivityIndicator size="large" color={COLORS.blue} />
+            ) : (
+              <FlashDealCategory
+                data={flashDeals}
+                handleFlashDealPress={handleFlashDealPress}
+              />
+            )}
+          </View>
+        )}
+        <Image
+          source={require('../assets/banner2.webp')}
+          style={styles.BannerImg}
+        />
       </ScrollView>
     </View>
   );
@@ -828,7 +922,7 @@ const styles = StyleSheet.create({
   FlashDealsTxt: {
     color: COLORS.Black,
     paddingHorizontal: scale(15),
-    fontSize: moderateScale(18),
+    fontSize: moderateScale(14),
     fontWeight: 'bold',
     marginVertical: verticalScale(2),
   },
@@ -936,5 +1030,60 @@ const styles = StyleSheet.create({
     marginTop: scale(10),
     alignSelf: 'center',
     marginHorizontal: scale(14),
+  },
+  button: {
+    flex: 1,
+    backgroundColor: '#2daafe',
+    paddingVertical: verticalScale(15),
+    paddingHorizontal: moderateScale(10),
+    marginHorizontal: moderateScale(5),
+    borderRadius: scale(10),
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: verticalScale(5),
+  },
+  title: {
+    flex: 1,
+    fontSize: moderateScale(12),
+    fontWeight: '600',
+    color: '#fff',
+    textAlign: 'center',
+  },
+  subtitle: {
+    flex: 1,
+    fontSize: moderateScale(13),
+    color: '#fff',
+    marginTop: verticalScale(5),
+    textAlign: 'center',
+  },
+  containers: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: moderateScale(10),
+    paddingVertical: verticalScale(20),
+  },
+  offPercent: {
+    color: COLORS.Black,
+    fontSize:scale(12),
+    marginLeft:10,
+    color:COLORS.blue
+  },
+  offPercents: {
+    color: COLORS.Black,
+    fontSize:scale(12),
+    marginLeft:10,
+    color:COLORS.Black
+  },
+  imageBox: {
+  height:120,
+  },
+  imageContainer: {
+    marginHorizontal: 20,
+    elevation:4,
+    backgroundColor:COLORS.White,
+    padding:scale(10),
+    marginBottom:5,
+    marginTop:5
+  
   },
 });

@@ -12,7 +12,7 @@ import {moderateScale, scale, verticalScale} from '../../utils/Scaling';
 import {COLORS} from '../../Theme/Colors';
 import HomeSlider from '../../Components/Slider/HomeSlider';
 
-const CotegoryScreen = ({navigation, route}) => {
+const CotegoryScreen = ({navigation, route,}) => {
   const {category} = route.params;
 
   const data = [
@@ -34,7 +34,7 @@ const CotegoryScreen = ({navigation, route}) => {
           <Text style={styles.FeedBtnTxt}>The Buzz Feed</Text>
         </TouchableOpacity>
       </View>
-      <Text style={styles.headerTxt}>{category.name}</Text>
+      {/* <Text style={styles.headerTxt}>{category.name}</Text> */}
       <View style={styles.cardsContainer}>
         <FlatList
           data={data}

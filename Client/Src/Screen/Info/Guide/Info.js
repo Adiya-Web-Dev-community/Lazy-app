@@ -51,10 +51,10 @@ const cardata = [
 
 export default function Info({navigation}) {
   const [modalVisible, setModalVisible] = useState(true);
-  const [selected, setSelected] = useState("short");
+  const [selected, setSelected] = useState('short');
 
   // Toggle button selection
-  const handleVisible = (videoType) => {
+  const handleVisible = videoType => {
     setSelected(videoType);
   };
   useEffect(() => {
@@ -103,73 +103,67 @@ export default function Info({navigation}) {
       </View>
 
       <View style={styles.videosContainer}>
-      {/* Short Videos Button */}
-      <TouchableOpacity
-        style={[
-          styles.button,
-          selected === 'short' && styles.selectedButton, // Apply blue background if selected
-        ]}
-        onPress={() => handleVisible('short')}
-      >
-        <Text style={styles.videoText}>Short Videos</Text>
-      </TouchableOpacity>
+        {/* Short Videos Button */}
+        <TouchableOpacity
+          style={[
+            styles.button,
+            selected === 'short' && styles.selectedButton, // Apply blue background if selected
+          ]}
+          onPress={() => handleVisible('short')}>
+          <Text style={styles.videoText}>Short Videos</Text>
+        </TouchableOpacity>
 
-      {/* Long Videos Button */}
-      <TouchableOpacity
-        style={[
-          styles.button,
-          selected === 'long' && styles.selectedButton, // Apply blue background if selected
-        ]}
-        onPress={() => handleVisible('long')}
-      >
-        <Text style={styles.videoText}>Long Videos</Text>
-      </TouchableOpacity>
-    </View>
-        {selected=="short" ? (
-         <>
-         
-         <View style={styles.shortVideos}>
+        {/* Long Videos Button */}
+        <TouchableOpacity
+          style={[
+            styles.button,
+            selected === 'long' && styles.selectedButton, // Apply blue background if selected
+          ]}
+          onPress={() => handleVisible('long')}>
+          <Text style={styles.videoText}>Long Videos</Text>
+        </TouchableOpacity>
+      </View>
+      {selected == 'short' ? (
+        <>
+          <View style={styles.shortVideos}></View>
+        </>
+      ) : (
+        <>
+          <Text style={styles.text}>Learn more about us through videos.</Text>
+          <Text style={styles.title}>Know more through our videos</Text>
+          {data.map(item => (
+            <View style={styles.mainCardContainer} key={item.id}>
+              <View style={styles.cardsContainer}>
+                <Text style={styles.heading}>{item.heading}</Text>
 
-         </View>
-         </>
-        ) : (
-        
-        
-             <>
-            <Text style={styles.text}>Learn more about us through videos.</Text>
-            <Text style={styles.title}>Know more through our videos</Text>
-            {data.map(item => (
-              <View style={styles.mainCardContainer} key={item.id}>
-                <View style={styles.cardsContainer}>
-                  <Text style={styles.heading}>{item.heading}</Text>
-
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    {cardata.map(cards => (
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          marginHorizontal: moderateScale(10),
-                        }}
-                        key={cards.id}>
-                        <View style={styles.cardContainer}>
-                          <View style={styles.cards}>
-                            <Image
-                              source={cards.Image}
-                              style={styles.cardimage}
-                            />
-                          </View>
-                          <Text style={styles.TItleTxt}>{cards.Title}</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                  {cardata.map(cards => (
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigation.navigate('VideoPlayer');
+                      }}
+                      style={{
+                        flexDirection: 'row',
+                        marginHorizontal: moderateScale(10),
+                      }}
+                      key={cards.id}>
+                      <View style={styles.cardContainer}>
+                        <View style={styles.cards}>
+                          <Image
+                            source={cards.Image}
+                            style={styles.cardimage}
+                          />
                         </View>
+                        <Text style={styles.TItleTxt}>{cards.Title}</Text>
                       </View>
-                    ))}
-                  </ScrollView>
-                </View>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
               </View>
-            ))}
-          
-          </>
-        )}
-    
+            </View>
+          ))}
+        </>
+      )}
     </ScrollView>
   );
 }
@@ -180,7 +174,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.White,
   },
   webview: {
-    height:700,
+    height: 700,
     width: scale(350),
     marginTop: scale(10),
     alignSelf: 'center',
@@ -352,26 +346,26 @@ const styles = StyleSheet.create({
   button: {
     paddingVertical: 10,
     paddingHorizontal: 20,
-    backgroundColor:COLORS.Black, 
+    backgroundColor: COLORS.Black,
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
   },
   selectedButton: {
-    backgroundColor:COLORS.blue, // Blue background when selected
+    backgroundColor: COLORS.blue, // Blue background when selected
   },
   videoText: {
     color: '#fff', // Text color inside the button
     fontSize: 16,
   },
-  shortVideos:{
-    height:600,
-    elevation:4,
-    backgroundColor:COLORS.White,
-    width:"95%",
-    alignSelf:"center",
-    marginTop:scale(10),
-    borderWidth:0.3,
-    borderRadius:scale(10)
-  }
+  shortVideos: {
+    height: 600,
+    elevation: 4,
+    backgroundColor: COLORS.White,
+    width: '95%',
+    alignSelf: 'center',
+    marginTop: scale(10),
+    borderWidth: 0.3,
+    borderRadius: scale(10),
+  },
 });

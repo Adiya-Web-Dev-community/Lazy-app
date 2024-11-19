@@ -1,11 +1,20 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import React, { useRef } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import { scale, verticalScale, moderateScale } from '../../utils/Scaling';
 
 const TrustedGrid = ({navigation}) => {
+  const scrollViewRef = useRef(null); // Reference to the ScrollView
+
+  const scrollToSection = () => {
+    scrollViewRef.current?.scrollTo({
+      y: 200, // Adjust this value based on the position of the section
+      animated: true,
+    });
+  };
   return (
+      <ScrollView horizontal={true} ref={scrollViewRef} >
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity  onPress={scrollToSection} style={styles.button}>
         <Text style={styles.title}>Trusted/Best Product</Text>
         <Text style={styles.subtitle}>Verified By Lazybat Team</Text>
       </TouchableOpacity>
@@ -18,6 +27,7 @@ const TrustedGrid = ({navigation}) => {
         <Text style={[styles.subtitle,{}]}>Help Us Discover Hidden Gems.</Text>
       </TouchableOpacity>
     </View>
+      </ScrollView>
   );
 };
 const styles = StyleSheet.create({
